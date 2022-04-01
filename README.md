@@ -1,5 +1,7 @@
 # entityOS SDK
 
+Javascript SDK for entityOS.
+
 - https://learn.entityos.cloud
 
 ## nodejs Examples
