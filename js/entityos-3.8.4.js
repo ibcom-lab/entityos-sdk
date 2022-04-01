@@ -2,7 +2,7 @@
  * This work is licensed under a Creative Commons Attribution-ShareAlike 4.0 International License.
  * http://creativecommons.org/licenses/by-sa/4.0/
  * Requires: jQuery, /jscripts/md5-min.js
- * entityos.cloud
+ * Based on entityos.cloud platform
  */
 
  "use strict";
@@ -32,7 +32,7 @@ entityos.init = function (data)
 		headers: {"cache-control": "no-cache"},
 		beforeSend: function (oRequest)
 		{
-			oRequest.setRequestHeader("X-HTTP-entityos-rest-level", 0);
+			oRequest.setRequestHeader("X-HTTP-myds-rest-level", 0);
 		}
 	});
 
@@ -95,7 +95,7 @@ entityos.init = function (data)
 
                         entityos._util.sendToView(
                         {
-                            from: 'entityos-auth',
+                            from: 'myds-auth',
                             status: 'error',
                             message: 'not-authenticated'
                         });		
@@ -104,7 +104,7 @@ entityos.init = function (data)
                     {
                         entityos._util.sendToView(
                         {
-                            from: 'entityos-core',
+                            from: 'myds-core',
                             status: 'error',
                             message: 'There is an error with this app.'
                         });
@@ -113,7 +113,7 @@ entityos.init = function (data)
                     {	
                         entityos._util.sendToView(
                         {
-                            from: 'entityos-core',
+                            from: 'myds-core',
                             status: 'error',
                             message: data.error.errornotes
                         });
@@ -153,7 +153,7 @@ entityos.init = function (data)
             {
                 entityos._util.sendToView(
                 {
-                    from: 'entityos-core',
+                    from: 'myds-core',
                     status: 'error',
                     message: 'There is an error communicating with the cloud service. Try re-opening the website.'
                 });
@@ -205,7 +205,7 @@ entityos.init = function (data)
 
 	if (data.options.dateFormats == undefined)
 	{
-		data.options.dateFormats = ['DD MMM YYYY', 'D MMM YYYY', 'D/MM/YYYY', 'DD/MM/YYYY', 'DD MMM YYYY HH:mm:ss']
+		data.options.dateFormats = ['D MMMM YYYY', 'DD MMMM YYYY', 'DD MMM YYYY', 'D MMM YYYY', 'D/MM/YYYY', 'DD/MM/YYYY', 'DD MMM YYYY HH:mm:ss']
 	}
 
 	var uriPath = window.location.pathname;
@@ -270,7 +270,7 @@ entityos.reset = function (param)
 	{
 		entityos._util.sendToView(
 		{
-			from: 'entityos-reset',
+			from: 'myds-reset',
 			status: 'error',
 			message: 'New passwords do not match.'
 		});
@@ -279,7 +279,7 @@ entityos.reset = function (param)
 	{
 		entityos._util.sendToView(
 		{
-			from: 'entityos-reset',
+			from: 'myds-reset',
 			status: 'error',
 			message: 'New password can not be blank.'
 		});
@@ -538,7 +538,7 @@ entityos.retrieve = function (param)
 	{
 		entityos._util.sendToView(
 		{
-			from: 'entityos-retrieve',
+			from: 'myds-retrieve',
 			status: 'error-internal',
 			message: 'No object'
 		});
@@ -1082,7 +1082,7 @@ entityos.space =
 
                 entityos._util.sendToView(
                 {
-                    from: 'entityos-space-switch',
+                    from: 'myds-space-switch',
                     status: 'switched-into',
                     message: entityos._scope.space.name
                 });
@@ -1127,7 +1127,7 @@ entityos.space =
 
                 entityos._util.sendToView(
                 {
-                    from: 'entityos-space-switch',
+                    from: 'myds-space-switch',
                     status: 'switched-back',
                     message: entityos._scope.space.name
                 });
@@ -1140,16 +1140,47 @@ entityos.space =
 
 entityos._util =
 {
-	hash: 	function(data)
-				{
-					//requires /jscripts/md5-min.js
-					
-					if (data !== undefined)
-					{	
-						return hex_md5(data);
-					}	
-				},
+	hash: 	    function(data)
+                {
+                    //requires /jscripts/md5-min.js
+                    
+                    if (data !== undefined)
+                    {	
+                        return hex_md5(data);
+                    }	
+                },
 
+	hex:
+                {
+                    to: function (textIn)
+                    {
+                        const encoder = new TextEncoder();
+                        return Array
+                            .from(encoder.encode(textIn))
+                            .map(b => b.toString(16).padStart(2, '0'))
+                            .join('')
+                    },
+
+                    from: function (hexIn)
+                    {
+                        var textOut = '';
+                        for (var i = 0; i < hexIn.length; i += 2) {
+                            var v = parseInt(hexIn.substr(i, 2), 16);
+                            if (v) textOut += String.fromCharCode(v);
+                        }
+                        return textOut;
+                    }  
+                },
+
+    format:    
+                {
+                    asUUID: function (text)
+                    {
+                        return text.substr(0,8) + '-' + text.substr(8,4) + '-' + text.substr(12,4) + '-' + text.substr(16,4) + '-' + text.substr(20);
+                    }
+
+                },
+    
 	sendToView: function(param)
 				{
 					entityos._scope.sentToView.unshift(param);
@@ -1300,7 +1331,7 @@ entityos._util =
 				{
 					entityos._util.sendToView(
 					{
-						from: 'entityos-init',
+						from: 'myds-init',
 						status: 'start'
 					});
 
@@ -1319,7 +1350,7 @@ entityos._util =
 					{
  						entityos._util.sendToView(
 						{
-							from: 'entityos-init',
+							from: 'myds-init',
 							status: 'uri-changed',
 							message: window.location.hash
 						});
@@ -1350,30 +1381,30 @@ entityos._util =
 
 						if (optionsAuth != undefined)
 						{
-							$('.entityos-signup').addClass('d-none');
+							$('.myds-signup').addClass('d-none');
 							if (optionsAuth.signup == true)
 							{
-								$('.entityos-signup').removeClass('d-none');
+								$('.myds-signup').removeClass('d-none');
 							}
 
-							$('.entityos-auth-info').addClass('d-none');
+							$('.myds-auth-info').addClass('d-none');
 							if (optionsAuth.caption != undefined || optionsAuth.note != undefined)
 							{
-								$('.entityos-auth-info').removeClass('d-none');
+								$('.myds-auth-info').removeClass('d-none');
 							}
 
-							$('.entityos-auth-info-caption').addClass('d-none');
+							$('.myds-auth-info-caption').addClass('d-none');
 							if (optionsAuth.caption != undefined)
 							{
-								$('.entityos-auth-info-caption').html(optionsAuth.caption);
-								$('.entityos-auth-info-caption').removeClass('d-none');
+								$('.myds-auth-info-caption').html(optionsAuth.caption);
+								$('.myds-auth-info-caption').removeClass('d-none');
 							}
 						
-							$('.entityos-auth-info-note').addClass('d-none');
+							$('.myds-auth-info-note').addClass('d-none');
 							if (optionsAuth.note != undefined)
 							{
-								$('.entityos-auth-info-note').html(optionsAuth.note);
-								$('.entityos-auth-info-note').removeClass('d-none');
+								$('.myds-auth-info-note').html(optionsAuth.note);
+								$('.myds-auth-info-note').removeClass('d-none');
 							}
 						}
 					}
@@ -1431,13 +1462,13 @@ entityos._util =
 						{
 							entityos._util.loadScript('/jscripts/md5-min.js')
 	
-							$(document).on('click', '#entityos-logon', function(event)
+							$(document).on('click', '#myds-logon', function(event)
 							{
 								entityos.auth(
 								{
-									logon: $('#entityos-logonname').val(),
-									password: $('#entityos-logonpassword').val(),
-									code: $('#entityos-logoncode').val()
+									logon: $('#myds-logonname').val(),
+									password: $('#myds-logonpassword').val(),
+									code: $('#myds-logoncode').val()
 								})
 							});							
 						}
@@ -1457,13 +1488,41 @@ entityos._util =
 								{
 									entityos._util.sendToView(
 									{
-										from: 'entityos-init',
+										from: 'myds-init',
 										status: 'end'
 									});
 									
 									if (data.status === 'ER')
 									{
-										entityos._scope.session.logonkey = data.logonkey;
+										entityos._scope.session = _.assign(entityos._scope.session,
+                                        {
+                                            logonkey: data.logonkey,
+                                        });
+
+                                        if (data.SAMLIdentityProviderId != '')
+                                        {
+                                            entityos._scope.session = _.assign(entityos._scope.session,
+                                            {
+                                                identityProvider:
+                                                {
+                                                    saml:
+                                                    {
+                                                        id: (data.SAMLIdentityProviderId != undefined?data.SAMLIdentityProviderId:data.samlidentityproviderid),
+                                                        name: (data.SAMLIdentityProviderName != undefined?data.SAMLIdentityProviderName:data.samlidentityprovidername),
+                                                        url: (data.SAMLIdentityProviderURL != undefined?data.SAMLIdentityProviderURL:data.samlidentityproviderurl),
+                                                        usernamepath: data.samlidentityproviderusernamepath
+                                                    }
+                                                },
+                                                serviceProvider:
+                                                {
+                                                    saml:
+                                                    {
+                                                        usernamepath: data.samlidentityproviderusernamepath
+                                                    }
+                                                }
+                                            });
+                                        }
+
 										entityos._util.doCallBack(callback, {isLoggedOn: false});
 									}
 									else
@@ -1549,7 +1608,7 @@ entityos._util =
 
 									entityos._util.sendToView(
 									{
-										from: 'entityos-logon-init',
+										from: 'myds-logon-init',
 										status: 'start'
 									});
 
@@ -1602,7 +1661,7 @@ entityos._util =
 									
 									entityos._util.sendToView(
 									{
-										from: 'entityos-logon-init',
+										from: 'myds-logon-init',
 										status: 'start'
 									});
 										
@@ -1623,7 +1682,7 @@ entityos._util =
 											{
 												entityos._util.sendToView(
 												{
-													from: 'entityos-logon-send',
+													from: 'myds-logon-send',
 													status: 'error',
 													message: 'Logon name or password is incorrect.'
 												});
@@ -1636,7 +1695,7 @@ entityos._util =
 
 												entityos._util.sendToView(
 												{
-													from: 'entityos-logon-init',
+													from: 'myds-logon-init',
 													status: 'end'
 												});
 
@@ -1650,7 +1709,7 @@ entityos._util =
 													{
 														entityos._util.sendToView(
 														{
-															from: 'entityos-logon-init',
+															from: 'myds-logon-init',
 															status: 'need-code',
 															message: (data.authenticationdelivery==1?'email':'SMS')
 														});
@@ -1665,7 +1724,7 @@ entityos._util =
 
 														entityos._util.sendToView(
 														{
-															from: 'entityos-logon-init',
+															from: 'myds-logon-init',
 															status: 'code-sent'
 														});
 
@@ -1680,7 +1739,7 @@ entityos._util =
 															{
 																entityos._util.sendToView(
 																{
-																	from: 'entityos-logon-init',
+																	from: 'myds-logon-init',
 																	status: 'end'
 																});
 
@@ -1688,7 +1747,7 @@ entityos._util =
 																{	
 																	entityos._util.sendToView(
 																	{
-																		from: 'entityos-logon-init',
+																		from: 'myds-logon-init',
 																		status: 'error',
 																		message: 'There is an issue with your user account (' + data.error.errornotes + ').'
 																	});
@@ -1699,7 +1758,7 @@ entityos._util =
 																{
 																	entityos._util.sendToView(
 																	{
-																		from: 'entityos-logon-init',
+																		from: 'myds-logon-init',
 																		status: 'end'
 																	});
 
@@ -1732,7 +1791,7 @@ entityos._util =
 														{
 															entityos._util.sendToView(
 															{
-																from: 'entityos-logon-init',
+																from: 'myds-logon-init',
 																status: 'need-totp-code',
 																message: entityos._scope.authenticationDelivery
 															});
@@ -1757,7 +1816,7 @@ entityos._util =
 								{
 									entityos._util.sendToView(
 									{
-										from: 'entityos-logon-send',
+										from: 'myds-logon-send',
 										status: 'start'
 									});
 
@@ -1795,7 +1854,7 @@ entityos._util =
 									
 									entityos._util.sendToView(
 									{
-										from: 'entityos-logon-send',
+										from: 'myds-logon-send',
 										status: 'request-start'
 									});
 									
@@ -1823,7 +1882,7 @@ entityos._util =
 
 												entityos._util.sendToView(
 												{
-													from: 'entityos-logon-send',
+													from: 'myds-logon-send',
 													status: 'error',
 													message: message
 												});
@@ -1834,7 +1893,7 @@ entityos._util =
 											{		
 												entityos._util.sendToView(
 												{
-													from: 'entityos-logon-send',
+													from: 'myds-logon-send',
 													status: 'end'
 												});
 
@@ -1852,7 +1911,7 @@ entityos._util =
 
 													entityos._util.sendToView(
 													{
-														from: 'entityos-logon-send',
+														from: 'myds-logon-send',
 														status: 'password-expired'
 													});
 												}
@@ -2079,7 +2138,7 @@ entityos._util =
 
 								entityos._util.sendToView(
 								{
-									from: 'entityos-send',
+									from: 'myds-send',
 									status: 'error',
 									message: message,
 									data: _.clone(param)
@@ -2169,7 +2228,7 @@ entityos._util =
 
 							entityos._util.sendToView(
 							{
-								from: 'entityos-send',
+								from: 'myds-send',
 								status: 'start'
 							});
 
@@ -2202,7 +2261,7 @@ entityos._util =
 								{	
                                     entityos._util.sendToView(
                                     {
-                                        from: 'entityos-send',
+                                        from: 'myds-send',
                                         status: 'end'
                                     });
 
@@ -2224,7 +2283,7 @@ entityos._util =
                                     {
                                         entityos._util.sendToView(
                                         {
-                                            from: 'entityos-core',
+                                            from: 'myds-core',
                                             status: 'error',
                                             message: 'There is an error communicating with the cloud service.'
                                         });
@@ -2234,7 +2293,7 @@ entityos._util =
 								{
 									entityos._util.sendToView(
 									{
-										from: 'entityos-send',
+										from: 'myds-send',
 										status: 'end'
 									});
 								
@@ -2369,7 +2428,7 @@ entityos._util =
 									{
 										entityos._util.sendToView(
 										{
-											from: 'entityos-send',
+											from: 'myds-send',
 											status: 'notify',
 											message: param.notify
 										});
@@ -2379,7 +2438,7 @@ entityos._util =
 									{
 										entityos._util.sendToView(
 										{
-											from: 'entityos-send',
+											from: 'myds-send',
 											status: 'notify',
 											message: param.notifyError
 										});
@@ -2508,17 +2567,17 @@ entityos._util =
 								{
 									if ($(uriContext).length != 0)
 									{
-										if (_.isEmpty($('#entityos-container')))
+										if (_.isEmpty($('#myds-container')))
 										{
-											$('div.entityos-view').addClass('hidden d-none');
+											$('div.myds-view').addClass('hidden d-none');
 											$(uriContext).removeClass('hidden d-none');
 										}
 										else
 										{	
 											var html = $(uriContext).clone();
-											var id = 'entityos-container-' + html.attr('id');
+											var id = 'myds-container-' + html.attr('id');
 											html.attr('id', id).removeClass('hidden d-none');
-											$('#entityos-container').html(html);
+											$('#myds-container').html(html);
 										}	
 									}
 								}
@@ -2528,7 +2587,7 @@ entityos._util =
 								{		
 									entityos._util.sendToView(
 									{
-										from: 'entityos-auth',
+										from: 'myds-auth',
 										status: 'error',
 										message: 'not-authenticated'
 									});	
@@ -2578,7 +2637,7 @@ entityos._util =
 												{
 													entityos._util.sendToView(
 													{
-														from: 'entityos-auth',
+														from: 'myds-auth',
 														status: 'error',
 														message: 'no-access',
 														data: entityos._scope.app.routing.noAccess
@@ -2588,7 +2647,7 @@ entityos._util =
 												{
 													entityos._util.sendToView(
 													{
-														from: 'entityos-auth',
+														from: 'myds-auth',
 														status: 'error',
 														message: 'no-access'
 													});
@@ -2603,7 +2662,7 @@ entityos._util =
 											}
 											else if (view.selector != undefined)
 											{
-												$('div.entityos-view').addClass('hidden d-none');
+												$('div.myds-view').addClass('hidden d-none');
 												$(view.selector).removeClass('hidden d-none');
 											}
 
@@ -2675,7 +2734,7 @@ entityos._util =
 
 										entityos._util.sendToView(
 										{
-											from: 'entityos-view-access',
+											from: 'myds-view-access',
 											status: 'context-changed',
 											message: {hide: elements, show: elementsShow}
 										});
@@ -2986,21 +3045,21 @@ entityos._util =
 											content = ifNoneContent;
 										}
 
-										if (content == undefined && type == 'template' && selector != undefined)
-										{
-											if ($(selector).length != 0)
-											{
-												content = $(selector).clone()
-											}
-										}
-
 										if (content == undefined && type == 'template' && queue != undefined)
 										{
 											if ($('#_' + queue).length != 0)
 											{
 												content = $('#_' + queue).clone().html()
 											}
-										}	
+										}
+
+                                        if (content == undefined && type == 'template' && selector != undefined)
+										{
+											if ($(selector).length != 0)
+											{
+												content = $(selector).clone().html()
+											}
+										}
 										
 										if (clear || type == 'template')
 										{
@@ -3030,19 +3089,19 @@ entityos._util =
 
 									     			if (data[key] == '')
 										     		{
-										     			content = s.replaceAll(content, '{{' + 'entityos-hide-if-empty-' + key.toLowerCase() + '}}', 'd-none');
-										     			content = s.replaceAll(content, '{{' + 'entityos-hide-if-empty-' + key + '}}', 'd-none');
+										     			content = s.replaceAll(content, '{{' + 'myds-hide-if-empty-' + key.toLowerCase() + '}}', 'd-none');
+										     			content = s.replaceAll(content, '{{' + 'myds-hide-if-empty-' + key + '}}', 'd-none');
 
-										     			content = s.replaceAll(content, '{{' + 'entityos-show-if-empty-' + key.toLowerCase() + '}}', '');
-										     			content = s.replaceAll(content, '{{' + 'entityos-show-if-empty-' + key + '}}', '');
+										     			content = s.replaceAll(content, '{{' + 'myds-show-if-empty-' + key.toLowerCase() + '}}', '');
+										     			content = s.replaceAll(content, '{{' + 'myds-show-if-empty-' + key + '}}', '');
 										     		}
 										     		else
 										     		{
-										     			content = s.replaceAll(content, '{{' + 'entityos-hide-if-empty-' + key.toLowerCase() + '}}', '');
-										     			content = s.replaceAll(content, '{{' + 'entityos-hide-if-empty-' + key + '}}', '');
+										     			content = s.replaceAll(content, '{{' + 'myds-hide-if-empty-' + key.toLowerCase() + '}}', '');
+										     			content = s.replaceAll(content, '{{' + 'myds-hide-if-empty-' + key + '}}', '');
 
-										     			content = s.replaceAll(content, '{{' + 'entityos-show-if-empty-' + key.toLowerCase() + '}}', 'd-none');
-										     			content = s.replaceAll(content, '{{' + 'entityos-show-if-empty-' + key + '}}', 'd-none');
+										     			content = s.replaceAll(content, '{{' + 'myds-show-if-empty-' + key.toLowerCase() + '}}', 'd-none');
+										     			content = s.replaceAll(content, '{{' + 'myds-show-if-empty-' + key + '}}', 'd-none');
 										     		}
 
 									     			keyData = String(data[key]);
@@ -3134,20 +3193,20 @@ entityos._util =
 									     		
 										     		if (data[key] == '')
 										     		{
-										     			_data['entityos-hide-if-empty-' + key] = 'd-none';
-										     			_data['entityos-show-if-empty-' + key] = '';
+										     			_data['myds-hide-if-empty-' + key] = 'd-none';
+										     			_data['myds-show-if-empty-' + key] = '';
 										     		}
 										     		else
 										     		{
-										     			_data['entityos-hide-if-empty-' + key] = '';
-										     			_data['entityos-show-if-empty-' + key] = 'd-none';
+										     			_data['myds-hide-if-empty-' + key] = '';
+										     			_data['myds-show-if-empty-' + key] = 'd-none';
 										     		}
 									     		}
 									     	}
 										}
 
 										entityos._util.view.queue.reset(param)
-										entityos._util.view.queue.add(template, {queue: param.queue, type: 'template'});
+										entityos._util.view.queue.add(template, {queue: param.queue, type: 'template', selector: selector});
 										entityos._util.view.queue.add({queue: param.queue, useTemplate: true}, _data);
 										entityos._util.view.queue.render(selector, {queue: param.queue}, _data);
 										entityos._util.view.queue.focus(selector, {queue: param.queue});
@@ -3176,7 +3235,7 @@ entityos._util =
 									var selector = $(selector);
 									if (selector.length != 0)
 									{
-										var focusElement = selector.find('.entityos-setfocus:first');
+										var focusElement = selector.find('.myds-setfocus:first');
 										if (focusElement.length == 0)
 										{
 											focusElement = selector.find('input:first');
@@ -3271,20 +3330,20 @@ entityos._util =
 			
 												if (includeDates)
 												{
-													entityos._util.view.datepicker({selector: '.entityos-date:visible', format: 'D MMM YYYY'})
-													entityos._util.view.datepicker({selector: '.entityos-date-time:visible', format: 'D MMM YYYY LT'})
+													entityos._util.view.datepicker({selector: '.myds-date:visible', format: 'D MMM YYYY'})
+													entityos._util.view.datepicker({selector: '.myds-date-time:visible', format: 'D MMM YYYY LT'})
 												}
 
 												if (setInputs && _.isObject(data))
 												{
-													_.each($(selector + ' input.entityos-check[data-context][data-id]'), function (element)
+													_.each($(selector + ' input.myds-check[data-context][data-id]'), function (element)
 													{
 														var context = $(element).data('context');
 														var value = data[context];
 
 														if (value != undefined)
 														{
-															$(selector + ' input.entityos-check[data-context="' + context + '"][data-id="' + value + '"]').attr('checked', 'checked')
+															$(selector + ' input.myds-check[data-context="' + context + '"][data-id="' + value + '"]').attr('checked', 'checked')
 														}
 													});
 												}
@@ -3417,7 +3476,7 @@ entityos._util =
 
 									entityos._util.sendToView(
 									{
-										from: 'entityos-register-space',
+										from: 'myds-register-space',
 										status: 'start'
 									});
 
@@ -3456,7 +3515,7 @@ entityos._util =
 										{
 											entityos._util.sendToView(
 											{
-												from: 'entityos-register-space',
+												from: 'myds-register-space',
 												status: 'end'
 											});
 
@@ -3501,7 +3560,7 @@ entityos._util =
 											{
 												entityos._util.sendToView(
 												{
-													from: 'entityos-register-templates',
+													from: 'myds-register-templates',
 													status: 'initialised'
 												});
 
@@ -3525,7 +3584,7 @@ entityos._util =
 
 											entityos._util.sendToView(
 											{
-												from: 'entityos-register-app',
+												from: 'myds-register-app',
 												status: 'start'
 											});
 
@@ -3613,7 +3672,7 @@ entityos._util =
 										{
 											entityos._util.sendToView(
 											{
-												from: 'entityos-register-app',
+												from: 'myds-register-app',
 												status: 'end'
 											});
 										}					
@@ -3626,7 +3685,7 @@ entityos._util =
 							{
 								entityos._util.sendToView(
 								{
-									from: 'entityos-user-password',
+									from: 'myds-user-password',
 									status: 'start'
 								});
 
@@ -3644,7 +3703,7 @@ entityos._util =
 									{
 										entityos._util.sendToView(
 										{
-											from: 'entityos-user-password',
+											from: 'myds-user-password',
 											status: 'end'
 										});
 
@@ -3760,7 +3819,7 @@ entityos._util =
 
     							entityos._util.sendToView(
 								{
-									from: 'entityos-util-location',
+									from: 'myds-util-location',
 									status: 'end',
 									message: data
 								});
@@ -3937,7 +3996,7 @@ entityos._util =
 						                '<input type="hidden" name="filetype0" id="{{context}}-attach-filetype0" value="">' +
 						                '<input type="hidden" name="title0" id="{{context}}-attach-title0" value="{{title}}">' +
 						                '<iframe style="display:none;" name="{{context}}-attach-proxy" id="{{context}}-attach-proxy" ' +
-						                'class="entityos-util-attachment-upload" frameborder="0"></iframe>' +
+						                'class="myds-util-attachment-upload" frameborder="0"></iframe>' +
 						                '<div class="form-group center-block">' +
 						                  '<div class="fileinput fileinput-new input-group" data-provides="fileinput"' +
 											' data-controller="{{controller}}">' +
@@ -4049,7 +4108,7 @@ entityos._util =
 								if (label != '') 
 								{
 									entityos._util.view.queue.add(
-										'<div id="' + context + '-attach-label" class="entityos-util-attach-label" style="margin-bottom:10px;">' + label + '</div>',
+										'<div id="' + context + '-attach-label" class="myds-util-attach-label" style="margin-bottom:10px;">' + label + '</div>',
 										{queue: 'attachments-select-template'});
 								}	
 									
@@ -4080,7 +4139,7 @@ entityos._util =
 								}
 	
 								entityos._util.view.queue.add(
-											'<iframe style="display:none;" name="' + context + '-attach-proxy" id="' + context + '-attach-proxy" class="entityos-util-attachment-upload" frameborder="0"></iframe>' +
+											'<iframe style="display:none;" name="' + context + '-attach-proxy" id="' + context + '-attach-proxy" class="myds-util-attachment-upload" frameborder="0"></iframe>' +
 											'</form>',
 						               {queue: 'attachments-select-template'});
 								
@@ -4139,7 +4198,7 @@ entityos._util =
 									{
 										entityos._util.sendToView(
 										{
-											from: 'entityos-util-attachments-upload',
+											from: 'myds-util-attachments-upload',
 											status: 'error',
 											message: response.error.errornotes
 										});
@@ -4347,7 +4406,7 @@ entityos._util =
 
 									entityos._util.sendToView(
 									{
-										from: 'entityos-util-attachments-upload',
+										from: 'myds-util-attachments-upload',
 										status: 'error',
 										message: response.error.errornotes
 									});
@@ -4407,7 +4466,7 @@ entityos._util =
 								
 								entityos._util.sendToView(
 								{
-									from: 'entityos-util-attachments-upload',
+									from: 'myds-util-attachments-upload',
 									status: 'start'
 								});
 
@@ -4461,7 +4520,7 @@ entityos._util =
 
 									entityos._util.sendToView(
 									{
-										from: 'entityos-util-attachments-upload',
+										from: 'myds-util-attachments-upload',
 										status: 'end'
 									});
 
@@ -4477,7 +4536,7 @@ entityos._util.svgToImage = function (param)
 	if (!window.atob) window.atob = base64.decode
 
 	var svgURI = entityos._util.param.get(param, 'svgURI').value;
-	var svgContainerID = entityos._util.param.get(param, 'svgContainerID', {default: 'entityos-svg'}).value;
+	var svgContainerID = entityos._util.param.get(param, 'svgContainerID', {default: 'myds-svg'}).value;
 	var imageContainerSelector = entityos._util.param.get(param, 'imageContainerSelector').value;
 	var attachmentLink = entityos._util.param.get(param, 'attachmentLink').value;
 	var scale = entityos._util.param.get(param, 'scale', {default: 15}).value;
@@ -4541,7 +4600,7 @@ entityos._util.svgToImage = function (param)
 		}
 		else
 		{
-			var canvas = document.getElementById("canvas.entityos-image");
+			var canvas = document.getElementById("canvas.myds-image");
 
 			if (canvas == null)
 			{
@@ -4730,8 +4789,8 @@ entityos._util.svgAsImage = function (param)
 entityos._util.svgToCanvas = function (param)
 {
 	var svgURI = entityos._util.param.get(param, 'svgURI').value;
-	var svgContainerSelector = entityos._util.param.get(param, 'svgContainerSelector', {default: '#entityos-svg'}).value;
-	var canvasContainerID = entityos._util.param.get(param, 'svgContainerID', {default: 'entityos-svg'}).value;
+	var svgContainerSelector = entityos._util.param.get(param, 'svgContainerSelector', {default: '#myds-svg'}).value;
+	var canvasContainerID = entityos._util.param.get(param, 'svgContainerID', {default: 'myds-svg'}).value;
 	var svgContainerID = entityos._util.param.get(param, 'svgContainerID').value;
 	var convertUsing = 'SVG2Bitmap';
 
@@ -4844,14 +4903,14 @@ entityos._util.imageToBase64Data = function (param)
 	var imageURI = entityos._util.param.get(param, 'imageURI').value;
 	var imageType = entityos._util.param.get(param, 'imageType', {default: 'svg+xml'}).value;
 	var attachmentLink = entityos._util.param.get(param, 'attachmentLink').value;
-	var svgSelector = entityos._util.param.get(param, 'svgSelector', {default: '#entityos-svg'}).value;
+	var svgSelector = entityos._util.param.get(param, 'svgSelector', {default: '#myds-svg'}).value;
 
 	if (!_.contains(imageType, 'image/'))
 	{
 		imageType = 'image/' + imageType.toLowerCase()
 	};
 
-	var imageContainerSelector = entityos._util.param.get(param, 'imageContainerSelector', {default: '#entityos-image-show'}).value;
+	var imageContainerSelector = entityos._util.param.get(param, 'imageContainerSelector', {default: '#myds-image-show'}).value;
 	var imageHTMLTemplate = entityos._util.param.get(param, 'imageHTMLTemplate', {default: '<img src="{{src}}">'}).value;
 
 	var scale = entityos._util.param.get(param, 'scale', {default: 15}).value;
@@ -4897,7 +4956,7 @@ entityos._util.imageToBase64Data = function (param)
 
 		image.onload = function()
 		{
-			var canvas = document.getElementById("canvas.entityos-image");
+			var canvas = document.getElementById("canvas.myds-image");
 
 			if (canvas == null)
 			{

@@ -50,7 +50,7 @@ catch (e)
 	entityos.saveAs = false
 }
 
-$(document).off('click', '.entityos-logoff').on('click', '.entityos-logoff', function(event)
+$(document).off('click', '.myds-logoff').on('click', '.myds-logoff', function(event)
 {
 	entityos.deauth();
 });
@@ -58,32 +58,32 @@ $(document).off('click', '.entityos-logoff').on('click', '.entityos-logoff', fun
 if (entityos._util.view == undefined) {entityos._util.view = {}}
 if (entityos._util.view.handlers == undefined) {entityos._util.view.handlers = {}}
 
-entityos._util.view.handlers['entityos-logon'] = function (event)
+entityos._util.view.handlers['myds-logon'] = function (event)
 {
 	var disabled = $(this).hasClass('disabled');
 
 	if (!disabled)
 	{
-		var password = $('#entityos-logonpassword').val();
+		var password = $('#myds-logonpassword').val();
 
-		if ($('#entityos-logonpassword').attr('data-password') != undefined)
+		if ($('#myds-logonpassword').attr('data-password') != undefined)
 		{
-			password = $('#entityos-logonpassword').attr('data-password');
+			password = $('#myds-logonpassword').attr('data-password');
 		}
 
 		entityos.auth(
 		{
-			logon: $('#entityos-logonname').val(),
+			logon: $('#myds-logonname').val(),
 			password: password,
-			code: $('#entityos-logoncode').val()
+			code: $('#myds-logoncode').val()
 		});
 	}
 }
 
-$(document).off('click', '#entityos-logon, .entityos-logon')
-.on('click', '#entityos-logon, .entityos-logon', entityos._util.view.handlers['entityos-logon']);
+$(document).off('click', '#myds-logon, .myds-logon')
+.on('click', '#myds-logon, .myds-logon', entityos._util.view.handlers['myds-logon']);
 
-entityos._util.view.handlers['entityos-register'] = function(event)
+entityos._util.view.handlers['myds-register'] = function(event)
 {
 	var disabled = $(this).hasClass('disabled');
 
@@ -91,42 +91,42 @@ entityos._util.view.handlers['entityos-register'] = function(event)
 	{
 		entityos.register(
 		{
-			spacename: $('#entityos-spacename').val(),
-			firstname: $('#entityos-firstname').val(),
-			surname: $('#entityos-surname').val(),
-			email: $('#entityos-email').val(),
-			notes: $('#entityos-notes').val()
+			spacename: $('#myds-spacename').val(),
+			firstname: $('#myds-firstname').val(),
+			surname: $('#myds-surname').val(),
+			email: $('#myds-email').val(),
+			notes: $('#myds-notes').val()
 		});	
 	}
 }
 
-$(document).off('click', '#entityos-register, .entityos-register')
-.on('click', '#entityos-register, .entityos-register', entityos._util.view.handlers['entityos-register']);
+$(document).off('click', '#myds-register, .myds-register')
+.on('click', '#myds-register, .myds-register', entityos._util.view.handlers['myds-register']);
 
-entityos._util.view.handlers['entityos-logoncode'] = function(e)
+entityos._util.view.handlers['myds-logoncode'] = function(e)
 {
     if (e.which === 13)
     {
-    	var password = $('#entityos-logonpassword').val();
+    	var password = $('#myds-logonpassword').val();
 
-		if ($('#entityos-logonpassword').attr('data-password') != undefined)
+		if ($('#myds-logonpassword').attr('data-password') != undefined)
 		{
-			password = $('#entityos-logonpassword').attr('data-password');
+			password = $('#myds-logonpassword').attr('data-password');
 		}
 
 		entityos.auth(
 		{
-			logon: $('#entityos-logonname').val(),
+			logon: $('#myds-logonname').val(),
 			password: password,
-			code: $('#entityos-logoncode').val()
+			code: $('#myds-logoncode').val()
 		});
     }
 }
 
-$(document).off('keypress', '#entityos-logonname, #entityos-logonpassword, #entityos-logoncode')
-.on('keypress', '#entityos-logonname, #entityos-logonpassword, #entityos-logoncode', entityos._util.view.handlers['entityos-logoncode']);
+$(document).off('keypress', '#myds-logonname, #myds-logonpassword, #myds-logoncode')
+.on('keypress', '#myds-logonname, #myds-logonpassword, #myds-logoncode', entityos._util.view.handlers['myds-logoncode']);
 
-entityos._util.view.handlers['entityos-enter'] = function(e)
+entityos._util.view.handlers['myds-enter'] = function(e)
 {
     if (e.which == 13)
     {
@@ -136,7 +136,7 @@ entityos._util.view.handlers['entityos-enter'] = function(e)
 
         if (routeToSelector != undefined)
         {
-            entityos._util.view.handlers['entityos-click']({currentTarget: $(routeToSelector)});
+            entityos._util.view.handlers['myds-click']({currentTarget: $(routeToSelector)});
         }
         else
         {
@@ -179,10 +179,10 @@ entityos._util.view.handlers['entityos-enter'] = function(e)
     }
 }
 
-$(document).off('keypress', '.entityos-enter')
-.on('keypress', '.entityos-enter', entityos._util.view.handlers['entityos-enter']);
+$(document).off('keypress', '.myds-enter')
+.on('keypress', '.myds-enter', entityos._util.view.handlers['myds-enter']);
 
-entityos._util.view.handlers['entityos-click'] = function (event)
+entityos._util.view.handlers['myds-click'] = function (event)
 {
 	//var element = $(this);
     var element = $(event.currentTarget);
@@ -218,8 +218,8 @@ entityos._util.view.handlers['entityos-click'] = function (event)
 
 			var data = entityos._util.data.clean(element.data());
 			
-			//if (data.context != undefined && data.id != undefined)
-            if (data.context != undefined)
+			if (data.context != undefined && data.id != undefined)
+            //if (data.context != undefined)
 			{
 				data[data.context] = data.id
 			}
@@ -262,17 +262,17 @@ entityos._util.view.handlers['entityos-click'] = function (event)
 	}
 }
 
-$(document).off('click', '.entityos-click, .entityos')
-.on('click', '.entityos-click, .entityos', entityos._util.view.handlers['entityos-click']);
+$(document).off('click', '.myds-click, .myds')
+.on('click', '.myds-click, .myds', entityos._util.view.handlers['myds-click']);
 
-entityos._util.view.handlers['entityos-view-table-select-all'] = function (event)
+entityos._util.view.handlers['myds-view-table-select-all'] = function (event)
 {
 	var element = $(this);
 	var context = element.attr('data-context');
 
 	if (context != undefined)
 	{
-		var inputs = $('[data-context="' + context + '"] input.entityos-view-table-select')
+		var inputs = $('[data-context="' + context + '"] input.myds-view-table-select')
 
 		if (element.prop('checked')) 
 		{
@@ -285,17 +285,17 @@ entityos._util.view.handlers['entityos-view-table-select-all'] = function (event
 	}
 }
 
-$(document).off('click', '.entityos-view-table-select-all')
-.on('click', '.entityos-view-table-select-all', entityos._util.view.handlers['entityos-view-table-select-all']);
+$(document).off('click', '.myds-view-table-select-all')
+.on('click', '.myds-view-table-select-all', entityos._util.view.handlers['myds-view-table-select-all']);
 
-entityos._util.view.handlers['entityos-navigate'] = function (event)
+entityos._util.view.handlers['myds-navigate'] = function (event)
 {
 	var controller = $(this).data('controller');
 	var scope = $(this).data('scope');
 	var target = $(this).data('target');
 	var context = $(this).attr('data-context');
 	var disabled = $(this).hasClass('disabled');
-	var newWindow = $(this).hasClass('entityos-navigate-new-window');
+	var newWindow = $(this).hasClass('myds-navigate-new-window');
 
 	if (!disabled)
 	{
@@ -313,7 +313,7 @@ entityos._util.view.handlers['entityos-navigate'] = function (event)
 
 		if (controller != undefined)
 		{
-			var routerElement = $('.entityos-router');
+			var routerElement = $('.myds-router');
 
 			if (routerElement.length > 0)
 			{
@@ -374,10 +374,10 @@ entityos._util.view.handlers['entityos-navigate'] = function (event)
 	}
 }
 
-$(document).off('click', '.entityos-navigate')
-.on('click', '.entityos-navigate', entityos._util.view.handlers['entityos-navigate']);
+$(document).off('click', '.myds-navigate')
+.on('click', '.myds-navigate', entityos._util.view.handlers['myds-navigate']);
 
-entityos._util.view.handlers['entityos-navigate-to'] = function (event)
+entityos._util.view.handlers['myds-navigate-to'] = function (event)
 {
 	var target = $(this).attr('target');
 	if (target == undefined) {target = $(this).data('target')};
@@ -394,10 +394,10 @@ entityos._util.view.handlers['entityos-navigate-to'] = function (event)
 	}
 }
 
-$(document).off('click', '.entityos-navigate-to')
-.on('click', '.entityos-navigate-to', entityos._util.view.handlers['entityos-navigate-to']);
+$(document).off('click', '.myds-navigate-to')
+.on('click', '.myds-navigate-to', entityos._util.view.handlers['myds-navigate-to']);
 
-entityos._util.view.handlers['entityos-invoke'] = function (event)
+entityos._util.view.handlers['myds-invoke'] = function (event)
 {
 	var controller = $(this).data('controller');
 	var scope = $(this).data('scope');
@@ -431,10 +431,10 @@ entityos._util.view.handlers['entityos-invoke'] = function (event)
 	}
 }
 
-$(document).off('click', '.entityos-show, .entityos-invoke')
-.on('click', '.entityos-show, .entityos-invoke', entityos._util.view.handlers['entityos-invoke']);
+$(document).off('click', '.myds-show, .myds-invoke')
+.on('click', '.myds-show, .myds-invoke', entityos._util.view.handlers['myds-invoke']);
 
-entityos._util.view.handlers['entityos-close'] = function (event)
+entityos._util.view.handlers['myds-close'] = function (event)
 {
 	var context = $(this).data('context');
 	var disabled = $(this).hasClass('disabled');
@@ -448,10 +448,10 @@ entityos._util.view.handlers['entityos-close'] = function (event)
 	}
 }
 
-$(document).off('click', '.entityos-close')
-.on('click', '.entityos-close', entityos._util.view.handlers['entityos-close']);
+$(document).off('click', '.myds-close')
+.on('click', '.myds-close', entityos._util.view.handlers['myds-close']);
 
-entityos._util.view.handlers['entityos-export-table'] = function(event)
+entityos._util.view.handlers['myds-export-table'] = function(event)
 {
 	var context = $(this).data('context');
 	var container = $(this).data('container');
@@ -473,10 +473,10 @@ entityos._util.view.handlers['entityos-export-table'] = function(event)
 	}
 }
 
-$(document).off('click', '.entityos-export, .entityos-export-table')
-.on('click', '.entityos-export, .entityos-export-table', entityos._util.view.handlers['entityos-export-table']);
+$(document).off('click', '.myds-export, .myds-export-table')
+.on('click', '.myds-export, .myds-export-table', entityos._util.view.handlers['myds-export-table']);
 
-entityos._util.view.handlers['entityos-notify'] = function(event)
+entityos._util.view.handlers['myds-notify'] = function(event)
 {
 	var message = $(this).data('message');
 	var type = $(this).data('type');
@@ -492,10 +492,10 @@ entityos._util.view.handlers['entityos-notify'] = function(event)
 	}
 }
 
-$(document).off('click', '.entityos-notify')
-.on('click', '.entityos-notify', entityos._util.view.handlers['entityos-notify']);
+$(document).off('click', '.myds-notify')
+.on('click', '.myds-notify', entityos._util.view.handlers['myds-notify']);
 
-entityos._util.view.handlers['entityos-pdf'] = function(event)
+entityos._util.view.handlers['myds-pdf'] = function(event)
 {
 	var scope = $(this).data('scope');
 	var selector = $(this).data('selector');
@@ -513,10 +513,10 @@ entityos._util.view.handlers['entityos-pdf'] = function(event)
 	}
 }
 
-$(document).off('click', '.entityos-pdf')
-.on('click', '.entityos-pdf', entityos._util.view.handlers['entityos-pdf']);
+$(document).off('click', '.myds-pdf')
+.on('click', '.myds-pdf', entityos._util.view.handlers['myds-pdf']);
 
-entityos._util.view.handlers['entityos-dropdown'] = function (event)
+entityos._util.view.handlers['myds-dropdown'] = function (event)
 {
 	var id = $(this).attr('id');
 	var controller = $(this).data('controller');
@@ -610,10 +610,10 @@ entityos._util.view.handlers['entityos-dropdown'] = function (event)
 	}
 }
 
-$(document).off('click', '.entityos-dropdown')
-.on('click', '.entityos-dropdown', entityos._util.view.handlers['entityos-dropdown']);
+$(document).off('click', '.myds-dropdown')
+.on('click', '.myds-dropdown', entityos._util.view.handlers['myds-dropdown']);
 
-entityos._util.view.handlers['entityos-range'] = function (event)
+entityos._util.view.handlers['myds-range'] = function (event)
 {
 	var id = $(this).attr('id');
 	var controller = $(this).data('controller');
@@ -648,10 +648,10 @@ entityos._util.view.handlers['entityos-range'] = function (event)
 	}
 }
 
-$(document).off('change', '.entityos-range')
-.on('change', '.entityos-range', entityos._util.view.handlers['entityos-range']);
+$(document).off('change', '.myds-range')
+.on('change', '.myds-range', entityos._util.view.handlers['myds-range']);
 
-entityos._util.view.handlers['entityos-list'] = function (event)
+entityos._util.view.handlers['myds-list'] = function (event)
 {
 	var element = $(this);
 	var id = element.attr('id');
@@ -699,19 +699,19 @@ entityos._util.view.handlers['entityos-list'] = function (event)
 	}
 }
 
-$(document).off('click', '.entityos-list')
-.on('click', '.entityos-list', entityos._util.view.handlers['entityos-list']);
+$(document).off('click', '.myds-list')
+.on('click', '.myds-list', entityos._util.view.handlers['myds-list']);
 
-entityos._util.view.handlers['entityos-button-group'] = function (event)
+entityos._util.view.handlers['myds-button-group'] = function (event)
 {
 	var element = $(this);
-	element.addClass("active").siblings('.entityos-button-group').removeClass("active");
+	element.addClass("active").siblings('.myds-button-group').removeClass("active");
 }
 
-$(document).off('click', '.entityos-button-group')
-.on('click', '.entityos-button-group', entityos._util.view.handlers['entityos-button-group']);
+$(document).off('click', '.myds-button-group')
+.on('click', '.myds-button-group', entityos._util.view.handlers['myds-button-group']);
 
-entityos._util.view.handlers['entityos-check'] = function (event)
+entityos._util.view.handlers['myds-check'] = function (event)
 {
 	var controller = $(this).data('controller');
 	var scope = $(this).data('scope');
@@ -777,11 +777,11 @@ entityos._util.view.handlers['entityos-check'] = function (event)
 			
 			if (controller != undefined)
 			{
-				var inputs = $('input.entityos-check[data-controller="' + controller + '"][data-context="' + context + '"]:visible');
+				var inputs = $('input.myds-check[data-controller="' + controller + '"][data-context="' + context + '"]:visible');
 				
 				if (inputs.length != 1)
 				{
-		 			var checked = $('input.entityos-check[data-controller="' + controller + '"][data-context="' + context + '"]:checked:visible');
+		 			var checked = $('input.myds-check[data-controller="' + controller + '"][data-context="' + context + '"]:checked:visible');
 		 			ids = $.map(checked, function (c)
 		 			{
 		 				if ($(c).attr('data-id') != undefined)
@@ -798,7 +798,7 @@ entityos._util.view.handlers['entityos-check'] = function (event)
 		 				}
 					});
 
-		 			var unchecked = $('input.entityos-check[data-controller="' + controller + '"][data-context="' + context + '"]:not(:checked):visible');
+		 			var unchecked = $('input.myds-check[data-controller="' + controller + '"][data-context="' + context + '"]:not(:checked):visible');
 		 			uncheckedids = $.map(unchecked, function (c)
 		 			{
 		 				return $(c).data('id')}
@@ -807,11 +807,11 @@ entityos._util.view.handlers['entityos-check'] = function (event)
 			}
 			else
 			{
-				var inputs = $('input.entityos-check[data-scope="' + scope + '"][data-context="' + context + '"]:visible');
+				var inputs = $('input.myds-check[data-scope="' + scope + '"][data-context="' + context + '"]:visible');
 				
 				if (inputs.length != 1)
 				{
-		 			var checked = $('input.entityos-check[data-scope="' + scope + '"][data-context="' + context + '"]:checked:visible');
+		 			var checked = $('input.myds-check[data-scope="' + scope + '"][data-context="' + context + '"]:checked:visible');
 
 		 			ids = $.map(checked, function (c)
 		 			{
@@ -829,7 +829,7 @@ entityos._util.view.handlers['entityos-check'] = function (event)
 		 				}
 		 			});
 
-		 			var unchecked = $('input.entityos-check[data-scope="' + scope + '"][data-context="' + context + '"]:not(:checked):visible');
+		 			var unchecked = $('input.myds-check[data-scope="' + scope + '"][data-context="' + context + '"]:not(:checked):visible');
 		 			uncheckedids = $.map(unchecked, function (c)
 		 			{
 		 				return $(c).data('id')}
@@ -852,10 +852,10 @@ entityos._util.view.handlers['entityos-check'] = function (event)
 	}
 }
 
-$(document).off('click', '.entityos-check')
-.on('click', '.entityos-check', entityos._util.view.handlers['entityos-check']);
+$(document).off('click', '.myds-check')
+.on('click', '.myds-check', entityos._util.view.handlers['myds-check']);
 
-entityos._util.view.handlers['entityos-text'] = function (event)
+entityos._util.view.handlers['myds-text'] = function (event)
 {
 	var controller = $(this).data('controller');
 	var scope = $(this).data('scope');
@@ -864,7 +864,10 @@ entityos._util.view.handlers['entityos-text'] = function (event)
 	var clean = $(this).data('clean');
 	var disabled = $(this).hasClass('disabled');
 
-	if (enter == undefined) { enter = 'stop' }
+	if (enter == undefined)
+    { 
+        enter = entityos._scope.app.options.textEnterDefault
+    }
 
 	var returnValue;
 
@@ -921,15 +924,18 @@ entityos._util.view.handlers['entityos-text'] = function (event)
 	return returnValue
 }
 
-$(document).off('keyup', '.entityos-text')
-.on('keyup', '.entityos-text', entityos._util.view.handlers['entityos-text']);
+$(document).off('keyup', '.myds-text')
+.on('keyup', '.myds-text', entityos._util.view.handlers['myds-text']);
 
-entityos._util.view.handlers['entityos-text-enter'] = function (event)
+entityos._util.view.handlers['myds-text-enter'] = function (event)
 {
 	var enter = $(this).data('enter');
 	var disabled = $(this).hasClass('disabled');
 
-	if (enter == undefined) { enter = 'stop' }
+    if (enter == undefined)
+    { 
+        enter = entityos._scope.app.options.textEnterDefault
+    }
 		
 	if (!disabled)
 	{
@@ -941,10 +947,10 @@ entityos._util.view.handlers['entityos-text-enter'] = function (event)
 	}
 }
 
-$(document).off('keypress', '.entityos-text')
-.on('keypress', '.entityos-text', entityos._util.view.handlers['entityos-text-enter']);
+$(document).off('keypress', '.myds-text')
+.on('keypress', '.myds-text', entityos._util.view.handlers['myds-text-enter']);
 
-entityos._util.view.handlers['entityos-date-time'] = function (event)
+entityos._util.view.handlers['myds-date-time'] = function (event)
 {
 	var controller = $(this).data('controller');
 	var scope = $(this).data('scope');
@@ -999,10 +1005,10 @@ entityos._util.view.handlers['entityos-date-time'] = function (event)
 	return returnValue
 }
 
-$(document).off('changeDate clearDate', '.entityos-date, .entityos-date-time')
-.on('changeDate clearDate', '.entityos-date, .entityos-date-time', entityos._util.view.handlers['entityos-date-time']);
+$(document).off('changeDate clearDate', '.myds-date, .myds-date-time')
+.on('changeDate clearDate', '.myds-date, .myds-date-time', entityos._util.view.handlers['myds-date-time']);
 
-entityos._util.view.handlers['entityos-focus'] = function (event)
+entityos._util.view.handlers['myds-focus'] = function (event)
 {
 	var controller = $(this).data('controller');
 	var scope = $(this).data('scope');
@@ -1041,17 +1047,17 @@ entityos._util.view.handlers['entityos-focus'] = function (event)
 			{
 				dataContext: app.data[controller]['_' + context],
 				_type: 'focusout',
-				_class: 'entityos-text',
+				_class: 'myds-text',
 				_xhtmlElementID: $(this).attr('id')
 			});
 		}
 	}		
 }
 
-$(document).off('focusout', '.entityos-focus')
-.on('focusout', '.entityos-focus', entityos._util.view.handlers['entityos-focus']);
+$(document).off('focusout', '.myds-focus')
+.on('focusout', '.myds-focus', entityos._util.view.handlers['myds-focus']);
 
-entityos._util.view.handlers['entityos-text-select-focus-out'] = function (event)
+entityos._util.view.handlers['myds-text-select-focus-out'] = function (event)
 {
 	if ($(this).val() == '')
 	{
@@ -1067,10 +1073,10 @@ entityos._util.view.handlers['entityos-text-select-focus-out'] = function (event
 	}
 }
 
-$(document).off('focusout', '.entityos-text-select')
-.on('focusout', '.entityos-text-select', entityos._util.view.handlers['entityos-text-select-focus-out']);
+$(document).off('focusout', '.myds-text-select')
+.on('focusout', '.myds-text-select', entityos._util.view.handlers['myds-text-select-focus-out']);
 
-entityos._util.view.handlers['entityos-text-select-change'] = function (event)
+entityos._util.view.handlers['myds-text-select-change'] = function (event)
 {
 	var controller = $(this).data('controller');
 	var scope = $(this).data('scope');
@@ -1210,7 +1216,7 @@ entityos._util.view.handlers['entityos-text-select-change'] = function (event)
 				{
 					dataContext: app.data[controller]['_' + context],
 					_type: 'change',
-					_class: 'entityos-text-select',
+					_class: 'myds-text-select',
 					_xhtmlElementID: $(this).attr('id')
 				}
 
@@ -1220,10 +1226,10 @@ entityos._util.view.handlers['entityos-text-select-change'] = function (event)
 	}
 }
 
-$(document).off('change select2:clear', '.entityos-text-select')
-.on('change select2:clear', '.entityos-text-select', entityos._util.view.handlers['entityos-text-select-change']);
+$(document).off('change select2:clear', '.myds-text-select')
+.on('change select2:clear', '.myds-text-select', entityos._util.view.handlers['myds-text-select-change']);
 
-entityos._util.view.handlers['entityos-select'] = function (event)
+entityos._util.view.handlers['myds-select'] = function (event)
 {
 	var controller = $(this).data('controller');
 	var scope = $(this).data('scope');
@@ -1277,10 +1283,10 @@ entityos._util.view.handlers['entityos-select'] = function (event)
 	}		
 }
 
-$(document).off('change', '.entityos-select')
-.on('change', '.entityos-select', entityos._util.view.handlers['entityos-select']);
+$(document).off('change', '.myds-select')
+.on('change', '.myds-select', entityos._util.view.handlers['myds-select']);
 
-entityos._util.view.handlers['entityos-change'] = function (event)
+entityos._util.view.handlers['myds-change'] = function (event)
 {
 	var controller = $(this).data('controller');
 	var context = $(this).data('context');
@@ -1314,10 +1320,10 @@ entityos._util.view.handlers['entityos-change'] = function (event)
 	}
 }
 
-$(document).off('change', '.entityos-change')
-.on('change', '.entityos-change', entityos._util.view.handlers['entityos-change']);
+$(document).off('change', '.myds-change')
+.on('change', '.myds-change', entityos._util.view.handlers['myds-change']);
 
-entityos._util.view.handlers['entityos-sort'] = function (event)
+entityos._util.view.handlers['myds-sort'] = function (event)
 {
 	var sort = $(this).attr('data-sort');
 	var sortDirection = $(this).attr('data-sort-direction');
@@ -1375,10 +1381,10 @@ entityos._util.view.handlers['entityos-sort'] = function (event)
 	}		
 }
 
-$(document).off('click', '.entityos-sort')
-.on('click', '.entityos-sort', entityos._util.view.handlers['entityos-sort']);
+$(document).off('click', '.myds-sort')
+.on('click', '.myds-sort', entityos._util.view.handlers['myds-sort']);
 
-entityos._util.view.handlers['entityos-page-rows'] = function (event)
+entityos._util.view.handlers['myds-page-rows'] = function (event)
 {
 	var rowsperpage = $(this).attr('data-rowsperpage');
 	var controller = $(this).attr('data-controller');
@@ -1426,10 +1432,10 @@ entityos._util.view.handlers['entityos-page-rows'] = function (event)
 	}		
 }
 
-$(document).off('click', '.entityos-page-rows')
-.on('click', '.entityos-page-rows', entityos._util.view.handlers['entityos-page-rows']);
+$(document).off('click', '.myds-page-rows')
+.on('click', '.myds-page-rows', entityos._util.view.handlers['myds-page-rows']);
 
-entityos._util.view.handlers['entityos-validate'] = function (event)
+entityos._util.view.handlers['myds-validate'] = function (event)
 {
 	entityos._util.validate.check(
 	{
@@ -1437,10 +1443,10 @@ entityos._util.view.handlers['entityos-validate'] = function (event)
 	});
 }
 
-$(document).off('focusout keyup change.select2 select2:clear', '.entityos-validate')
-.on('focusout keyup change.select2 select2:clear', '.entityos-validate', entityos._util.view.handlers['entityos-validate']);
+$(document).off('focusout keyup change.select2 select2:clear', '.myds-validate')
+.on('focusout keyup change.select2 select2:clear', '.myds-validate', entityos._util.view.handlers['myds-validate']);
 
-entityos._util.view.handlers['entityos-date-time-picker'] = function(event)
+entityos._util.view.handlers['myds-date-time-picker'] = function(event)
 {
 	var element;
 
@@ -1489,20 +1495,20 @@ entityos._util.view.handlers['entityos-date-time-picker'] = function(event)
 			}
 		}
 
-		if ($(element).hasClass('entityos-validate'))
+		if ($(element).hasClass('myds-validate'))
 		{
 			entityos._util.validate.check(element);
 		}
 	}
 }
 
-$(document).off('dp.change change.datetimepicker error.datetimepicker', '.entityos, .entityos-date, .entityos-date-time')
-.on('dp.change  change.datetimepicker error.datetimepicker', '.entityos, .entityos-date, .entityos-date-time', entityos._util.view.handlers['entityos-date-time-picker']);
+$(document).off('dp.change change.datetimepicker error.datetimepicker', '.myds, .myds-date, .myds-date-time')
+.on('dp.change  change.datetimepicker error.datetimepicker', '.myds, .myds-date, .myds-date-time', entityos._util.view.handlers['myds-date-time-picker']);
 
-$(document).off('focusout', '.entityos-date input, .entityos-date-time input')
-.on('focusout', '.entityos-date input, .entityos-date-time input', entityos._util.view.handlers['entityos-date-time-picker']);
+$(document).off('focusout', '.myds-date input, .myds-date-time input')
+.on('focusout', '.myds-date input, .myds-date-time input', entityos._util.view.handlers['myds-date-time-picker']);
 
-entityos._util.view.handlers['entityos-file-input'] = function(event)
+entityos._util.view.handlers['myds-file-input'] = function(event)
 {
 	var element = $(event.target);
 	var elementInput = element.find('input[type="file"]');
@@ -1534,12 +1540,12 @@ entityos._util.view.handlers['entityos-file-input'] = function(event)
 	}
 }
 
-$(document).off('change.bs.fileinput', '.entityos')
-.on('change.bs.fileinput', '.entityos', entityos._util.view.handlers['entityos-file-input']);
+$(document).off('change.bs.fileinput', '.myds')
+.on('change.bs.fileinput', '.myds', entityos._util.view.handlers['myds-file-input']);
 
 if (typeof $.fn.metisMenu == 'function')
 { 
-	entityos._util.view.handlers['entityos-menu-set'] = function (e)
+	entityos._util.view.handlers['myds-menu-set'] = function (e)
 	{
 		entityos._util.menu.set(
 		{
@@ -1547,22 +1553,22 @@ if (typeof $.fn.metisMenu == 'function')
 		});
 	}
 
-	$(document).off('click', '.entityos-menu a')
-	.on('click', '.entityos-menu a', entityos._util.view.handlers['entityos-menu-set']);
+	$(document).off('click', '.myds-menu a')
+	.on('click', '.myds-menu a', entityos._util.view.handlers['myds-menu-set']);
 }
 
-entityos._util.view.handlers['entityos-file-input-custom'] = function()
+entityos._util.view.handlers['myds-file-input-custom'] = function()
 {
    let fileName = $(this).val().split('\\').pop();
    $(this).next('.custom-file-label').addClass("selected").html(fileName);
 }
 
 $(document).off('change', '.custom-file-input')
-.on('change', '.custom-file-input', entityos._util.view.handlers['entityos-file-input-custom']);
+.on('change', '.custom-file-input', entityos._util.view.handlers['myds-file-input-custom']);
 
 if (typeof $.fn.tab == 'function')
 { 
-	entityos._util.view.handlers['entityos-tab-a'] = function (e)
+	entityos._util.view.handlers['myds-tab-a'] = function (e)
 	{
 		e.preventDefault()
 		$(this).tab('show');
@@ -1570,28 +1576,28 @@ if (typeof $.fn.tab == 'function')
 		$('.nav-tabs a[href="' + $(this).attr("href") + '"] :visible').parent().parent().addClass('active');
 	}
 
-	$(document).off('click', '.entityos-tab a')
-	.on('click', '.entityos-tab a', entityos._util.view.handlers['entityos-tab-a']);
+	$(document).off('click', '.myds-tab a')
+	.on('click', '.myds-tab a', entityos._util.view.handlers['myds-tab-a']);
 
-	entityos._util.view.handlers['entityos-tab'] = function (e)
+	entityos._util.view.handlers['myds-tab'] = function (e)
 	{
 		e.preventDefault()
 		$('a[href="' + $(this).attr('href') + '"]').tab('show');
 	}
 
-	$(document).off('click', '.entityos-tab')
-	.on('click', '.entityos-tab', entityos._util.view.handlers['entityos-tab']);
+	$(document).off('click', '.myds-tab')
+	.on('click', '.myds-tab', entityos._util.view.handlers['myds-tab']);
 
-	entityos._util.view.handlers['entityos-pill-a'] = function (e)
+	entityos._util.view.handlers['myds-pill-a'] = function (e)
 	{
 	  	e.preventDefault()
 	  	$(this).tab('show');
 	}
 
-	$(document).off('click', '.entityos-pill a')
-	.on('click', '.entityos-pill a', entityos._util.view.handlers['entityos-pill-a']);	
+	$(document).off('click', '.myds-pill a')
+	.on('click', '.myds-pill a', entityos._util.view.handlers['myds-pill-a']);	
 
-	entityos._util.view.handlers['entityos-tab-a-show'] = function(event)
+	entityos._util.view.handlers['myds-tab-a-show'] = function(event)
 	{
 		var uriContext = $(event.target).attr('href').replace('#', '');
 		var controller = $(event.target).attr('data-controller');
@@ -1652,14 +1658,14 @@ if (typeof $.fn.tab == 'function')
 		}
 	}
 
-	$(document).off('shown.bs.tab show.bs.tab', '.app-tab a, .app-pill a, .entityos-tab a')
-					.on('shown.bs.tab show.bs.tab', '.app-tab a, .app-pill a, .entityos-tab a',
-						entityos._util.view.handlers['entityos-tab-a-show']);
+	$(document).off('shown.bs.tab show.bs.tab', '.app-tab a, .app-pill a, .myds-tab a')
+					.on('shown.bs.tab show.bs.tab', '.app-tab a, .app-pill a, .myds-tab a',
+						entityos._util.view.handlers['myds-tab-a-show']);
 }
 
 if (typeof $.fn.modal == 'function')
 { 
-	entityos._util.view.handlers['entityos-modal-shown'] = function (event)
+	entityos._util.view.handlers['myds-modal-shown'] = function (event)
 	{
 		var id = event.target.id;
 
@@ -1712,10 +1718,10 @@ if (typeof $.fn.modal == 'function')
 		}	
     }
 
-    $(document).off('shown.bs.modal', '.entityos-modal')
-	.on('shown.bs.modal', entityos._util.view.handlers['entityos-modal-shown']);
+    $(document).off('shown.bs.modal', '.myds-modal')
+	.on('shown.bs.modal', entityos._util.view.handlers['myds-modal-shown']);
 
-	entityos._util.view.handlers['entityos-modal-show'] = function (event)
+	entityos._util.view.handlers['myds-modal-show'] = function (event)
 	{
 		var id = event.target.id;
 
@@ -1773,13 +1779,13 @@ if (typeof $.fn.modal == 'function')
 		}	
 	}
 
-	$(document).off('show.bs.modal', '.entityos-modal')
-    .on('show.bs.modal', entityos._util.view.handlers['entityos-modal-show']);
+	$(document).off('show.bs.modal', '.myds-modal')
+    .on('show.bs.modal', entityos._util.view.handlers['myds-modal-show']);
 }
 
 if (typeof $.fn.collapse == 'function')
 {
-	entityos._util.view.handlers['entityos-collapse-hide'] = function (event)
+	entityos._util.view.handlers['myds-collapse-hide'] = function (event)
 	{
 		var id = event.target.id;
 
@@ -1828,13 +1834,13 @@ if (typeof $.fn.collapse == 'function')
 			}
 		}
 
-		$('#' + id + ' .entityos-clear-on-collapse-hide').html('');
+		$('#' + id + ' .myds-clear-on-collapse-hide').html('');
     }
 
-    $(document).off('hidden.bs.collapse', '.entityos-collapse')
-	.on('hidden.bs.collapse', '.entityos-collapse', entityos._util.view.handlers['entityos-collapse-hide']);
+    $(document).off('hidden.bs.collapse', '.myds-collapse')
+	.on('hidden.bs.collapse', '.myds-collapse', entityos._util.view.handlers['myds-collapse-hide']);
 
-	entityos._util.view.handlers['entityos-collapse-shown'] = function (event)
+	entityos._util.view.handlers['myds-collapse-shown'] = function (event)
 	{
 		var processEvent = true;
 		var eventID;
@@ -1923,10 +1929,10 @@ if (typeof $.fn.collapse == 'function')
 		}
     }
 
-	$(document).off('shown.bs.collapse', '.entityos-collapse:visible')
-	.on('shown.bs.collapse', '.entityos-collapse:visible', entityos._util.view.handlers['entityos-collapse-shown']);
+	$(document).off('shown.bs.collapse', '.myds-collapse:visible')
+	.on('shown.bs.collapse', '.myds-collapse:visible', entityos._util.view.handlers['myds-collapse-shown']);
 
-	entityos._util.view.handlers['entityos-collapse-show'] = function (event)
+	entityos._util.view.handlers['myds-collapse-show'] = function (event)
 	{
 		var id = event.target.id;
 
@@ -1959,10 +1965,10 @@ if (typeof $.fn.collapse == 'function')
 		}
    }
 
-   $(document).off('show.bs.collapse', '.entityos-collapse')
-	.on('show.bs.collapse', '.entityos-collapse', entityos._util.view.handlers['entityos-collapse-show']);
+   $(document).off('show.bs.collapse', '.myds-collapse')
+	.on('show.bs.collapse', '.myds-collapse', entityos._util.view.handlers['myds-collapse-show']);
 
-	entityos._util.view.handlers['entityos-collapse-toggle'] = function (event)
+	entityos._util.view.handlers['myds-collapse-toggle'] = function (event)
 	{
 		var button = $(event.target);
 		if (!$(event.target).is('i'))
@@ -1973,13 +1979,13 @@ if (typeof $.fn.collapse == 'function')
 		button.toggleClass('fa-chevron-up').toggleClass('fa-chevron-down');
 	}
 
-	 $(document).off('click', '.entityos-collapse-toggle:visible')
-	.on('click', '.entityos-collapse-toggle:visible', entityos._util.view.handlers['entityos-collapse-toggle']);
+	 $(document).off('click', '.myds-collapse-toggle:visible')
+	.on('click', '.myds-collapse-toggle:visible', entityos._util.view.handlers['myds-collapse-toggle']);
 }
 
 if (typeof $.fn.popover == 'function')
 { 
-   entityos._util.view.handlers['entityos-popover-shown'] = function (event)
+   entityos._util.view.handlers['myds-popover-shown'] = function (event)
 	{
 		if (event.target != undefined)
 		{
@@ -2020,22 +2026,22 @@ if (typeof $.fn.popover == 'function')
 		}	
 	}
 
-	//entityos-popover
-   $(document).off('shown.bs.popover').on('shown.bs.popover', entityos._util.view.handlers['entityos-popover-shown']);
-   $(document).off('shown.bs.popover', '.entityos-popover').on('shown.bs.popover', '.entityos-popover', entityos._util.view.handlers['entityos-popover-shown']);
+	//myds-popover
+   $(document).off('shown.bs.popover').on('shown.bs.popover', entityos._util.view.handlers['myds-popover-shown']);
+   $(document).off('shown.bs.popover', '.myds-popover').on('shown.bs.popover', '.myds-popover', entityos._util.view.handlers['myds-popover-shown']);
 
-	entityos._util.view.handlers['entityos-popover-show'] = function (event)
+	entityos._util.view.handlers['myds-popover-show'] = function (event)
 	{
 		$('.popover:visible').popover("hide")	
 	}
 
-	$(document).off('show.bs.popover').on('show.bs.popover', entityos._util.view.handlers['entityos-popover-show']);
-	$(document).off('show.bs.popover', '.entityos-popover').on('show.bs.popover', '.entityos-popover', entityos._util.view.handlers['entityos-popover-show']);
+	$(document).off('show.bs.popover').on('show.bs.popover', entityos._util.view.handlers['myds-popover-show']);
+	$(document).off('show.bs.popover', '.myds-popover').on('show.bs.popover', '.myds-popover', entityos._util.view.handlers['myds-popover-show']);
 }    
 
 if (typeof $.fn.carousel == 'function')
 { 
-   entityos._util.view.handlers['entityos-slide'] = function (event)
+   entityos._util.view.handlers['myds-slide'] = function (event)
 	{
 		if (event.relatedTarget != undefined)
 		{
@@ -2073,13 +2079,13 @@ if (typeof $.fn.carousel == 'function')
 		}
 	}
 
-	$(document).off('slide.bs.carousel', '.entityos-slide')
-   .on('slide.bs.carousel', '.entityos-slide', entityos._util.view.handlers['entityos-slide']);
+	$(document).off('slide.bs.carousel', '.myds-slide')
+   .on('slide.bs.carousel', '.myds-slide', entityos._util.view.handlers['myds-slide']);
 }
 
 if (typeof $.fn.carousel == 'function')
 { 
-   entityos._util.view.handlers['entityos-slid'] =	function (event)
+   entityos._util.view.handlers['myds-slid'] =	function (event)
 	{
 		if (event.relatedTarget != undefined)
 		{
@@ -2112,13 +2118,13 @@ if (typeof $.fn.carousel == 'function')
 		}	
 	}
 
-	$(document).off('slid.bs.carousel', '.entityos-slid')
-	.on('slid.bs.carousel', '.entityos-slid', entityos._util.view.handlers['entityos-slid']);
+	$(document).off('slid.bs.carousel', '.myds-slid')
+	.on('slid.bs.carousel', '.myds-slid', entityos._util.view.handlers['myds-slid']);
 }
 
 if (typeof $.fn.dropdown == 'function')
 { 
-	entityos._util.view.handlers['entityos-dropdown'] = function (event)
+	entityos._util.view.handlers['myds-dropdown'] = function (event)
 	{
 		if (event.relatedTarget != undefined)
 		{
@@ -2140,30 +2146,30 @@ if (typeof $.fn.dropdown == 'function')
 		}	
 	}
 
-	$(document).off('show.bs.dropdown', '.entityos-dropdown')
-	.on('show.bs.dropdown', '.entityos-dropdown', entityos._util.view.handlers['entityos-dropdown']);
+	$(document).off('show.bs.dropdown', '.myds-dropdown')
+	.on('show.bs.dropdown', '.myds-dropdown', entityos._util.view.handlers['myds-dropdown']);
 }
 
 if (typeof $.fn.toast == 'function')
 {
-	entityos._util.view.handlers['entityos-toast-show'] = function (event)
+	entityos._util.view.handlers['myds-toast-show'] = function (event)
 	{
-		$('#entityos-toast').css('z-index', '1030')
+		$('#myds-toast').css('z-index', '9999') //1030
 	}
 
-	$(document).off('show.bs.toast', '#entityos-toast')
-	.on('show.bs.toast', '#entityos-toast', entityos._util.view.handlers['entityos-toast-show']);
+	$(document).off('show.bs.toast', '#myds-toast')
+	.on('show.bs.toast', '#myds-toast', entityos._util.view.handlers['myds-toast-show']);
 
-	entityos._util.view.handlers['entityos-toast-hidden'] = function (event)
+	entityos._util.view.handlers['myds-toast-hidden'] = function (event)
 	{
-		$('#entityos-toast').css('z-index', '0')
+		$('#myds-toast').css('z-index', '0')
 	}
 
-	$(document).off('hidden.bs.toast', '#entityos-toast')
-	.on('hidden.bs.toast', '#entityos-toast', entityos._util.view.handlers['entityos-toast-hidden']);
+	$(document).off('hidden.bs.toast', '#myds-toast')
+	.on('hidden.bs.toast', '#myds-toast', entityos._util.view.handlers['myds-toast-hidden']);
 }
 
-entityos._util.view.handlers['entityos-more'] = function (event)
+entityos._util.view.handlers['myds-more'] = function (event)
 {
 	$(this).addClass('disabled');
 
@@ -2189,10 +2195,10 @@ entityos._util.view.handlers['entityos-more'] = function (event)
 	});
 }
 
-$(document).off('click', '.entityos-more')
-.on('click', '.entityos-more', entityos._util.view.handlers['entityos-more']);
+$(document).off('click', '.myds-more')
+.on('click', '.myds-more', entityos._util.view.handlers['myds-more']);
 
-entityos._util.view.handlers['entityos-page'] = function (event)
+entityos._util.view.handlers['myds-page'] = function (event)
 {
 	$(this).addClass('disabled');
 
@@ -2226,8 +2232,8 @@ entityos._util.view.handlers['entityos-page'] = function (event)
 	});
 }
 
-$(document).off('click', '.entityos-page')
-.on('click', '.entityos-page', entityos._util.view.handlers['entityos-page']);
+$(document).off('click', '.myds-page')
+.on('click', '.myds-page', entityos._util.view.handlers['myds-page']);
 
 String.prototype.formatXHTML = function(bDirection)
 {
@@ -2608,7 +2614,7 @@ entityos._util.view.more = function (response, param)
 		if (response.morerows == 'true' && !_.isUndefined(scope))
 		{
 			app.vq.add('<div class="text-center m-b m-t mb-2 mt-2">' +
-      					'<button class="' + buttonClass + ' entityos-more" data-id="' + response.moreid + '"' +
+      					'<button class="' + buttonClass + ' myds-more" data-id="' + response.moreid + '"' +
       					' data-start="' + (_.toNumber(response.startrow) + _.toNumber(response.rows)) + '"' +
       					' data-rows="' + response.rows + '"' +
       					' data-context="' + context + '"' +
@@ -2621,7 +2627,7 @@ entityos._util.view.more = function (response, param)
 				{
 					if (showFooter)
 					{
-						app.vq.add('<div class="text-center m-b mb-2 small text-muted"><span class="entityos-info" data-id="' + response.moreid + '">' +
+						app.vq.add('<div class="text-center m-b mb-2 small text-muted"><span class="myds-info" data-id="' + response.moreid + '">' +
 										(_.toNumber(response.startrow) + _.toNumber(response.rows)) + ' of ' + app.data[scope].count + '</span></div>', param);
 					}
 				};
@@ -2743,10 +2749,10 @@ entityos._util.view.more = function (response, param)
 
 		if (!progressive)
 		{
-			html.push('<li class="page-item' + (bPrevious?'':' disabled') + ' entityos-previous"' +
+			html.push('<li class="page-item' + (bPrevious?'':' disabled') + ' myds-previous"' +
 									' data-id="' + response.moreid + '"' +
 									'>' +
-							   	'<a class="page-link entityos-page" aria-label="Previous"' +
+							   	'<a class="page-link myds-page" aria-label="Previous"' +
 							   	' data-id="' + response.moreid + '"' +
 						      	' data-page="' + (_.toNumber(currentPage) - 1) + '"' +
 									' data-pages="' + allPagesTotal + '"' +
@@ -2794,7 +2800,7 @@ entityos._util.view.more = function (response, param)
 								((page.number >= firstShowPage) && (page.number <= lastShowPage)?'':' hidden d-none') + '"' +
 								' data-page="' + page.number + '"' +
 								' data-id="' + response.moreid + '">' +
-								'<a class="page-link entityos-page" style="cursor:pointer;"' +
+								'<a class="page-link myds-page" style="cursor:pointer;"' +
 								' data-page="' + page.number + '"' +
 								' data-pages="' + allPagesTotal + '"' +
 								' data-show-pages="' + showPagesTotal + '"' +
@@ -2812,7 +2818,7 @@ entityos._util.view.more = function (response, param)
 			if (bNext)
 			{
 				html.push('<li class="page-item">' +
-						      '<a class="page-link entityos-more entityos-page" aria-label="Next" style="cursor:pointer;"' +
+						      '<a class="page-link myds-more myds-page" aria-label="Next" style="cursor:pointer;"' +
 						      	' data-id="' + response.moreid + '"' +
 						      	' data-start="' + (_.toNumber(response.startrow) + _.toNumber(response.rows)) + '"' +
 	      						' data-rows="' + response.rows + '"' +
@@ -2834,8 +2840,8 @@ entityos._util.view.more = function (response, param)
 
 			if (currentPage < allPagesTotal)
 			{
-				html.push('<li class="page-item entityos-next">' +
-						      '<a class="page-link entityos-page" aria-label="Next" style="cursor:pointer;"' +
+				html.push('<li class="page-item myds-next">' +
+						      '<a class="page-link myds-page" aria-label="Next" style="cursor:pointer;"' +
 						      	' data-id="' + response.moreid + '"' +
 						      	' data-page="' + (_.toNumber(currentPage) + 1) + '"' +
 									' data-pages="' + allPagesTotal + '"' +
@@ -2856,10 +2862,10 @@ entityos._util.view.more = function (response, param)
 			}
 			else
 			{
-				html.push('<li class="page-item' + (bNext?'':' disabled') + ' entityos-next"' +
+				html.push('<li class="page-item' + (bNext?'':' disabled') + ' myds-next"' +
 								' data-id="' + response.moreid + '"' +
 								'>' +
-						      '<a class="page-link entityos-page" aria-label="Next"' +
+						      '<a class="page-link myds-page" aria-label="Next"' +
 						      	' data-id="' + response.moreid + '"' +
 						      	' data-page="' + (_.toNumber(currentPage)) + '"' +
 									' data-pages="' + allPagesTotal + '"' +
@@ -2889,16 +2895,16 @@ entityos._util.view.more = function (response, param)
 			html.push(
 						'<div class="dropdown text-center m-x-auto mx-auto" style="width:150px;">' +
 								'<a class="dropdown-toggle text-muted"' +
-								' href="#" role="button" id="entityos-page-rows-selection-' + response.moreid + '"' +
+								' href="#" role="button" id="myds-page-rows-selection-' + response.moreid + '"' +
 								' style="padding-top: 2px; padding-bottom: 2px; margin-right: 6px;" ' +
 								' data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' +
-								' <span class="entityos-dropdown-text text-muted">' + pageRows + ' rows per page</span><span class="caret"></span></a>' +
-			 				' <ul class="dropdown-menu m-x-auto" aria-labelledby="entityos-page-rows-selection-' + response.moreid + '">' +
+								' <span class="myds-dropdown-text text-muted">' + pageRows + ' rows per page</span><span class="caret"></span></a>' +
+			 				' <ul class="dropdown-menu m-x-auto" aria-labelledby="myds-page-rows-selection-' + response.moreid + '">' +
 			 				' <li><div class="dropdown-header text-muted" style="font-size:0.75rem; padding-bottom:2px;">Rows Per Page</div></li>');
 
 			_.each(pageRowsSelections, function (pageRowsSelection)
 			{
-				html.push('<li><a class="dropdown-item entityos-page-rows" href="#" ' +
+				html.push('<li><a class="dropdown-item myds-page-rows" href="#" ' +
 							' data-controller="util-view-table"' +
 							' data-context="' + context + '" ' +
 							' data-rowsperpage="' + pageRowsSelection + '">' + pageRowsSelection + '</a></li>');
@@ -2942,36 +2948,36 @@ entityos._util.view.showPage = function (param)
 
 		if (pages == number)
 		{
-			$('li.entityos-next[data-id="' + id + '"]').addClass('disabled');
-			$('li.entityos-next[data-id="' + id + '"] a').removeAttr('style');
+			$('li.myds-next[data-id="' + id + '"]').addClass('disabled');
+			$('li.myds-next[data-id="' + id + '"] a').removeAttr('style');
 		}
 		else
 		{
-			$('li.entityos-next[data-id="' + id + '"]').removeClass('disabled');
-			$('li.entityos-next[data-id="' + id + '"] a').attr('style', 'cursor:pointer;');
+			$('li.myds-next[data-id="' + id + '"]').removeClass('disabled');
+			$('li.myds-next[data-id="' + id + '"] a').attr('style', 'cursor:pointer;');
 		}
 
 		if (number == 1)
 		{
-			$('li.entityos-previous[data-id="' + id + '"]').addClass('disabled');
-			$('li.entityos-previous[data-id="' + id + '"] a').removeAttr('style');
+			$('li.myds-previous[data-id="' + id + '"]').addClass('disabled');
+			$('li.myds-previous[data-id="' + id + '"] a').removeAttr('style');
 		}
 		else
 		{
-			$('li.entityos-previous[data-id="' + id + '"]').removeClass('disabled');
-			$('li.entityos-previous[data-id="' + id + '"] a').attr('style', 'cursor:pointer;');
+			$('li.myds-previous[data-id="' + id + '"]').removeClass('disabled');
+			$('li.myds-previous[data-id="' + id + '"] a').attr('style', 'cursor:pointer;');
 		}
 
-		if ($('div.entityos-page-view[data-page="' + number + '"][data-context="' + context + '"]').length != 0)
+		if ($('div.myds-page-view[data-page="' + number + '"][data-context="' + context + '"]').length != 0)
 		{
-			$('div.entityos-page-view[data-context="' + context + '"]').hide();
-			$('div.entityos-page-view[data-page="' + number + '"][data-context="' + context + '"]').show();
+			$('div.myds-page-view[data-context="' + context + '"]').hide();
+			$('div.myds-page-view[data-page="' + number + '"][data-context="' + context + '"]').show();
 
 			$('li.page-item[data-id="' + id + '"]').removeClass('active');
 			$('li.page-item[data-id="' + id + '"][data-page="' + number + '"]').addClass('active');
 			$('li.page-item[data-id="' + id + '"][data-page="' + number + '"]').removeClass('hidden d-none');
 
-			var previous = $('li.entityos-previous a')
+			var previous = $('li.myds-previous a')
 			if (previous.length != 0)
 			{
 				var previousPage = parseInt(previous.attr('data-page'));
@@ -2982,7 +2988,7 @@ entityos._util.view.showPage = function (param)
 				}
 			}
 
-			var next = $('li.entityos-next a')
+			var next = $('li.myds-next a')
 			if (next.length != 0)
 			{
 				var nextPage = parseInt(next.attr('data-page'));
@@ -3026,8 +3032,8 @@ entityos._util.view.showPage = function (param)
 			{	
 				//$('li.page-item[data-page="' + (parseInt(number) + parseInt(showPagesMaximum) ) + '"]').addClass('hidden d-none');
 
-				$('li.entityos-next[data-id="' + id + '"]').removeClass('disabled');
-				$('li.entityos-next[data-id="' + id + '"] a').attr('style', 'cursor:pointer;');
+				$('li.myds-next[data-id="' + id + '"]').removeClass('disabled');
+				$('li.myds-next[data-id="' + id + '"] a').attr('style', 'cursor:pointer;');
 			}
 
 			var onComplete = entityos._util.data.get(
@@ -3199,16 +3205,16 @@ entityos._util.view.set = function (param)
                 context.value = _.unescape(context.value);
             }
 
-			if (element.hasClass('entityos-text') || element.hasClass('entityos-select'))
+			if (element.hasClass('myds-text') || element.hasClass('myds-select'))
 			{
 				element.val(context.value);
 			}
-			else if (element.hasClass('entityos-text-select'))
+			else if (element.hasClass('myds-text-select'))
 			{
 				element.val(context.value);
 				element.attr('data-id', context.id);
 			}
-			else if (element.hasClass('entityos-check'))
+			else if (element.hasClass('myds-check'))
 			{
 				element.filter('[value="' + context.value + '"]').prop('checked', true);
 			}
@@ -3359,7 +3365,7 @@ entityos._util.view._refresh = function (param)
 		var context;
 		var value;
 
-		_.each($(selector + ' input.entityos-check[data-context][data-id]'),
+		_.each($(selector + ' input.myds-check[data-context][data-id]'),
 			function (element)
 		{
 			var context = $(element).data('context');
@@ -3367,11 +3373,11 @@ entityos._util.view._refresh = function (param)
 
 			if (value != undefined)
 			{
-				$(selector + ' input.entityos-check[data-context="' + context + '"][data-id="' + value + '"]').attr('checked', 'checked')
+				$(selector + ' input.myds-check[data-context="' + context + '"][data-id="' + value + '"]').attr('checked', 'checked')
 			}
 		});
 
-		_.each($(selector + ' input.entityos-check[data-context][data-selected-id]'),
+		_.each($(selector + ' input.myds-check[data-context][data-selected-id]'),
 			function (element)
 		{
 			var context = $(element).data('context');
@@ -3379,11 +3385,11 @@ entityos._util.view._refresh = function (param)
 
 			if (value != undefined)
 			{
-				$(selector + ' input.entityos-check[data-context="' + context + '"][data-selected-id="' + value + '"]').attr('checked', 'checked')
+				$(selector + ' input.myds-check[data-context="' + context + '"][data-selected-id="' + value + '"]').attr('checked', 'checked')
 			}
 		});
 
-		_.each($(selector + ' input.entityos-select[data-context][value]'),
+		_.each($(selector + ' input.myds-select[data-context][value]'),
 			function (element)
 		{
 			var context = $(element).data('context');
@@ -3391,7 +3397,7 @@ entityos._util.view._refresh = function (param)
 
 			if (value != undefined)
 			{
-				$(selector + ' input.entityos-select[data-context="' + context + '"][value="' + value + '"]').attr('checked', 'checked')
+				$(selector + ' input.myds-select[data-context="' + context + '"][value="' + value + '"]').attr('checked', 'checked')
 			}
 		});
 	}
@@ -3410,7 +3416,7 @@ entityos._util.view._refresh = function (param)
 
 			_.each(elementIDs, function (element)
 			{
-				if (!$(element).hasClass('entityos-check'))
+				if (!$(element).hasClass('myds-check'))
 				{
 					elementID = $(element).attr('id');
 					$(element).attr('data-id', data.id);
@@ -3425,7 +3431,7 @@ entityos._util.view._refresh = function (param)
 
 			_.each(elementIDs, function (element)
 			{
-				if (!$(element).hasClass('entityos-text-select'))
+				if (!$(element).hasClass('myds-text-select'))
 				{
 					elementContext = $(element).attr('data-context');
 
@@ -3494,8 +3500,8 @@ entityos._util.view._refresh = function (param)
 
 	if (includeDates)
 	{
-		var selectorDate = '.entityos-date';
-		var selectorDateTime = '.entityos-date-time';
+		var selectorDate = '.myds-date';
+		var selectorDateTime = '.myds-date-time';
 
 		if (onlyIfVisible)
 		{ 
@@ -3558,6 +3564,7 @@ entityos._util.view.datepicker = function (param)
 	var selector = entityos._util.param.get(param, 'selector').value;
 	var format = entityos._util.param.get(param, 'format', {"default": 'D MMM YYYY'}).value;
 	var pickerOptions = entityos._util.param.get(param, 'pickerOptions', {"default": {}}).value; 
+    var debug = entityos._util.param.get(param, 'debug', {"default": false}).value;
 
 	var datepicker = $(selector).data("DateTimePicker");
 
@@ -3590,6 +3597,11 @@ entityos._util.view.datepicker = function (param)
 
 	if ($.fn.datetimepicker != undefined)
 	{
+        if (debug)
+        {
+            options.debug = true;
+        }
+
 		if (!_.includes(selector, ':visible'))
 		{
 			selector = selector + ':visible'
@@ -3600,6 +3612,14 @@ entityos._util.view.datepicker = function (param)
 			$(selector).datetimepicker(options);
 		}
 	}
+    else if ($.fn.flatpickr != undefined)
+	{
+        options.enableTime = _.includes(format.toUpperCase(), 'H');
+        options.dateFormat = format;
+        _.replace(options.dateFormat, 'LT', 'H:i');
+
+        $(selector).flatpickr(options);
+    }
 }
 
 entityos._util.controller.add(
@@ -3610,6 +3630,114 @@ entityos._util.controller.add(
 		entityos._util.view.datepicker(param);
 	}
 });
+
+entityos._util.view.popover =
+{
+	init: function (param)
+	{
+		var selector = entityos._util.param.get(param, 'selector', {default: '.popover:visible'}).value;
+		var title = entityos._util.param.get(param, 'title', {default: ''}).value;
+		var isHTML = entityos._util.param.get(param, 'isHTML', {default: true}).value;
+		var placement = entityos._util.param.get(param, 'placement', {default: 'auto'}).value;
+		var sanitize = entityos._util.param.get(param, 'sanitize', {default: false}).value;
+		var options =  entityos._util.param.get(param, 'options', {default: {}}).value;
+		var content =  entityos._util.param.get(param, 'content' ).value;
+		var text =  entityos._util.param.get(param, 'text').value;
+		var showCancel =  entityos._util.param.get(param, 'showCancel', {default: true}).value;
+		var buttonClass =  entityos._util.param.get(param, 'buttonClass', {default: 'btn-primary myds-click myds-close'}).value;
+		var buttonData =  entityos._util.param.get(param, 'buttonData', {default: ''}).value;
+		var buttonText =  entityos._util.param.get(param, 'buttonText', {default: 'OK'}).value;
+		var buttonController =  entityos._util.param.get(param, 'buttonController').value;
+
+		options = _.assign(
+		{
+			title: title,
+			content: content,
+			html: isHTML,
+			placement: placement,
+			sanitize: sanitize
+		}, options);
+
+		if (typeof $.fn.popover == 'function')
+		{
+			if (options.content == undefined)
+			{
+				options.content = ''
+				
+				if (text != undefined)
+				{
+					options.content += '<div class="text-center">' + text + '</div>'
+				}
+
+				if (showCancel || buttonController != undefined)
+				{
+					options.content += '<div class="text-center mt-3 mb-2 m-t m-b">';
+
+					if (showCancel)
+					{
+						options.content += '<button type="button" class="btn btn-link text-muted myds-close" data-context="popover">Cancel</button>';
+					}
+
+					if (buttonController != undefined)
+					{
+						options.content += '<button type="button" class="btn ' + buttonClass + '"' +
+										' data-context="popover"' +
+										' data-controller="' + buttonController + '"' +
+										buttonData +
+									'>' + buttonText + '</button>';
+					}
+
+					options.content += '</div>';
+				}
+			}
+
+			$(selector).popover(options);
+		}
+		else if (typeof $.fn.popConfirm == 'function')
+		{
+			$(selector).popConfirm(options);
+		}
+	},
+
+	show: function (param)
+	{
+		var selector = entityos._util.param.get(param, 'selector', {default: '.popover:visible'}).value;
+		$(selector).popover("hide");
+	},
+
+	hide: function (param)
+	{
+		var selector = entityos._util.param.get(param, 'selector', {default: '.popover:visible'}).value;
+		$(selector).popover("hide");
+	}
+}
+
+entityos._util.controller.add(
+[
+	{
+		name: 'util-view-popover',
+		code: function (param)
+		{
+			entityos._util.view.popover.init(param);
+		}
+	},
+	{
+		name: 'util-view-popover-hide',
+		code: function (param)
+		{
+			entityos._util.view.popover.hide(param);
+			
+		}
+	},
+	{
+		name: 'util-view-popover-show',
+		code: function (param)
+		{
+			entityos._util.view.popover.show(param);
+			
+		}
+	},
+]);
 
 entityos._util.view.dateFormat = function (param)
 {
@@ -3631,7 +3759,7 @@ entityos._util.view.dateFormat = function (param)
 	
 	if (dateCurrentFormat == undefined)
 	{
-		dateCurrentFormat = ["DD MMM YYYY", "D MMM YYYY", "D/MM/YYYY", "DD/MM/YYYY", "DD MMM YYYY HH:mm:ss"]
+		dateCurrentFormat = ["D MMMM YYYY", "DD MMMM YYYY", "DD MMM YYYY", "D MMM YYYY", "D/MM/YYYY", "DD/MM/YYYY", "DD MMM YYYY HH:mm:ss"]
 	}
 
 	if (date != '' && date != undefined && dateFormat != undefined)
@@ -3687,18 +3815,39 @@ entityos._util.controller.add(
 	code: function (param)
 	{
 		var date = entityos._util.param.get(param, 'date').value;
+		var modify = entityos._util.param.get(param, 'modify').value;
+        var format = entityos._util.param.get(param, 'format', {default: 'D MMM YYYY'}).value;
 
 		if (date == undefined)
 		{
-			date = moment().format('DD MMM YYYY')
+			date = moment().format(format)
 		}
 
+        if (_.isSet(modify))
+        {
+            if (!_.isFunction(moment))
+            {
+                console.log('!! Need reference to moment.js')
+            }
+            else 
+            {
+                var _date = moment(date, entityos._scope.app.options.dateFormats)
+
+                if (_date.isValid())
+                {
+                    _date = _date.add(modify);
+                }
+
+                date = _date.format(format);
+            }
+        }
+
 		var param = _.assign(
+        param,
 		{
 			date: date,
 			clean: true
-		},
-		param);
+		});
 
 		return entityos._util.view.dateFormat(param);
 	}
@@ -3771,7 +3920,7 @@ entityos._util.whoami = function (param)
 	}
 
 	var form = [];
-	var elements = $('.entityos-view');
+	var elements = $('.myds-view');
 
 	_.each(elements, function (element)
 	{
@@ -3784,7 +3933,7 @@ entityos._util.whoami = function (param)
 
 	whoamiData.myForm.views = form;
 
-	elements = $('.entityos-view-template');
+	elements = $('.myds-view-template');
 	form = [];
 
 	_.each(elements, function (element)
@@ -4001,8 +4150,8 @@ entityos._util.healthCheck =
 
 		if (selector == undefined)
 		{
-			selector = '.entityos-view'
-			if (scope == 'view-templates') {selector = '.entityos-view-template'}
+			selector = '.myds-view'
+			if (scope == 'view-templates') {selector = '.myds-view-template'}
 		}
 	
 		if (checkParent)
@@ -4089,7 +4238,7 @@ entityos._util.healthCheck =
 					{
 						if (scope == 'views')
 						{
-							if (_.includes(openElement, 'entityos-view'))
+							if (_.includes(openElement, 'myds-view'))
 							{
 								elementData[type][elementID].missingClose = true;
 							}
@@ -4097,7 +4246,7 @@ entityos._util.healthCheck =
 
 						if (scope == 'view-templates')
 						{
-							if (_.includes(openElement, 'entityos-view-template'))
+							if (_.includes(openElement, 'myds-view-template'))
 							{
 								elementData[type][elementID].missingClose = true;
 							}
@@ -4406,6 +4555,11 @@ entityos._util.data =
 					{
 						if (name != undefined)
 						{
+                            if (_.isFunction(value))
+                            {
+                                value = value(app.data[controller][context][name])
+                            }
+
 							if (merge && _.isObject(value) && _.isObject(app.data[controller][context][name]))
 							{
 								app.data[controller][context][name] = _.assign(app.data[controller][context][name], value);
@@ -4419,6 +4573,11 @@ entityos._util.data =
 						}
 						else 
 						{
+                            if (_.isFunction(value))
+                            {
+                                value = value(app.data[controller][context])
+                            }
+
 							if (merge && _.isObject(value) && _.isObject(app.data[controller][context]))
 							{
 								app.data[controller][context] = _.assign(app.data[controller][context], value);
@@ -4435,6 +4594,11 @@ entityos._util.data =
 					{
 						if (name != undefined)
 						{
+                            if (_.isFunction(value))
+                            {
+                                value = value(app.data[controller][name])
+                            }
+
 							if (merge && _.isObject(value) && _.isObject(app.data[controller][name]))
 							{
 								app.data[controller][name] = _.assign(app.data[controller][name], value);
@@ -4448,6 +4612,11 @@ entityos._util.data =
 						}
 						else
 						{
+                            if (_.isFunction(value))
+                            {
+                                value = value(app.data[controller])
+                            }
+
 							if (merge && _.isObject(value) && _.isObject(app.data[controller]))
 							{
 								app.data[controller] = _.assign(app.data[controller], value);
@@ -4783,13 +4952,13 @@ entityos._util.reset = function (param)
 		}
 	}
 	
-	$('#' + controller + ' .entityos-text').val('');
-	$('#' + controller + ' .entityos-check').attr('checked', false);
-	$('#' + controller + ' .entityos-data').html('...');
-	$('#' + controller + ' .entityos-data-view').html(app.options.working);
-	$('#' + controller + ' .entityos-text-select').val('');
-	$('#' + controller + ' .entityos-text-select').removeAttr('data-id');
-	$('#' + controller + ' input').removeClass('entityos-validate-error');
+	$('#' + controller + ' .myds-text').val('');
+	$('#' + controller + ' .myds-check').attr('checked', false);
+	$('#' + controller + ' .myds-data').html('...');
+	$('#' + controller + ' .myds-data-view').html(app.options.working);
+	$('#' + controller + ' .myds-text-select').val('');
+	$('#' + controller + ' .myds-text-select').removeAttr('data-id');
+	$('#' + controller + ' input').removeClass('myds-validate-error');
 }
 
 entityos._util.controller.add(
@@ -4956,21 +5125,21 @@ entityos._util.menu =
 			{
 				if (href != undefined)
 				{
-					selector = '.entityos-menu [href="' + href + '"]' 
+					selector = '.myds-menu [href="' + href + '"]' 
 				}
 				else if (scope != undefined)
 				{
-					selector = '.entityos-menu [href="' + uri + '/#' + scope + '"]' 
+					selector = '.myds-menu [href="' + uri + '/#' + scope + '"]' 
 				}
 				else if (uriContext != undefined)
 				{
-					selector = '.entityos-menu [href="' + uri + '/' + uriContext + '"]' 
+					selector = '.myds-menu [href="' + uri + '/' + uriContext + '"]' 
 
 					var _uriContext = _.split(uriContext, '-');
 
 					if (_uriContext.length > 2)
 					{
-						selector = selector + ', .entityos-menu [href="' + uri + '/' + _uriContext[0] + '-' + _uriContext[1] + 's"]'
+						selector = selector + ', .myds-menu [href="' + uri + '/' + _uriContext[0] + '-' + _uriContext[1] + 's"]'
 					}
 				}
 			}
@@ -5012,6 +5181,41 @@ entityos._util.menu =
 					});
 				}
 			}
+		}
+		else if (element.length != 0 )
+		{
+			//$('.myds-menu').find('li').not(element.parents('li')).removeClass('active');
+			$('.myds-menu').find('li').removeClass('active');
+
+			if (element.attr('href') != '#')
+			{
+				element.parent().addClass('active');
+
+				if ($(element).parents('div.myds-menu-group').length == 0)
+				{
+					element.parent().siblings().find('div.myds-menu-group').removeClass('show');
+				}
+				else
+				{
+					element.parents('div.myds-menu-group').addClass('show');
+					/*_.each(['second', 'third'], function(numberLevel)
+					{
+						var parentElement = $(element).parents('ul.nav-' + numberLevel + '-level');
+						if (!parentElement.parent().hasClass('active'))
+						{
+							parentElement.parent().addClass('active');
+						}
+
+						if (!parentElement.hasClass('in'))
+						{
+							parentElement.addClass('in');
+						}
+						
+						parentElement.parent().siblings().find('ul').removeClass('in');
+					});*/
+				}
+			}
+
 		}
 	}
 }
@@ -5223,7 +5427,7 @@ entityos._util.view.spinner =
 			if (mode == 'prepend') {margin = 'mr-1'}
 			if (mode == 'append') {margin = 'ml-1'}
 
-			var html = '<span class="spinner-border spinner-border-sm entityos-spinner ' + margin + '" role="status" aria-hidden="true"></span>';
+			var html = '<span class="spinner-border spinner-border-sm myds-spinner ' + margin + '" role="status" aria-hidden="true"></span>';
 
 			if (text == undefined)
 			{
@@ -5231,7 +5435,7 @@ entityos._util.view.spinner =
 			}
 			else
 			{
-				html = html + '<span class="entityos-spinner">' + text + '</span>'
+				html = html + '<span class="myds-spinner">' + text + '</span>'
 			}
 
 			if (controller != undefined) {uuid = controller}
@@ -5251,13 +5455,13 @@ entityos._util.view.spinner =
 				$(element).addClass('disabled');
 			}
 
-			$(element).data('entityos-spinner-uuid', uuid)
+			$(element).data('myds-spinner-uuid', uuid)
 		}
 	},
 
 	removeAll: function (param)
 	{
-		var elements = $('.entityos-spinner,[data-spinner]');
+		var elements = $('.myds-spinner,[data-spinner]');
 
 		_.each(elements, function (element)
 		{
@@ -5303,7 +5507,7 @@ entityos._util.view.spinner =
 
 		if (element != undefined)
 		{
-			var uuid = $(element).data('entityos-spinner-uuid');
+			var uuid = $(element).data('myds-spinner-uuid');
 
 			if (uuid != undefined)
 			{
@@ -5316,7 +5520,7 @@ entityos._util.view.spinner =
 				}
 				else
 				{
-					$(element).children('.entityos-spinner').remove();
+					$(element).children('.myds-spinner').remove();
 				}
 
 				if (enable)
@@ -5384,24 +5588,32 @@ entityos._util.view.hide =  function (param)
     var context = entityos._util.param.get(param, 'context').value;
     var selector = entityos._util.param.get(param, 'selector').value;
     var collapse = entityos._util.param.get(param, 'collapse', {default: false}).value;
+    var toast = entityos._util.param.get(param, 'toast', {default: false}).value;
 
-    if (selector == undefined && context != undefined)
+    if (toast)
     {
-        selector = '#' + context;
-
-        if (collapse)
-        {
-            selector = selector + '-collapse';
-        }
-    }
-    
-    if (collapse)
-    {
-        $(selector).removeClass('show');
+        $('.toast').toast('hide');
     }
     else
     {
-        $(selector).addClass('d-none hidden');
+        if (selector == undefined && context != undefined)
+        {
+            selector = '#' + context;
+
+            if (collapse)
+            {
+                selector = selector + '-collapse';
+            }
+        }
+        
+        if (collapse)
+        {
+            $(selector).removeClass('show');
+        }
+        else
+        {
+            $(selector).addClass('d-none hidden');
+        }
     }
 }
 
@@ -5474,13 +5686,13 @@ entityos._util.validate =
 
 				if (_selector.length != 0)
 				{
-					selector = '.entityos-validate' + _.join(_selector, '');
+					selector = '.myds-validate' + _.join(_selector, '');
 				}
 			}
 
 			if (selector == undefined)
 			{
-				selector = '.entityos-validate:visible';
+				selector = '.myds-validate:visible';
 			}
 
 			if (selector != undefined)
@@ -5640,11 +5852,117 @@ entityos._util.validate =
 
 		if ($(element).hasClass('select2-hidden-accessible'))
 		{
-			element = $(element).siblings('.select2-container').find('.select2-selection').addClass('entityos-validate-error')
+			element = $(element).siblings('.select2-container').find('.select2-selection').addClass('myds-validate-error')
 		}
 
-		$(element)[action + 'Class']('entityos-validate-error');
+		$(element)[action + 'Class']('myds-validate-error');
 	}
+}
+
+entityos._util.whenCan =
+{
+    queue: 		[],
+    completed: 	[],
+    exists: 	function (param)
+    {
+        if (param && param.uuid)
+        {
+            return (_.filter(entityos._util.whenCan.whenCan.queue, function (queue) {queue.uuid == param.uuid}).length > 0)
+        }	
+        else
+        {	
+            return (entityos._util.whenCan.queue.length != 0);
+        }	
+    },
+
+    then: function(param)
+    {
+        if (_.has(param, 'uuid'))
+        {
+            return (_.find(entityos._util.whenCan.queue, function (queue) {queue.uuid == param.uuid}))
+        }	
+    },			
+
+    clear: function(param)
+    {
+        entityos._util.whenCan.queue.length = 0;
+    },
+
+    invoke: function(param)
+    {
+        var uuid = entityos._util.uuid();
+
+        param.then.uuid = uuid;
+        entityos._util.whenCan.queue.unshift(param.then);
+
+        if (param.now)
+        {
+            var nowParam = _.assign({}, param.now.param);
+            nowParam.uuid = uuid;
+            param.now.method(nowParam)
+        }	
+    },
+                
+    complete: function(returnData, param)
+    {
+		var onComplete = entityos._util.param.get(param, 'onComplete').value;
+
+        if (entityos._util.whenCan.queue.length > 0)
+        {	
+            var thenQueue;
+
+            if (param.uuid)
+            {
+                _.each(entityos._util.whenCan.queue, function (queue, q)
+                {
+                    if (queue)
+                    {	
+                        if (queue.uuid == param.uuid)
+                        {
+                            thenQueue = queue;
+                            entityos._util.whenCan.queue.splice(q, 1);
+                        }
+                    }	
+                });
+            }	
+            else
+            {	
+                thenQueue = entityos._util.whenCan.queue.shift();
+            }
+
+            if (thenQueue)
+            {	
+                entityos._util.whenCan.completed.unshift(thenQueue);
+
+                if (param == undefined) {param = {}}
+                param = _.assign(param, thenQueue.param)
+                if (thenQueue.set) {param[thenQueue.set] = returnData};
+
+                returnData = undefined;
+                
+                var executeMethod = thenQueue.method;
+                if (executeMethod != undefined)
+                {
+                    if (typeof executeMethod != 'string')
+                    {
+                        executeMethod(param)
+                    }	
+                }
+
+                var executeController = thenQueue.controller;
+                if (executeController != undefined)
+                {
+                    entityos._util.controller.invoke(executeController, param)	
+                }
+            }	
+        }
+		else if (onComplete != undefined)
+		{
+			entityos._util.onComplete(param)
+		}
+        
+        return returnData;
+    }			
 }
 
 entityos._util.factory = {};
@@ -5690,7 +6008,7 @@ entityos._util.factory.core = function (param)
 
 				if (!_.isUndefined(controller))
 				{
-					var routerElement = $('.entityos-router');
+					var routerElement = $('.myds-router');
 
 					if (routerElement.length > 0)
 					{
@@ -5901,20 +6219,20 @@ entityos._util.factory.core = function (param)
 							{
 								if (_.isObject(entityos._scope.user))
 								{
-									$('.entityos-logon-first-name').html(entityos._scope.user.firstname);
-									$('.entityos-logon-surname').html(entityos._scope.user.surname)
-									$('.entityos-logon-name').html(entityos._scope.user.userlogonname)
+									$('.myds-logon-first-name').html(entityos._scope.user.firstname);
+									$('.myds-logon-surname').html(entityos._scope.user.surname)
+									$('.myds-logon-name').html(entityos._scope.user.userlogonname)
                                     if (entityos.space != undefined)
                                     {
-									    $('.entityos-logon-space').html(entityos.space.whoAmI().name);
+									    $('.myds-logon-space').html(entityos.space.whoAmI().name);
                                     
                                         if(entityos.space.isSwitched())
                                         {
-                                            $('#entityos-logon-icon, .entityos-logon-icon, .entityos-logon-space').addClass('entityos-space-switched-in');
+                                            $('#myds-logon-icon, .myds-logon-icon, .myds-logon-space').addClass('myds-space-switched-in');
                                         }
                                         else
                                         {
-                                            $('#entityos-logon-icon, .entityos-logon-icon, .entityos-logon-space').removeClass('entityos-space-switched-in');
+                                            $('#myds-logon-icon, .myds-logon-icon, .myds-logon-space').removeClass('myds-space-switched-in');
                                         }
                                     }
 							
@@ -6456,10 +6774,10 @@ entityos._util.factory.core = function (param)
 				}
 				else if (typeof $.fn.toast == 'function')
 				{		
-					if ($('#entityos-toast').length == 0)
+					if ($('#myds-toast').length == 0)
 					{
 						$(selector).append(
-							'<div id="entityos-toast" class="position-absolute w-100 d-flex flex-column p-4" aria-live="assertive" aria-atomic="true"></div>');
+							'<div id="myds-toast" class="position-absolute w-100 d-flex flex-column p-4" aria-live="assertive" aria-atomic="true"></div>');
 					}
 
 					var html	= 
@@ -6498,7 +6816,7 @@ entityos._util.factory.core = function (param)
 
 	  				if (showDismiss == true)
 					{
-	  					html = html + '<button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">' +
+	  					html = html + '<button type="button" class="ml-2 mb-1 close myds-click" data-controller="util-view-notify-hide" data-dismiss="toast" aria-label="Close">' +
 	      							'<span aria-hidden="true">' + dismiss + '</i></span>' +
 	    							'</button>';
 	    			}
@@ -6519,7 +6837,7 @@ entityos._util.factory.core = function (param)
   					html = html +		
 	  					'</div>';
 
-	  				$('#entityos-toast').html(html);
+	  				$('#myds-toast').html(html);
 					$('.toast').toast({delay: time, autohide: !persist, animation: animation})
 					$('.toast').toast('show')
 
@@ -6584,7 +6902,7 @@ entityos._util.factory.core = function (param)
 				var element = $(selector);
 				if (!_.isEmpty(element))
 				{
-					element.addClass("active").siblings('.entityos-button-group').removeClass("active");
+					element.addClass("active").siblings('.myds-button-group').removeClass("active");
 				}
 			}
 		},
@@ -6684,49 +7002,49 @@ entityos._util.factory.core = function (param)
 			}
 		},
 		{
-			name: 'util-cloud-storage-query',
+			name: 'util-cloud-search',
 			code: function (param)
 			{
-				return entityos.cloud.query(param)
+				return entityos.cloud.search(param)
 			}
 		},
 		{
-			name: 'util-cloud-storage-save',
+			name: 'util-cloud-save',
 			code: function (param)
 			{
 				return entityos.cloud.save(param)
 			}
 		},
 		{
-			name: 'util-cloud-storage-delete',
+			name: 'util-cloud-delete',
 			code: function (param)
 			{
 				return entityos.cloud.delete(param)
 			}
 		},
 		{
-			name: 'util-cloud-storage-auth',
+			name: 'util-cloud-auth',
 			code: function (param)
 			{
 				return entityos.cloud.auth(param)
 			}
 		},
 		{
-			name: 'util-cloud-storage-deauth',
+			name: 'util-cloud-deauth',
 			code: function (param)
 			{
 				return entityos.cloud.deauth(param)
 			}
 		},
 		{
-			name: 'util-cloud-storage-invoke',
+			name: 'util-cloud--invoke',
 			code: function (param)
 			{
 				return entityos.cloud.invoke(param)
 			}
 		},
 		{
-			name: 'util-cloud-storage-upload',
+			name: 'util-cloud-upload',
 			code: function (param)
 			{
 				return entityos.cloud.upload(param)
@@ -6896,7 +7214,7 @@ entityos._util.factory.core = function (param)
 
 				app.vq.clear({queue: 'util-user-switches'});
 				
-				app.vq.add('<li><a href="#" class="entityos" style="padding-top:3px;padding-bottom:3px;" data-controller="util-user-switch-to" data-context="{{context}}" data-id="{{id}}"' +
+				app.vq.add('<li><a href="#" class="myds" style="padding-top:3px;padding-bottom:3px;" data-controller="util-user-switch-to" data-context="{{context}}" data-id="{{id}}"' +
 						   ' data-contactbusiness="{{targetusercontactbusiness}}"' +
 						   ' data-contactbusinesstext="{{targetusercontactbusinesstext}}"' +
 						   '>{{country}}</li>',
@@ -7773,10 +8091,13 @@ entityos._util.factory.core = function (param)
 
 							if (options.count == undefined)
 							{
+                                var countField = options.countField;
+                                if (countField == undefined) {countField = 'id'};
+                             
 								search.criteria.summaryFields =
 								[
 									{
-										name: 'count(id) count'
+										name: 'count(' + countField + ') count'
 									}
 								]
 							}		
@@ -7789,7 +8110,8 @@ entityos._util.factory.core = function (param)
 								callbackParam: param,
 								includeMetadata: options.includeMetadata,
 								includeMetadataAdvanced: options.includeMetadataAdvanced,
-								includeMetadataSnapshot: options.includeMetadataSnapshot
+								includeMetadataSnapshot: options.includeMetadataSnapshot,
+                                includeMetadataGUID: options.includeMetadataGUID
 							});
 						}
 						else // render
@@ -7843,7 +8165,7 @@ entityos._util.factory.core = function (param)
 										noDataClass = ' ' + containerClass
 									}
 									
-									app.vq.show('#' + container, '<div class="text-muted mx-auto text-center entityos-no-data' + noDataClass + '">' + noDataText + '</div>', {queue: context});
+									app.vq.show('#' + container, '<div class="text-muted mx-auto text-center myds-no-data' + noDataClass + '">' + noDataText + '</div>', {queue: context});
 								} 
 								else
 								{	
@@ -7948,7 +8270,7 @@ entityos._util.factory.core = function (param)
 
 										if (!_.isEmpty(select))
 										{
-											html.push('<td id="entityos-view-table-select-{{id}}-container"');
+											html.push('<td id="myds-view-table-select-{{id}}-container"');
 
 											if (select.containerClass != undefined)
 											{
@@ -7965,7 +8287,7 @@ entityos._util.factory.core = function (param)
 												select.selectAll = (select.type == 'checkbox')
 											}
 
-											html.push('><input type="' + select.type + '" class="entityos-view-table-select');
+											html.push('><input type="' + select.type + '" class="myds-view-table-select');
 
 											if (select.class != undefined)
 											{
@@ -8042,7 +8364,7 @@ entityos._util.factory.core = function (param)
 
 										if (options.containerController != undefined && options.containerController != '')
 										{
-											html.push('<tr id="' + options.containerController + '-{{id}}-container" class="collapse entityos-collapse" data-id="{{id}}"' +
+											html.push('<tr id="' + options.containerController + '-{{id}}-container" class="collapse myds-collapse" data-id="{{id}}"' +
 											' data-controller="' + options.containerController + '" data-context="' +  context + '"' +
 											(options.containerControllerData==undefined?'':' ' + options.containerControllerData) +
 											'>' +
@@ -8107,7 +8429,7 @@ entityos._util.factory.core = function (param)
 											}
 										}
 										
-										app.vq.add('<div class="entityos-page-view" data-page="' + currentPage + '"', {queue: context});
+										app.vq.add('<div class="myds-page-view" data-page="' + currentPage + '"', {queue: context});
 										
 										if (context != undefined)
 										{
@@ -8158,7 +8480,7 @@ entityos._util.factory.core = function (param)
 
 													if (select.selectAll != false)
 													{
-														app.vq.add('<input class="entityos-view-table-select-all', {queue: context});
+														app.vq.add('<input class="myds-view-table-select-all', {queue: context});
 
 														if (select.class != undefined)
 														{
@@ -8203,7 +8525,7 @@ entityos._util.factory.core = function (param)
 
 													if (caption.sortBy)
 													{
-														captionClass = captionClass + ' entityos-sort';
+														captionClass = captionClass + ' myds-sort';
 														captionData = 'data-sort-direction="' +
 																			(caption.sortDirection!=undefined?caption.sortDirection:'asc') + '" data-sort="' + caption.param + '"';
 													}
@@ -8278,11 +8600,11 @@ entityos._util.factory.core = function (param)
 
 									if (options.orientation == 'horizontal')
 									{
-										$('#' + container + ' div.entityos-page-view').hide()
+										$('#' + container + ' div.myds-page-view').hide()
 									}
 
 									var append = !init;
-									var appendSelector = (options.orientation=='horizontal'?'div.entityos-page-view:last':'table tr:last');
+									var appendSelector = (options.orientation=='horizontal'?'div.myds-page-view:last':'table tr:last');
 
 									app.vq.render('#' + container, {append: append, queue: context, appendSelector: appendSelector}, data);
 
@@ -8310,12 +8632,12 @@ entityos._util.factory.core = function (param)
 								{
 									if (typeof $.fn.popover == 'function')
 									{
-										$('#' + container + ' .entityos-delete').each(function (b, button)
+										$('#' + container + ' .myds-delete').each(function (b, button)
 										{
 											var content = '<div class="text-center">' + options.deleteConfirm.text + '</div>' +
 												  	'<div class="text-center mt-3 mb-2 m-t m-b">' +
-												  	'<button type="button" class="btn btn-link text-muted entityos-close" data-context="popover">Cancel</button>' +
-												  	'<button type="button" class="btn btn-danger btn-outline entityos-click entityos-close"' +
+												  	'<button type="button" class="btn btn-link text-muted myds-close" data-context="popover">Cancel</button>' +
+												  	'<button type="button" class="btn btn-danger btn-outline myds-click myds-close"' +
 												  		' data-context="popover"' +
 												  		' data-controller="' + (_.isUndefined(options.deleteConfirm.controller)?context + '-delete-ok':options.deleteConfirm.controller) + '"' +
 												  		' data-id="' + $(button).attr('data-id') + '"' +
@@ -8335,7 +8657,7 @@ entityos._util.factory.core = function (param)
 									}
 									else if (typeof $.fn.popConfirm == 'function')
 									{
-										$('#' + container + ' .entityos-delete').popConfirm(
+										$('#' + container + ' .myds-delete').popConfirm(
 										{
 											title: (_.isUndefined(options.deleteConfirm.headerText)?'Delete':options.deleteConfirm.headerText),
 											content: options.deleteConfirm.text,
@@ -8447,9 +8769,9 @@ entityos._util.factory.core = function (param)
 		{
 			var html = entityos._util.param.get(param, 'html').value;
 
-			if ($('#entityos-modal').length == 0)
+			if ($('#myds-modal').length == 0)
 			{
-				$('#wrapper').append('<div id="entityos-modal"></div>');
+				$('#wrapper').append('<div id="myds-modal"></div>');
 			}
 
 			var htmlModal = '<div class="modal" id="util-view-modal-view">' +
@@ -8457,7 +8779,7 @@ entityos._util.factory.core = function (param)
 							   '</div>' +
 							'</div>';
 
-			$('#entityos-modal').html(htmlModal)
+			$('#myds-modal').html(htmlModal)
 			$('#util-view-modal-view').modal()
 		}
 	});
@@ -8700,6 +9022,47 @@ entityos._util.factory.core = function (param)
 		}
 	});
 
+    entityos._util.controller.add(
+    {
+        name: 'util-view-notify-hide',
+        code: function (param)
+        {
+            entityos._util.view.hide({toast: true})
+        }
+    });
+
+    entityos._util.controller.add(
+    {
+        name: 'util-get-ids',
+        code: function (param, response)
+        {
+            var field = entityos._util.param.get(param, 'field', {default: 'id'}).value;
+            var data = entityos._util.param.get(param, 'data', {default: []}).value;
+            var defaultIDs = entityos._util.param.get(param, 'default').value;
+            var ids = _.filter(_.map(data, field), function (dataID) {return dataID != ''});
+
+            if (ids.length == 0)
+            {
+                ids = defaultIDs
+            }
+            else
+            {
+                ids = _.join(ids, ',');
+            }
+
+            return ids
+        }
+    });
+
+    entityos._util.controller.add(
+    {
+        name: 'util-whencan-invoke',
+        code: function (param)
+        {
+            entityos._util.whenCan.invoke(param)
+        }
+    });
+
 	app._util = entityos._util;
 	app.invoke = entityos._util.controller.invoke;
 	app.add = entityos._util.controller.add;
@@ -8741,7 +9104,8 @@ entityos._util.factory.core = function (param)
 		'editor',
 		'chart',
 		'calendar',
-		'financial'
+		'financial',
+		'protect'
 	], function (namespace)
 	{
 		if (_.isFunction(entityos._util.factory[namespace]))
@@ -8749,6 +9113,8 @@ entityos._util.factory.core = function (param)
 			entityos._util.factory[namespace](param)
 		}
 	});
+
+    window.entityOS = window.entityos;
 }
 
 
