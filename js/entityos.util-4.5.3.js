@@ -3369,7 +3369,13 @@ entityos._util.view._refresh = function (param)
 			function (element)
 		{
 			var context = $(element).data('context');
-			var value = data[context];
+
+			var value = '';
+            
+            if (_.isSet(data))
+            {
+                value = data[context];
+            }
 
 			if (value != undefined)
 			{
@@ -9114,7 +9120,7 @@ entityos._util.factory.core = function (param)
 		}
 	});
 
-    window.entityOS = window.entityos;
+    window.mydigitalstructure = window.entityos;
 }
 
 

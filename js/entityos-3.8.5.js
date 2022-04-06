@@ -2008,7 +2008,10 @@ entityos._util =
 
 					if (uri == undefined)
 					{
-						//uri = entityos._scope.app.options.authURI + '/' + entityos._scope.app.options.authURIContext;
+						if (_.has(entityos, '_scope.app.options.deauthURI'))
+						{
+							uri = entityos._scope.app.options.deauthURI;
+						}
 					}
 
 					if (uri == undefined)
