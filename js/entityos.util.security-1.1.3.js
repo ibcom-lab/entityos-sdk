@@ -1092,7 +1092,7 @@ entityos._util.factory.security = function (param)
 
 	entityos._util.controller.add(
 	{
-		name:	'util-security-sharing-show',
+		name: 'util-security-sharing-show',
 		code: function (param)
 		{
 			if (param.status == 'shown')
@@ -1137,6 +1137,7 @@ entityos._util.factory.security = function (param)
                 var id = app._util.param.get(param, 'id').value;
                 var user = app._util.param.get(param, 'user', {default: app.whoami().thisInstanceOfMe.user});
                 if (id == undefined && user != undefined) {id = user.id}
+                if (id == undefined && param.dataContext != undefined) {id = param.dataContext.id}
 
                 if (id == undefined)
                 {
@@ -1697,6 +1698,116 @@ entityos._util.security.trusted =
 				}
 				
 			}
-		}
+		},
+
+        saml:
+        {
+            identityProviderURI: function (param)
+            {
+                if (_.has(entityos, '_scope.session.identityProvider.saml'))
+				{
+                    var samlIdentityProvider = entityos._scope.session.identityProvider.saml;
+
+                    var trustedLogon =
+                    {
+                        identityProviderEntityID: samlIdentityProvider.id,
+                        identityProviderName: samlIdentityProvider.name,
+                        issuer: samlIdentityProvider.id,
+                        identityProviderAppName: samlIdentityProvider.name,
+                        identityProviderURL: samlIdentityProvider.url
+                    }
+                
+                    if (trustedLogon.type == undefined)
+                    {
+                        trustedLogon.type = 'SAML2.0'
+                    }
+        
+                    if (trustedLogon.assertionConsumerServiceURL == undefined)
+                    {
+                        if (_.has(entityos, '_scope.app.options.auth.trusted.saml.assertionConsumerServiceURL'))
+                        {
+                            trustedLogon.assertionConsumerServiceURL = entityos._scope.app.options.auth.trusted.saml.assertionConsumerServiceURL;
+                        }
+                        else
+                        {
+                            trustedLogon.assertionConsumerServiceURL =
+                                window.location.protocol + '//' + window.location.host + '/rpc/logon/?method=LOGON_TRUSTED';
+                        }
+                    }
+        
+                    if (trustedLogon.issuer == undefined)
+                    {
+                        trustedLogon.issuer = indow.location.host;
+                    }
+        
+                    if (trustedLogon.identityProviderAppName == undefined)
+                    {
+                        trustedLogon.identityProviderAppName = window.location.host;
+                    }
+
+                    if (trustedLogon.identityProviderURL == undefined)
+                    {
+                        trustedLogon.identityProviderURL = 
+                            trustedLogon.identityProviderEntityID
+                    }
+
+                    trustedLogon.nameIDFormat = 'emailAddress';
+
+                    if (_.has(entityos, '_scope.app.options.auth.trusted.saml.nameIDFormat'))
+                    {
+                        trustedLogon.nameIDFormat = entityos._scope.app.options.auth.trusted.saml.nameIDFormat;
+                    }
+        
+                    if (trustedLogon.type == 'SAML2.0')
+                    {
+                        var samlRequest = 
+                            '<samlp:AuthnRequest xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion"' +
+                                ' ID="entityos_' + entityos._scope.session.logonkey + '"' +
+                                ' Version="2.0"' +
+                                ' ProviderName="' + trustedLogon.identityProviderAppName + '"' +
+                                ' IssueInstant="' + moment.utc().format() + '"' +
+                                ' Destination="' + trustedLogon.identityProviderURL + '"' +
+                                ' ProtocolBinding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"' +
+                                ' AssertionConsumerServiceURL="' + trustedLogon.assertionConsumerServiceURL + '">' +
+                                '<saml:Issuer>' + trustedLogon.issuer + '</saml:Issuer>' +
+                                    '<samlp:NameIDPolicy Format="urn:oasis:names:tc:SAML:1.1:nameid-format:' + trustedLogon.nameIDFormat + '" AllowCreate="true"/>' +
+                                    '<samlp:RequestedAuthnContext Comparison="exact">' +
+                                    '<saml:AuthnContextClassRef>urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport</saml:AuthnContextClassRef>' +
+                                    '</samlp:RequestedAuthnContext>' +
+                            '</samlp:AuthnRequest>';
+        
+                        var uriSAMLRequest = btoa(samlRequest);
+                        uriSAMLRequest = encodeURIComponent(uriSAMLRequest);
+        
+                        var uri = trustedLogon.identityProviderURL + '?SAMLRequest=' + uriSAMLRequest;
+        
+                        return uri
+                    }
+                }
+            },   
+        
+            test:   function ()
+            {
+                var sSAMLRequest = '<samlp:AuthnRequest xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion"' +
+                    ' ID="1blankspace_809707f0030a5d00620c9d9df97f627afe9dcc24"' +
+                    ' Version="2.0" ProviderName="1blankspace" IssueInstant="2017-11-22T23:52:45Z" Destination="https://accounts.google.com/o/saml2/idp?idpid=C00mem5jv"' +
+                    ' ProtocolBinding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" AssertionConsumerServiceURL="https://app-next.lab.ibcom.biz/saml">' +
+                  '<saml:Issuer>app-next.lab.ibcom.biz</saml:Issuer>' +
+                  '<samlp:NameIDPolicy Format="urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress" AllowCreate="true"/>' +
+                  '<samlp:RequestedAuthnContext Comparison="exact">' +
+                  '<saml:AuthnContextClassRef>urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport</saml:AuthnContextClassRef>' +
+                  '</samlp:RequestedAuthnContext>' +
+                    '</samlp:AuthnRequest>'
+        
+                var sURISAMLRequest = btoa(sSAMLRequest);
+                console.log(sURISAMLRequest)
+        
+                sURISAMLRequest = encodeURIComponent(sURISAMLRequest);
+                console.log(sURISAMLRequest)        
+        
+                var sURL = 'https://accounts.google.com/o/saml2/idp?idpid=C00mem5jv&SAMLRequest=' + sURISAMLRequest
+                console.log(sURL)
+            }              
+        }
 	}
 }

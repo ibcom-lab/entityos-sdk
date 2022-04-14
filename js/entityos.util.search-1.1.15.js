@@ -54,8 +54,6 @@ entityos._util.factory.search = function (param)
 
 			if (template == undefined)
 			{
-				//	'<button class="btn btn-default btn-outline btn-sm entityos-navigate mt-2 d-none" data-name="{{name}}" data-context="{{context}}" data-controller="{{controller}}" id="{{id}}">{{buttonCaption}}</button>',
-
 				template =
 				[
 		 			'<div class="{{class}} entityos-click" data-name="{{name}}" data-controller="{{controller}}">',
@@ -866,9 +864,10 @@ entityos._util.factory.search = function (param)
 
                             if (userFilter.filters != undefined)
 							{	
-                                if (userFilter.object == undefined || userFilter.object == search.object)
+                                
+                                _.each(userFilter.filters, function (filter)
                                 {
-                                    _.each(userFilter.filters, function (filter)
+                                    if (filter.object == undefined || filter.object == search.object)
                                     {
                                         if (filter.field != undefined
                                                 && userFilter.value != undefined
@@ -913,8 +912,8 @@ entityos._util.factory.search = function (param)
                                         {
                                             filters.push(filter)
                                         }
-                                    });
-                                }
+                                    }
+                                });
 							}
 						});
 					}
@@ -1416,6 +1415,7 @@ entityos._util.factory.search = function (param)
             });
 
             var object = entityos._util.param.get(param, 'object').value;
+            var includeFixed = entityos._util.param.get(param, 'includeFixed', {default: false}).value;
     
             var searchFilters = [];
     
@@ -1441,14 +1441,15 @@ entityos._util.factory.search = function (param)
 
                 if (_.has(userFilter, 'filters'))
                 {	
-                    if (userFilter.object == undefined || userFilter.object == object)
+                   
+                    _.each(userFilter.filters, function (filter)
                     {
-                        _.each(userFilter.filters, function (filter)
-                        {
-                            // && userFilter.value != undefined
-                            //&& userFilter.value != ''
-                            //&& userFilter.value != 'undefined'
+                        // && userFilter.value != undefined
+                        //&& userFilter.value != ''
+                        //&& userFilter.value != 'undefined'
 
+                        if (filter.object == undefined || filter.object == object)
+                        {
                             if (filter.field != undefined)
                             {
                                 if (filter.comparison == undefined)
@@ -1491,10 +1492,15 @@ entityos._util.factory.search = function (param)
                             {
                                 searchFilters.push(filter)
                             }
-                        });
-                    }
+                        }
+                    });
                 }
             });
+
+            if (includeFixed)
+            {
+                searchFilters = _.concat(searchFilters, search.filters)
+            }
     
             return searchFilters;
         }
