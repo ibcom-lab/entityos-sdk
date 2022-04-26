@@ -1142,12 +1142,26 @@ entityos._util =
 {
 	hash: 	    function(data)
                 {
-                    //requires /jscripts/md5-min.js
+                    var returnData;
                     
                     if (data !== undefined)
                     {	
-                        return hex_md5(data);
-                    }	
+						if (_.isFunction(hex_md5))
+						{
+							// /jscripts/md5-min.js
+                        	returnData = hex_md5(data);
+						}
+						else if (_.isObject(CryptoJS))
+						{
+							// /crypto-js.js + helper files
+							if (_.isFunction(CryptoJS.MD5))
+							{
+								returnData = CryptoJS.MD5(data).toString();
+							}
+						}
+                    }
+
+					return returnData;
                 },
 
 	hex:
@@ -5303,3 +5317,4 @@ entityos._util.log =
 entityos.upload = entityos._util.attachment.upload;
 entityos.cloud.upload = entityos.upload;
 
+window.mydigitalstructure = window.entityos;

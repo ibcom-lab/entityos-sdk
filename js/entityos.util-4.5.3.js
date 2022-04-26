@@ -9119,8 +9119,3 @@ entityos._util.factory.core = function (param)
 		}
 	});
 }
-
-window.mydigitalstructure = window.entityos;
-
-
-
