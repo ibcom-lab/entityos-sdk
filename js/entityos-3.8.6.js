@@ -4602,7 +4602,8 @@ entityos._util.svgToImage = function (param)
 	var serialise = entityos._util.param.get(param, 'serialise', {default: true}).value;
 	var showSVGURI = entityos._util.param.get(param, 'showSVGURI', {default: false}).value;
 	var svgData = entityos._util.param.get(param, 'svgData').value;
-
+	var onRenderController = mydigitalstructure._util.param.get(param, 'onRenderController').value;
+	
 	if (svgURI == undefined && attachmentLink != undefined)
 	{
 		svgURI = '/rpc/core/?method=CORE_IMAGE_SHOW&contenttype=image/svg%2Bxml&id=' + attachmentLink;
@@ -4680,7 +4681,10 @@ entityos._util.svgToImage = function (param)
 				context.drawImage(svgImage, 0, 0);
 				imageHTMLTemplate = imageHTMLTemplate.replace('{{src}}', canvas.toDataURL("image/png"));
 				$(imageContainerSelector).html(imageHTMLTemplate);
-                entityos._util.onComplete(param);
+				if (onRenderController != undefined)
+				{
+					entityos._util.controller.invoke(onRenderController, param);
+				}
 			};
 		}
 	}
