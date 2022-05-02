@@ -343,12 +343,18 @@ entityos._util.factory.export = function (param)
 			csv.push('\r\n');
 		}
 
-		if (exportParam.captions != undefined)
+        if (exportParam.captions != undefined)
 		{
-			csv.push($.map(exportParam.captions, function (caption) {return '"' + caption.text + '"'}).join(','));
+			csv.push(_.map(exportParam.captions, function (caption)
+			{
+				caption._text = entityos._util.decode(caption.text);
+				caption._text = _.replaceAll(caption._text, '"', '""');
+				return '"' + caption._text + '"'
+			}).join(','));
+
 			csv.push('\r\n');
 		}
-		
+
 		if (fileData == undefined)
 		{
 			fileData = exportParam.fileData;	

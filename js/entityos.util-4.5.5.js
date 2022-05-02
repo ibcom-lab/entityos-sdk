@@ -5108,6 +5108,56 @@ entityos._util.controller.add(
 	}
 });
 
+entityos._util.decode = function (data)
+{
+	var dataReturn = {}
+
+	if (_.isPlainObject(data))
+	{
+		_.each(data, function (value, key)
+		{
+			dataReturn[key] = entityos._util._decode(value)
+		});
+	}
+	else
+	{
+		dataReturn = entityos._util._decode(data)
+	}
+
+	return dataReturn;
+};
+
+entityos._util._decode = function(value)
+{
+    var dataReturn = '';
+
+	if (_.isUndefined(value)) {value = ''};
+
+    if (_.isObject(window.he))
+    {
+        dataReturn = he.decode(value);
+    }
+    else if (_.isFunction(_.unescapeHTML))
+    {
+        dataReturn = _.unescapeHTML(value);
+    }
+    else
+    {
+        dataReturn = _.unescape(value);
+    }
+
+    return dataReturn;
+}
+
+entityos._util.controller.add(
+{
+    name: 'util-decode',
+    code: function (param)
+    {
+        return entityos._util.decode(param);
+    }
+});
+
 entityos._util.menu =
 {
 	set: function (param)
