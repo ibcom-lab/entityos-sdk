@@ -4481,7 +4481,7 @@ entityos._util =
                                     {
                                         if (response.error.errorcode == '1')
                                         {
-											mydigitalstructure._util.logoff();
+											entityos._util.logoff();
                                         }
                                         else
                                         {
