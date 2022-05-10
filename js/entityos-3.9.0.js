@@ -1903,6 +1903,11 @@ entityos._util =
 													message = 'Logon name, password and/or code is incorrect.'
 												}
 
+												if (data.error.errornotes == 'LogonKey has not been requested')
+												{
+													message = 'There is an issue with your current browser session.  Please refresh the webpage and trying again.'
+												}
+
 												entityos._util.sendToView(
 												{
 													from: 'entityos-logon-send',
@@ -4457,18 +4462,37 @@ entityos._util =
 									{
 										from: 'entityos-util-attachments-upload',
 										status: 'error',
-										message: response.error.errornotes
+										message: errorMessage
 									});
 								});
 
 								entityos._util.attachment.dropzone.object[name].on('success', function(file, response)
 								{
-									entityos._util.attachment.dropzone.data[name]['files']['uploaded'].push({file: file, response: response});
+                                    if (response.status == 'OK')
+                                    {
+                                        entityos._util.attachment.dropzone.data[name]['files']['uploaded'].push({file: file, response: response});
 
-									if (removeFileOnUpload)
-									{
-										entityos._util.attachment.dropzone.object[name].removeFile(file);
-									}
+                                        if (removeFileOnUpload)
+                                        {
+                                            entityos._util.attachment.dropzone.object[name].removeFile(file);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (response.error.errorcode == '1')
+                                        {
+											mydigitalstructure._util.logoff();
+                                        }
+                                        else
+                                        {
+                                            entityos._util.sendToView(
+                                            {
+                                                from: 'entityos-util-attachments-upload',
+                                                status: 'error',
+                                                message:  response.error.errornotes
+                                            });
+                                        }
+                                    }
 								});
 								
 								entityos._util.attachment.dropzone.object[name].on('queuecomplete', function(progress)
@@ -4597,7 +4621,8 @@ entityos._util.svgToImage = function (param)
 	var serialise = entityos._util.param.get(param, 'serialise', {default: true}).value;
 	var showSVGURI = entityos._util.param.get(param, 'showSVGURI', {default: false}).value;
 	var svgData = entityos._util.param.get(param, 'svgData').value;
-
+	var onRenderController = mydigitalstructure._util.param.get(param, 'onRenderController').value;
+	
 	if (svgURI == undefined && attachmentLink != undefined)
 	{
 		svgURI = '/rpc/core/?method=CORE_IMAGE_SHOW&contenttype=image/svg%2Bxml&id=' + attachmentLink;
@@ -4675,6 +4700,10 @@ entityos._util.svgToImage = function (param)
 				context.drawImage(svgImage, 0, 0);
 				imageHTMLTemplate = imageHTMLTemplate.replace('{{src}}', canvas.toDataURL("image/png"));
 				$(imageContainerSelector).html(imageHTMLTemplate);
+				if (onRenderController != undefined)
+				{
+					entityos._util.controller.invoke(onRenderController, param);
+				}
 			};
 		}
 	}
