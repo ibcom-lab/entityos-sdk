@@ -4462,18 +4462,37 @@ entityos._util =
 									{
 										from: 'entityos-util-attachments-upload',
 										status: 'error',
-										message: response.error.errornotes
+										message: errorMessage
 									});
 								});
 
 								entityos._util.attachment.dropzone.object[name].on('success', function(file, response)
 								{
-									entityos._util.attachment.dropzone.data[name]['files']['uploaded'].push({file: file, response: response});
+                                    if (response.status == 'OK')
+                                    {
+                                        entityos._util.attachment.dropzone.data[name]['files']['uploaded'].push({file: file, response: response});
 
-									if (removeFileOnUpload)
-									{
-										entityos._util.attachment.dropzone.object[name].removeFile(file);
-									}
+                                        if (removeFileOnUpload)
+                                        {
+                                            entityos._util.attachment.dropzone.object[name].removeFile(file);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (response.error.errorcode == '1')
+                                        {
+											entityos._util.logoff();
+                                        }
+                                        else
+                                        {
+                                            entityos._util.sendToView(
+                                            {
+                                                from: 'entityos-util-attachments-upload',
+                                                status: 'error',
+                                                message:  response.error.errornotes
+                                            });
+                                        }
+                                    }
 								});
 								
 								entityos._util.attachment.dropzone.object[name].on('queuecomplete', function(progress)
