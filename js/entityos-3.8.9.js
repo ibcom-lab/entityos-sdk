@@ -1724,7 +1724,18 @@ entityos._util =
 										logon: logon
 									};	
 
-									data.passwordhash = entityos._util.hash(logon + password);
+                                    if (_.has(entityos, '_scope.app.options.password.hashType'))
+                                    {
+                                        data.passwordhash = entityos._util.hash(
+                                        {
+                                            data: logon + password,
+                                            hashType: entityos._scope.app.options.password.hashType
+                                        });
+                                    }
+                                    else
+                                    {
+									    data.passwordhash = entityos._util.hash(logon + password);
+                                    }
 									
 									entityos._util.sendToView(
 									{
