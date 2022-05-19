@@ -103,6 +103,13 @@ if (_.isObject(XLSX))
                                 status: 'error',
                                 message: 'not-valid-excel-file'
                             });
+
+							entityos._util.sendToView(
+							{
+								from: 'myds-import-sheet',
+								status: 'error',
+								message: 'not-valid-excel-file'
+							});
                         }	
                 }
                 else
@@ -624,8 +631,8 @@ if (_.isObject(XLSX))
  		}
   	}
 
-	$(document).off('change', '#entityos-util-import-sheet-file, .entityos-util-import-sheet')
-	.on('change', '#entityos-util-import-sheet-file, .entityos-util-import-sheet', function(event)
+	$(document).off('change', '#entityos-util-import-sheet-file, .entityos-util-import-sheet, #myds-util-import-sheet-file, .myds-util-import-sheet')
+	.on('change', '#entityos-util-import-sheet-file, .entityos-util-import-sheet, #myds-util-import-sheet-file, .myds-util-import-sheet', function(event)
 	{
 		entityos._util.import.sheet.init(event);
 	});
@@ -808,22 +815,34 @@ entityos._util.factory.import = function (param)
 				value: context
 			});
 
-			if ($('#entityos-util-attachment-upload-import-file0').val() == '')
+			var importFile = $('#entityos-util-attachment-upload-import-file0');
+			if (importFile == undefined)
+			{
+				importFile = $('#myds-util-attachment-upload-import-file0');
+			}
+
+			if (importFile.val() == '')
 			{	
 				$('#util-import-upload-no-file').removeClass('hidden d-none');
 
 				entityos._util.view.refresh(
 				{
-						selector: '#util-import-status',
-						template: 'No file to upload!'
-					}
-				);
+					selector: '#util-import-status',
+					template: 'No file to upload!'
+				});
 
 				app.invoke('util-view-spinner-remove', {controller: 'util-import-upload-attach'});
 			
 				entityos._util.sendToView(
 				{
 					from: 'entityos-util-attachments-upload',
+					status: 'error',
+					message: 'No file to upload'
+				});
+
+				entityos._util.sendToView(
+				{
+					from: 'myds-util-attachments-upload',
 					status: 'error',
 					message: 'No file to upload'
 				});

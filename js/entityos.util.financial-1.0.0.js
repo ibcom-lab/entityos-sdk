@@ -20,8 +20,6 @@
     <p>Pay Now</p>
     <div id="ns1blankspaceUtilFinancialStripeContainer"></div>
 
-    !!!!! TO BE CONVERTED TO MYDIGITALSRUCTURE NAMESPACE & FACTORY GENERATED CONTROLLERS
-
     //FLOW
     //Stripe: Elements;
     //1. Create a page with HTML container with data-ui="elements"

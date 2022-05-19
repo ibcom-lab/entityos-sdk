@@ -1305,7 +1305,7 @@ entityos._util.factory.security = function (param)
     
                     if (user['user.contactperson.mobile'] != '')
                     {
-                        app.vq.add('<button type="button" class="btn btn-default btn-outline btn-sm entityos-click" data-controller="util-security-totp-send-sms" ' +
+                        app.vq.add('<button type="button" class="btn btn-default btn-outline btn-sm entityos-click myds-click" data-controller="util-security-totp-send-sms" ' +
                                     ' id="util-security-totp-send-sms" data-tokenuuid="' + token.uuid + '" data-spinner="prepend">Send as SMS</button>' + 
                                     '<div class="text-muted text-center small mt-1 mb-2">' +
                                     user['user.contactperson.mobile'] + '</div>');
@@ -1313,7 +1313,7 @@ entityos._util.factory.security = function (param)
     
                     if (user['user.contactperson.email'] != '')
                     {
-                        app.vq.add('<button type="button" class="btn btn-default btn-outline btn-sm entityos-click" data-controller="util-security-totp-send-email" ' +
+                        app.vq.add('<button type="button" class="btn btn-default btn-outline btn-sm entityos-click myds-click" data-controller="util-security-totp-send-email" ' +
                                     ' id="util-security-totp-send-email" data-tokenuuid="' + token.uuid + '" data-spinner="prepend">Send as Email</button>' + 
                                     '<div class="text-muted text-center small mt-1 mb-2">' +
                                     user['user.contactperson.email'] + '</div>');

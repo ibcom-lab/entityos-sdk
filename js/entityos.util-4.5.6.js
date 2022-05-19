@@ -343,7 +343,8 @@ entityos._util.view.handlers['entityos-view-table-select-all'] = function (event
 
 	if (context != undefined)
 	{
-		var inputs = $('[data-context="' + context + '"] input.entityos-view-table-select')
+		var inputs = $('[data-context="' + context + '"] input.entityos-view-table-select, ' +
+							'[data-context="' + context + '"] input.myds-view-table-select')
 
 		if (element.prop('checked')) 
 		{
@@ -449,8 +450,8 @@ entityos._util.view.handlers['entityos-navigate'] = function (event)
 	}
 }
 
-$(document).off('click', '.entityos-navigate')
-.on('click', '.entityos-navigate', entityos._util.view.handlers['entityos-navigate']);
+$(document).off('click', '.entityos-navigate, .myds-navigate')
+.on('click', '.entityos-navigate, .myds-navigate', entityos._util.view.handlers['entityos-navigate']);
 
 entityos._util.view.handlers['entityos-navigate-to'] = function (event)
 {
@@ -1155,8 +1156,8 @@ entityos._util.view.handlers['entityos-text-select-focus-out'] = function (event
 	}
 }
 
-$(document).off('focusout', '.entityos-text-select, .myds-text-select')
-.on('focusout', '.entityos-text-select, .myds-text-select', entityos._util.view.handlers['entityos-text-select-focus-out']);
+$(document).off('focusout', '.entityos-text-select, .entityos-focus-out, .myds-text-select, .myds-focus-out')
+.on('focusout', '.entityos-text-select, .entityos-focus-out, .myds-text-select, .myds-focus-out', entityos._util.view.handlers['entityos-text-select-focus-out']);
 
 entityos._util.view.handlers['entityos-text-select-change'] = function (event)
 {
@@ -1917,6 +1918,7 @@ if (typeof $.fn.collapse == 'function')
 		}
 
 		$('#' + id + ' .entityos-clear-on-collapse-hide').html('');
+		$('#' + id + ' .myds-clear-on-collapse-hide').html('');
     }
 
     $(document).off('hidden.bs.collapse', '.entityos-collapse, .myds-collapse')
@@ -2238,7 +2240,8 @@ if (typeof $.fn.toast == 'function')
 {
 	entityos._util.view.handlers['entityos-toast-show'] = function (event)
 	{
-		$('#entityos-toast').css('z-index', '9999')
+		$('#entityos-toast').css('z-index', '9999');
+		$('#myds-toast').css('z-index', '9999')
 	}
 
 	$(document).off('show.bs.toast', '#entityos-toast, #myds-toast')
@@ -2246,7 +2249,8 @@ if (typeof $.fn.toast == 'function')
 
 	entityos._util.view.handlers['entityos-toast-hidden'] = function (event)
 	{
-		$('#entityos-toast').css('z-index', '0')
+		$('#entityos-toast').css('z-index', '0');
+		$('#myds-toast').css('z-index', '0')
 	}
 
 	$(document).off('hidden.bs.toast', '#entityos-toast, #myds-toast')
@@ -3042,7 +3046,7 @@ entityos._util.view.showPage = function (param)
 			$('li.entityos-next[data-id="' + id + '"]').removeClass('disabled');
 			$('li.entityos-next[data-id="' + id + '"] a').attr('style', 'cursor:pointer;');
             $('li.myds-next[data-id="' + id + '"]').removeClass('disabled');
-			$('li.entityos-next[data-id="' + id + '"] a').attr('style', 'cursor:pointer;');
+			$('li.myds-next[data-id="' + id + '"] a').attr('style', 'cursor:pointer;');
 		}
 
 		if (number == 1)
@@ -3060,7 +3064,8 @@ entityos._util.view.showPage = function (param)
 			$('li.myds-previous[data-id="' + id + '"] a').attr('style', 'cursor:pointer;');
 		}
 
-		if ($('div.entityos-page-view[data-page="' + number + '"][data-context="' + context + '"]').length != 0)
+		if ($('div.entityos-page-view[data-page="' + number + '"][data-context="' + context + '"]').length != 0 
+				|| $('div.myds-page-view[data-page="' + number + '"][data-context="' + context + '"]').length != 0)
 		{
 			$('div.entityos-page-view[data-context="' + context + '"]').hide();
 			$('div.entityos-page-view[data-page="' + number + '"][data-context="' + context + '"]').show();
@@ -3478,7 +3483,7 @@ entityos._util.view._refresh = function (param)
 			}
 		});
 
-		_.each($(selector + ' input.entityos-check[data-context][data-selected-id], ' + selector + ' input.entityos-check[data-context][data-selected-id]'),
+		_.each($(selector + ' input.entityos-check[data-context][data-selected-id], ' + selector + ' input.myds-check[data-context][data-selected-id]'),
 			function (element)
 		{
 			var context = $(element).data('context');
@@ -3486,11 +3491,11 @@ entityos._util.view._refresh = function (param)
 
 			if (value != undefined)
 			{
-				$(selector + ' input.entityos-check[data-context="' + context + '"][data-selected-id="' + value + '"], ' + selector + ' input.entityos-check[data-context="' + context + '"][data-selected-id="' + value + '"]').attr('checked', 'checked')
+				$(selector + ' input.entityos-check[data-context="' + context + '"][data-selected-id="' + value + '"], ' + selector + ' input.myds-check[data-context="' + context + '"][data-selected-id="' + value + '"]').attr('checked', 'checked')
 			}
 		});
 
-		_.each($(selector + ' input.entityos-select[data-context][value]'),
+		_.each($(selector + ' input.entityos-select[data-context][value], ' + selector + ' input.myds-select[data-context][value]'),
 			function (element)
 		{
 			var context = $(element).data('context');
@@ -3498,7 +3503,7 @@ entityos._util.view._refresh = function (param)
 
 			if (value != undefined)
 			{
-				$(selector + ' input.entityos-select[data-context="' + context + '"][value="' + value + '"], ' + selector + ' input.entityos-select[data-context="' + context + '"][value="' + value + '"]').attr('checked', 'checked')
+				$(selector + ' input.entityos-select[data-context="' + context + '"][value="' + value + '"], ' + selector + ' input.myds-select[data-context="' + context + '"][value="' + value + '"]').attr('checked', 'checked')
 			}
 		});
 	}
@@ -5605,7 +5610,7 @@ entityos._util.view.spinner =
 
 	removeAll: function (param)
 	{
-		var elements = $('.entityos-spinner,.myds-spinner,[data-spinner]');
+		var elements = $('.entityos-spinner, .myds-spinner, [data-spinner]');
 
 		_.each(elements, function (element)
 		{
@@ -6980,7 +6985,7 @@ entityos._util.factory.core = function (param)
 
 	  				if (showDismiss == true)
 					{
-	  					html = html + '<button type="button" class="ml-2 mb-1 close entityos-click" data-controller="util-view-notify-hide" data-dismiss="toast" aria-label="Close">' +
+	  					html = html + '<button type="button" class="ml-2 mb-1 close entityos-click myds-click" data-controller="util-view-notify-hide" data-dismiss="toast" aria-label="Close">' +
 	      							'<span aria-hidden="true">' + dismiss + '</i></span>' +
 	    							'</button>';
 	    			}
@@ -8798,12 +8803,12 @@ entityos._util.factory.core = function (param)
 								{
 									if (typeof $.fn.popover == 'function')
 									{
-										$('#' + container + ' .entityos-delete, #' + container + ' .entityos-delete').each(function (b, button)
+										$('#' + container + ' .entityos-delete, #' + container + ' .myds-delete').each(function (b, button)
 										{
 											var content = '<div class="text-center">' + options.deleteConfirm.text + '</div>' +
 												  	'<div class="text-center mt-3 mb-2 m-t m-b">' +
 												  	'<button type="button" class="btn btn-link text-muted entityos-close myds-close" data-context="popover">Cancel</button>' +
-												  	'<button type="button" class="btn btn-danger btn-outline entityos-click entityos-close myds-click myds-close"' +
+												  	'<button type="button" class="btn btn-danger btn-outline entityos-click myds-close myds-click myds-close"' +
 												  		' data-context="popover"' +
 												  		' data-controller="' + (_.isUndefined(options.deleteConfirm.controller)?context + '-delete-ok':options.deleteConfirm.controller) + '"' +
 												  		' data-id="' + $(button).attr('data-id') + '"' +

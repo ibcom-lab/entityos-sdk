@@ -56,7 +56,7 @@ entityos._util.factory.search = function (param)
 			{
 				template =
 				[
-		 			'<div class="{{class}} entityos-click" data-name="{{name}}" data-controller="{{controller}}">',
+		 			'<div class="{{class}} entityos-click myds-click" data-name="{{name}}" data-controller="{{controller}}">',
 						'<div class="ibox">',
 							'<div class="ibox-title">',
 								'<div class="ibox-tools">',
@@ -307,7 +307,7 @@ entityos._util.factory.search = function (param)
 					    		app.vq.add(
 								[
 					               '<li>',
-					                  '<a href="#" class="entityos-dropdown" data-id="', data.id + '">',
+					                  '<a href="#" class="entityos-dropdown myds-dropdown" data-id="', data.id + '">',
 					                  data.text,
 					                  '</a>',
 					               '</li>'
@@ -326,7 +326,7 @@ entityos._util.factory.search = function (param)
 		              	{
 		              		app.vq.add(
 							[
-				              	'<select class="form-control entityos-text-select disabled"',
+				              	'<select class="form-control entityos-text-select myds-text-select disabled"',
 				              		' id="util-view-search-user-filter-', userFilter.name, '"',
 				              		' data-scope="util-view-search-user-filter"',
 				              			(search.searchOnChange?' data-controller="util-view-search-process"':''),
@@ -354,7 +354,7 @@ entityos._util.factory.search = function (param)
 					    	app.vq.add(
 							[
 								'<input id="util-view-search-user-filter-', userFilter.name, '" type="text"',
-												' class="form-control entityos-text input-sm entityos-enter"',
+												' class="form-control entityos-text input-sm entityos-enter myds-text input-sm myds-enter"',
                                                 ' data-on-enter-route-to="#util-view-search-user-filter-search"',
 												' style="font-size:0.8rem;"',
 					    						' data-name="', userFilter.name, '"',
@@ -395,7 +395,7 @@ entityos._util.factory.search = function (param)
 
 					    	app.vq.add(
 							[
-							  '<div class="input-group date entityos-date" data-target-input="nearest" id="util-view-search-user-filter-', userFilter.name, '">',
+							  '<div class="input-group date entityos-date myds-date" data-target-input="nearest" id="util-view-search-user-filter-', userFilter.name, '">',
 			                  '<input type="text" class="form-control input-sm datetimepicker-input" data-target="#util-view-search-user-filter-', userFilter.name, '"',
 			                    	' id="util-view-search-user-filter-input-', userFilter.name, '"',
 			                    	' data-scope="util-view-search-user-filter"',
@@ -463,7 +463,7 @@ entityos._util.factory.search = function (param)
 						[
 							'<div>' +
 								'<button type="button" id="util-view-search-user-filter-search" style="margin-top:26px;"',
-									' class="entityos-click btn btn-default btn-outline btn-block" role="button" data-controller="util-view-search-process">',
+									' class="entityos-click myds-click btn btn-default btn-outline btn-block" role="button" data-controller="util-view-search-process">',
 	            					'Search',
 	           					'</button>',
 	           				'</div>'
@@ -480,7 +480,7 @@ entityos._util.factory.search = function (param)
 								app.vq.add(
 								[
 									'<button type="button" id="util-view-search-user-filter-search"',
-											' class="entityos-click btn btn-default btn-outline mt-2 btn-block" role="button"' +
+											' class="entityos-click myds-click btn btn-default btn-outline mt-2 btn-block" role="button"' +
 											' data-select-controller="' + search.options.select.controller + '"',
 											' data-controller="util-view-search-select-init"',
 											' data-name="' + search.name + '"',
@@ -574,21 +574,21 @@ entityos._util.factory.search = function (param)
 							'<div class="card">',
 								'<div class="card-header">',
 									'<div class="float-right" data-html2canvas-ignore="true">',
-										'<button class="entityos-click btn btn-white btn-sm" role="button" data-source="close" data-controller="' + context + '">' +
+										'<button class="entityos-click myds-click btn btn-white btn-sm" role="button" data-source="close" data-controller="' + context + '">' +
 		               				'<i class="fa fa-times fa-fw"></i> Close' +
 		              				'</button>',
 		              				'<div class="btn-group" role="group">',
-				                     '<button class="entityos-click btn btn-white btn-sm ml-2" role="button" data-controller="', search.export.controller, '"',
+				                     '<button class="entityos-click myds-click btn btn-white btn-sm ml-2" role="button" data-controller="', search.export.controller, '"',
 				                     	' data-filename="', search.export.filename, '"',
 				                     	(search.export.scope!=undefined?' data-scope="' + search.export.scope + '"':''),
 				                     	(search.export.context!=undefined?' data-context="' + search.export.context + '"':''),
 				                     	'>',
 			               				'<i class="fa fa-cloud-download-alt fa-fw"></i>',
 			              				'</button>',
-			              				'<button class="entityos-pdf btn btn-white btn-sm" role="button" data-selector="', search.selector, '">',
+			              				'<button class="entityos-pdf myds-pdf btn btn-white btn-sm" role="button" data-selector="', search.selector, '">',
 			               				'<i class="far fa-file-pdf fa-fw"></i>',
 			              				'</button>',
-			              				(search.charting?'<button class="entityos-click btn btn-white btn-sm" role="button"' +
+			              				(search.charting?'<button class="entityos-click myds-click btn btn-white btn-sm" role="button"' +
 			              							' data-controller="' + search.chart.controller + '"' +
 			              							(search.chart.scope!=undefined?' data-scope="' + search.chart.scope + '"':'') +
 			              							(search.chart.context!=undefined?' data-context="' + search.chart.context + '"':'') +
@@ -649,8 +649,8 @@ entityos._util.factory.search = function (param)
 					queue: 'util-view-search-show'
 				});
 
-				entityos._util.view.datepicker({selector: '.entityos-date', format: 'D MMM YYYY', pickerOptions: {buttons: {showClear: true}, useCurrent: false}});
-				entityos._util.view.datepicker({selector: '.entityos-date-time', format: 'D MMM YYYY LT'});
+				entityos._util.view.datepicker({selector: '.entityos-date, .myds-date', format: 'D MMM YYYY', pickerOptions: {buttons: {showClear: true}, useCurrent: false}});
+				entityos._util.view.datepicker({selector: '.entityos-date-time, .myds-date-time', format: 'D MMM YYYY LT'});
 
 				_.each(search.userFilters, function (userFilter)
 				{
@@ -675,6 +675,7 @@ entityos._util.factory.search = function (param)
 				});
 
 				$('.entityos-text-select:visible').removeClass('disabled');
+				$('.myds-text-select:visible').removeClass('disabled');
 
 				if (search.searchOnChange)
 				{

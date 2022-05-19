@@ -291,8 +291,14 @@ entityos._util.factory.editor = function (param)
 
 			var xhtml;
 
-			$('#entityos-app-template-preview').html(templateXHTML);
-			xhtml = $('#entityos-app-template-preview');
+			var templatePreview = $('#entityos-app-template-preview');
+			if (templatePreview == undefined)
+			{
+				templatePreview = $('#myds-app-template-preview');
+			}
+
+			templatePreview.html(templateXHTML);
+			xhtml = templatePreview;
 
 			$('span.template', xhtml).each(function(i,e) 
 			{
@@ -436,8 +442,14 @@ entityos._util.factory.editor = function (param)
 
 			if (!_.isUndefined(param.xhtml))
 			{
-				$('#entityos-app-template-preview').html(param.xhtml);
-				xhtml = $('#entityos-app-template-preview');
+				var templatePreview = $('#entityos-app-template-preview');
+				if (templatePreview == undefined)
+				{
+					templatePreview = $('#myds-app-template-preview');
+				}
+
+				templatePreview.html(param.xhtml);
+				xhtml = templatePreview;
 			}
 
 			if (response.status != 'ER')

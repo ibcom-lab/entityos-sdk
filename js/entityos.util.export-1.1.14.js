@@ -83,7 +83,8 @@ entityos._util.factory.export = function (param)
 								scope: scope,
 								context: 'export',
 								name: 'exportController',
-								value: tableParam.format.row.method
+								value: tableParam.format.row.method,
+								valueAsIs: true
 							});
 						}
 
@@ -128,6 +129,17 @@ entityos._util.factory.export = function (param)
 						value: filename
 					});
 
+                    if (_.has(tableParam, 'options.exportGetMore'))
+                    {
+                        app._util.data.set(
+                        {
+                            scope: scope,
+                            context: 'export',
+                            name: 'getMore',
+                            value: tableParam.options.exportGetMore
+                        });
+                    }
+
 					app.controller['util-export-download'](
 					_.assign(
 					{
@@ -149,6 +161,8 @@ entityos._util.factory.export = function (param)
 		var filename = entityos._util.param.get(param, 'filename').value;
 		var beforeExportController = entityos._util.param.get(param, 'beforeExportController').value;
 
+		$('.entityos-export[data-context="' + source + '"]').addClass('disabled');
+		$('.entityos-export[data-context="' + source + '"]').text('Downloading...');
 		$('.myds-export[data-context="' + source + '"]').addClass('disabled');
 		$('.myds-export[data-context="' + source + '"]').text('Downloading...');
 
@@ -220,13 +234,16 @@ entityos._util.factory.export = function (param)
 
 		var getMore = false;
 
-		if (!_.isUndefined(dataSource.count))
-		{
-			if (_.gt(dataSource.count, _.size(dataSource['all'])))
-			{
-				getMore = true;
-			}
-		}
+        if (exportParam.getMore == undefined || exportParam.getMore == true)
+        {
+            if (!_.isUndefined(dataSource.count))
+            {
+                if (_.gt(dataSource.count, _.size(dataSource['all'])))
+                {
+                    getMore = true;
+                }
+            }
+        }
 
 		var cancel = (exportParam.cancelProcessing == true);
 
@@ -344,7 +361,13 @@ entityos._util.factory.export = function (param)
 
 		if (exportParam.captions != undefined)
 		{
-			csv.push($.map(exportParam.captions, function (caption) {return '"' + caption.text + '"'}).join(','));
+			csv.push(_.map(exportParam.captions, function (caption)
+			{
+				caption._text = entityos._util.decode(caption.text);
+				caption._text = _.replaceAll(caption._text, '"', '""');
+				return '"' + caption._text + '"'
+			}).join(','));
+
 			csv.push('\r\n');
 		}
 		
@@ -767,10 +790,42 @@ if (_.isObject(window.XLSX))
 									return (_exportData.object == format.storage.object 
 												&& _exportData.field == format.storage.field)
 								});
+
+                                worksheet = workbook.Sheets[format.sheet];
+                                
+                                //Split into seperate validations
+                                _.each(worksheet['!validations'], function (validation)
+                                {
+                                    if (!_.isPlainObject(validation.ref))
+                                    {
+                                        var _ref = _.split(validation.ref, ' ');
+                                        if (_ref.length > 1)
+                                        {
+                                            var _validations = [];
+
+                                            _.each(_ref, function (ref, r)
+                                            {
+                                                if (r==0)
+                                                {
+                                                    validation.ref = ref;
+                                                }
+                                                else
+                                                {
+                                                    var _validation = _.cloneDeep(validation);
+                                                    _validation.ref = ref;
+                                                    _validations.push(_validation);
+                                                }
+                                            });
+
+                                            worksheet['!validations'] = _.concat(worksheet['!validations'], _validations);
+                                        }
+                                    }
+                                });
 							   
 							   if (data != undefined)
 							   {
 									format.rowsToAdd = (data.value.length - rows.length + 1);
+                                    if (format.rowsToAdd < 0) {format.rowsToAdd = 0}
 
 									if (format.rowsToAdd > 0)
 									{
@@ -811,19 +866,6 @@ if (_.isObject(window.XLSX))
                                             {
                                                 if (field.merge.e.c > maxCol) {maxCol = field.merge.e.c}
                                             }
-
-                                            _.each(worksheet['!validations'], function (validation)
-											{
-                                                if (!_.isPlainObject(validation.ref))
-                                                {
-                                                    validation.ref = XLSX.utils.decode_range(validation.ref);
-                                                }
-                                                
-												if ((validation.ref.e.c == field._cellRC.c) && (validation.ref.e.r == field._cellRC.r))
-                                                {
-                                                    validation.ref.e.r = format.fieldsEndRow + format.rowsToAdd
-                                                }
-											});
 										});
 
 										_.each(newRows, function (newRow)
@@ -852,6 +894,24 @@ if (_.isObject(window.XLSX))
 
                                             worksheet['!rows'][(newRow - 1)] = worksheet['!rows'][(format.fieldsEndRow - 1)];
 										});
+
+                                        _.each(worksheet['!validations'], function (validation)
+                                        {
+                                            if (!_.isPlainObject(validation.ref))
+                                            {
+                                                validation.ref = XLSX.utils.decode_range(validation.ref);
+                                            }
+
+                                            if (validation.ref.e.r > format.rowsImpactedAfter)
+                                            {
+                                                validation.ref.e.r = validation.ref.e.r + format.rowsToAdd;
+                                            }
+
+                                            if (validation.ref.s.r > format.rowsImpactedAfter)
+                                            {        
+                                                validation.ref.s.r = validation.ref.s.r + format.rowsToAdd;
+                                            }
+                                        });
 									}
 							   }
 							}
