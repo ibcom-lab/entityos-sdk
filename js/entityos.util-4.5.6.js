@@ -589,7 +589,7 @@ entityos._util.view.handlers['entityos-pdf'] = function(event)
 }
 
 $(document).off('click', '.entityos-pdf, .myds-pdf')
-.on('click', '.entityos-pdf', entityos._util.view.handlers['entityos-pdf']);
+.on('click', '.entityos-pdf, .myds-pdf', entityos._util.view.handlers['entityos-pdf']);
 
 entityos._util.view.handlers['entityos-dropdown'] = function (event)
 {
@@ -685,8 +685,8 @@ entityos._util.view.handlers['entityos-dropdown'] = function (event)
 	}
 }
 
-$(document).off('click', '.entityos-dropdown')
-.on('click', '.entityos-dropdown', entityos._util.view.handlers['entityos-dropdown']);
+$(document).off('click', '.entityos-dropdown, .myds-dropdown')
+.on('click', '.entityos-dropdown, .myds-dropdown', entityos._util.view.handlers['entityos-dropdown']);
 
 entityos._util.view.handlers['entityos-range'] = function (event)
 {
@@ -723,8 +723,8 @@ entityos._util.view.handlers['entityos-range'] = function (event)
 	}
 }
 
-$(document).off('change', '.entityos-range')
-.on('change', '.entityos-range', entityos._util.view.handlers['entityos-range']);
+$(document).off('change', '.entityos-range, .myds-range')
+.on('change', '.entityos-range, .myds-range', entityos._util.view.handlers['entityos-range']);
 
 entityos._util.view.handlers['entityos-list'] = function (event)
 {
@@ -774,8 +774,8 @@ entityos._util.view.handlers['entityos-list'] = function (event)
 	}
 }
 
-$(document).off('click', '.entityos-list')
-.on('click', '.entityos-list', entityos._util.view.handlers['entityos-list']);
+$(document).off('click', '.entityos-list, .myds-list')
+.on('click', '.entityos-list, .myds-list', entityos._util.view.handlers['entityos-list']);
 
 entityos._util.view.handlers['entityos-button-group'] = function (event)
 {
@@ -783,8 +783,8 @@ entityos._util.view.handlers['entityos-button-group'] = function (event)
 	element.addClass("active").siblings('.entityos-button-group').removeClass("active");
 }
 
-$(document).off('click', '.entityos-button-group')
-.on('click', '.entityos-button-group', entityos._util.view.handlers['entityos-button-group']);
+$(document).off('click', '.entityos-button-group, .myds-button-group')
+.on('click', '.entityos-button-group, .myds-button-group', entityos._util.view.handlers['entityos-button-group']);
 
 entityos._util.view.handlers['entityos-check'] = function (event)
 {
@@ -852,11 +852,14 @@ entityos._util.view.handlers['entityos-check'] = function (event)
 			
 			if (controller != undefined)
 			{
-				var inputs = $('input.entityos-check[data-controller="' + controller + '"][data-context="' + context + '"]:visible');
+				var inputs = $('input.entityos-check[data-controller="' + controller + '"][data-context="' + context + '"]:visible,' +
+                                ' input.myds-check[data-controller="' + controller + '"][data-context="' + context + '"]:visible');
 				
 				if (inputs.length != 1)
 				{
-		 			var checked = $('input.entityos-check[data-controller="' + controller + '"][data-context="' + context + '"]:checked:visible');
+		 			var checked = $('input.entityos-check[data-controller="' + controller + '"][data-context="' + context + '"]:checked:visible, ' +
+                                        'input.myds-check[data-controller="' + controller + '"][data-context="' + context + '"]:checked:visible');
+
 		 			ids = $.map(checked, function (c)
 		 			{
 		 				if ($(c).attr('data-id') != undefined)
@@ -873,7 +876,8 @@ entityos._util.view.handlers['entityos-check'] = function (event)
 		 				}
 					});
 
-		 			var unchecked = $('input.entityos-check[data-controller="' + controller + '"][data-context="' + context + '"]:not(:checked):visible');
+		 			var unchecked = $('input.entityos-check[data-controller="' + controller + '"][data-context="' + context + '"]:not(:checked):visible, ' +
+                                        'input.myds-check[data-controller="' + controller + '"][data-context="' + context + '"]:not(:checked):visible');
 		 			uncheckedids = $.map(unchecked, function (c)
 		 			{
 		 				return $(c).data('id')}
@@ -882,11 +886,13 @@ entityos._util.view.handlers['entityos-check'] = function (event)
 			}
 			else
 			{
-				var inputs = $('input.entityos-check[data-scope="' + scope + '"][data-context="' + context + '"]:visible');
+				var inputs = $('input.entityos-check[data-scope="' + scope + '"][data-context="' + context + '"]:visible, ' +
+                                'input.myds-check[data-scope="' + scope + '"][data-context="' + context + '"]:visible');
 				
 				if (inputs.length != 1)
 				{
-		 			var checked = $('input.entityos-check[data-scope="' + scope + '"][data-context="' + context + '"]:checked:visible');
+		 			var checked = $('input.entityos-check[data-scope="' + scope + '"][data-context="' + context + '"]:checked:visible, ' +
+                                        'input.myds-check[data-scope="' + scope + '"][data-context="' + context + '"]:checked:visible');
 
 		 			ids = $.map(checked, function (c)
 		 			{
@@ -904,7 +910,8 @@ entityos._util.view.handlers['entityos-check'] = function (event)
 		 				}
 		 			});
 
-		 			var unchecked = $('input.entityos-check[data-scope="' + scope + '"][data-context="' + context + '"]:not(:checked):visible');
+		 			var unchecked = $('input.entityos-check[data-scope="' + scope + '"][data-context="' + context + '"]:not(:checked):visible, ' +
+                                        'input.myds-check[data-scope="' + scope + '"][data-context="' + context + '"]:not(:checked):visible');
 		 			uncheckedids = $.map(unchecked, function (c)
 		 			{
 		 				return $(c).data('id')}
@@ -927,8 +934,8 @@ entityos._util.view.handlers['entityos-check'] = function (event)
 	}
 }
 
-$(document).off('click', '.entityos-check')
-.on('click', '.entityos-check', entityos._util.view.handlers['entityos-check']);
+$(document).off('click', '.entityos-check, .myds-check')
+.on('click', '.entityos-check, .myds-check', entityos._util.view.handlers['entityos-check']);
 
 entityos._util.view.handlers['entityos-text'] = function (event)
 {
@@ -999,8 +1006,8 @@ entityos._util.view.handlers['entityos-text'] = function (event)
 	return returnValue
 }
 
-$(document).off('keyup', '.entityos-text')
-.on('keyup', '.entityos-text', entityos._util.view.handlers['entityos-text']);
+$(document).off('keyup', '.entityos-text, .myds-text')
+.on('keyup', '.entityos-text, .myds-text', entityos._util.view.handlers['entityos-text']);
 
 entityos._util.view.handlers['entityos-text-enter'] = function (event)
 {
@@ -1022,8 +1029,8 @@ entityos._util.view.handlers['entityos-text-enter'] = function (event)
 	}
 }
 
-$(document).off('keypress', '.entityos-text')
-.on('keypress', '.entityos-text', entityos._util.view.handlers['entityos-text-enter']);
+$(document).off('keypress', '.entityos-text, .myds-text')
+.on('keypress', '.entityos-text, .myds-text', entityos._util.view.handlers['entityos-text-enter']);
 
 entityos._util.view.handlers['entityos-date-time'] = function (event)
 {
@@ -1080,8 +1087,8 @@ entityos._util.view.handlers['entityos-date-time'] = function (event)
 	return returnValue
 }
 
-$(document).off('changeDate clearDate', '.entityos-date, .entityos-date-time')
-.on('changeDate clearDate', '.entityos-date, .entityos-date-time', entityos._util.view.handlers['entityos-date-time']);
+$(document).off('changeDate clearDate', '.entityos-date, .entityos-date-time, .myds-date, .myds-date-time')
+.on('changeDate clearDate', '.entityos-date, .entityos-date-time, .myds-date, .myds-date-time', entityos._util.view.handlers['entityos-date-time']);
 
 entityos._util.view.handlers['entityos-focus'] = function (event)
 {
@@ -1129,8 +1136,8 @@ entityos._util.view.handlers['entityos-focus'] = function (event)
 	}		
 }
 
-$(document).off('focusout', '.entityos-focus')
-.on('focusout', '.entityos-focus', entityos._util.view.handlers['entityos-focus']);
+$(document).off('focusout', '.entityos-focus, .myds-focus')
+.on('focusout', '.entityos-focus, .myds-focus', entityos._util.view.handlers['entityos-focus']);
 
 entityos._util.view.handlers['entityos-text-select-focus-out'] = function (event)
 {
@@ -1148,8 +1155,8 @@ entityos._util.view.handlers['entityos-text-select-focus-out'] = function (event
 	}
 }
 
-$(document).off('focusout', '.entityos-text-select')
-.on('focusout', '.entityos-text-select', entityos._util.view.handlers['entityos-text-select-focus-out']);
+$(document).off('focusout', '.entityos-text-select, .myds-text-select')
+.on('focusout', '.entityos-text-select, .myds-text-select', entityos._util.view.handlers['entityos-text-select-focus-out']);
 
 entityos._util.view.handlers['entityos-text-select-change'] = function (event)
 {
@@ -1301,8 +1308,8 @@ entityos._util.view.handlers['entityos-text-select-change'] = function (event)
 	}
 }
 
-$(document).off('change select2:clear', '.entityos-text-select')
-.on('change select2:clear', '.entityos-text-select', entityos._util.view.handlers['entityos-text-select-change']);
+$(document).off('change select2:clear', '.entityos-text-select, .myds-text-select')
+.on('change select2:clear', '.entityos-text-select, .myds-text-select', entityos._util.view.handlers['entityos-text-select-change']);
 
 entityos._util.view.handlers['entityos-select'] = function (event)
 {
@@ -1358,8 +1365,8 @@ entityos._util.view.handlers['entityos-select'] = function (event)
 	}		
 }
 
-$(document).off('change', '.entityos-select')
-.on('change', '.entityos-select', entityos._util.view.handlers['entityos-select']);
+$(document).off('change', '.entityos-select, .myds-select')
+.on('change', '.entityos-select, .myds-select', entityos._util.view.handlers['entityos-select']);
 
 entityos._util.view.handlers['entityos-change'] = function (event)
 {
@@ -1395,8 +1402,8 @@ entityos._util.view.handlers['entityos-change'] = function (event)
 	}
 }
 
-$(document).off('change', '.entityos-change')
-.on('change', '.entityos-change', entityos._util.view.handlers['entityos-change']);
+$(document).off('change', '.entityos-change, .myds-change')
+.on('change', '.entityos-change, .myds-change', entityos._util.view.handlers['entityos-change']);
 
 entityos._util.view.handlers['entityos-sort'] = function (event)
 {
@@ -1456,8 +1463,8 @@ entityos._util.view.handlers['entityos-sort'] = function (event)
 	}		
 }
 
-$(document).off('click', '.entityos-sort')
-.on('click', '.entityos-sort', entityos._util.view.handlers['entityos-sort']);
+$(document).off('click', '.entityos-sort, .myds-sort')
+.on('click', '.entityos-sort, .myds-sort', entityos._util.view.handlers['entityos-sort']);
 
 entityos._util.view.handlers['entityos-page-rows'] = function (event)
 {
@@ -1507,8 +1514,8 @@ entityos._util.view.handlers['entityos-page-rows'] = function (event)
 	}		
 }
 
-$(document).off('click', '.entityos-page-rows')
-.on('click', '.entityos-page-rows', entityos._util.view.handlers['entityos-page-rows']);
+$(document).off('click', '.entityos-page-rows, .myds-page-row')
+.on('click', '.entityos-page-rows, .myds-page-row', entityos._util.view.handlers['entityos-page-rows']);
 
 entityos._util.view.handlers['entityos-validate'] = function (event)
 {
@@ -1518,8 +1525,8 @@ entityos._util.view.handlers['entityos-validate'] = function (event)
 	});
 }
 
-$(document).off('focusout keyup change.select2 select2:clear', '.entityos-validate')
-.on('focusout keyup change.select2 select2:clear', '.entityos-validate', entityos._util.view.handlers['entityos-validate']);
+$(document).off('focusout keyup change.select2 select2:clear', '.entityos-validate, .myds-validate')
+.on('focusout keyup change.select2 select2:clear', '.entityos-validate, .myds-validate', entityos._util.view.handlers['entityos-validate']);
 
 entityos._util.view.handlers['entityos-date-time-picker'] = function(event)
 {
@@ -1615,8 +1622,8 @@ entityos._util.view.handlers['entityos-file-input'] = function(event)
 	}
 }
 
-$(document).off('change.bs.fileinput', '.entityos, .entityos-file, .myds')
-.on('change.bs.fileinput', '.entityos, .entityos-file, .myds', entityos._util.view.handlers['entityos-file-input']);
+$(document).off('change.bs.fileinput', '.entityos, .entityos-file, .myds, .myds-file')
+.on('change.bs.fileinput', '.entityos, .entityos-file, .myds, .myds-file', entityos._util.view.handlers['entityos-file-input']);
 
 if (typeof $.fn.metisMenu == 'function')
 { 
