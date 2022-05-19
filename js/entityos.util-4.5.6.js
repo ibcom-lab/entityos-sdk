@@ -2,7 +2,7 @@
  * This work is licensed under a Creative Commons Attribution-ShareAlike 4.0 International License.
  * http://creativecommons.org/licenses/by-sa/4.0/
  * Requires: jQuery, /jscripts/md5-min.js
- * Based on entityos.cloud platform
+ * Based on https://entityos.cloud platform
  * boostrap 3 & 4
  */
 
