@@ -1249,10 +1249,10 @@ entityos._util =
 					{
 						var _param;
 
-						if (_.startWith(param.from, 'entityos-'))
+						if (_.startsWith(param.from, 'entityos-'))
 						{
 							_param = _.cloneDeep(param);
-							_param.from = _.replace(_.param.from, 'entityos-', 'myds-');
+							_param.from = _.replace(_param.from, 'entityos-', 'myds-');
 						}
 
 						if (_.isFunction(entityos._scope.app.viewUpdate))
