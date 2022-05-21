@@ -32,6 +32,7 @@ entityos.init = function (data)
 		headers: {"cache-control": "no-cache"},
 		beforeSend: function (oRequest)
 		{
+			oRequest.setRequestHeader("X-HTTP-myds-rest-level", 0);
 			oRequest.setRequestHeader("X-HTTP-entityos-rest-level", 0);
 		}
 	});
@@ -98,7 +99,8 @@ entityos.init = function (data)
                             from: 'entityos-auth',
                             status: 'error',
                             message: 'not-authenticated'
-                        });		
+                        });
+
                     }
                     else if ((data.error.errornotes).toLowerCase().indexOf('undefined') != -1)
                     {
@@ -1147,9 +1149,9 @@ entityos._util =
                         param = {data: param}
                     }
 
-                    var data = mydigitalstructure._util.param.get(param, 'data', {remove: true, default: ''}).value;
-                    var hashType = mydigitalstructure._util.param.get(param, 'hashType').value;
-                    var hashOutput = mydigitalstructure._util.param.get(param, 'hashOutput').value;
+                    var data = entityos._util.param.get(param, 'data', {remove: true, default: ''}).value;
+                    var hashType = entityos._util.param.get(param, 'hashType').value;
+                    var hashOutput = entityos._util.param.get(param, 'hashOutput').value;
                     var hashFunction;
 
                     if (hashType == undefined)
@@ -1242,15 +1244,34 @@ entityos._util =
 	sendToView: function(param)
 				{
 					entityos._scope.sentToView.unshift(param);
+
 					if (entityos._scope.app.viewUpdate != undefined)
 					{
+						var _param;
+
+						if (_.startWith(param.from, 'entityos-'))
+						{
+							_param = _.cloneDeep(param);
+							_param.from = _.replace(_.param.from, 'entityos-', 'myds-');
+						}
+
 						if (_.isFunction(entityos._scope.app.viewUpdate))
 						{
-							entityos._scope.app.viewUpdate(param)
+							entityos._scope.app.viewUpdate(param);
+
+							if (_param != undefined)
+							{
+								entityos._scope.app.viewUpdate(_param);
+							}
 						}
 						else if (entityos._scope.app.viewUpdate != undefined)
 						{
 							entityos._util.controller.invoke(entityos._scope.app.viewUpdate, param);
+
+							if (_param != undefined)
+							{
+								entityos._util.controller.invoke(entityos._scope.app.viewUpdate, _param);
+							}
 						}
 					};
 				},
@@ -1439,30 +1460,30 @@ entityos._util =
 
 						if (optionsAuth != undefined)
 						{
-							$('.myds-signup, .entityos-signup').addClass('d-none');
+							$('.entityos-signup, .myds-signup').addClass('d-none hidden');
 							if (optionsAuth.signup == true)
 							{
-								$('.myds-signup, .entityos-signup').removeClass('d-none');
+								$('.entityos-signup, .myds-signup').removeClass('d-none hidden');
 							}
 
-							$('.myds-auth-info, .entityos-auth-info').addClass('d-none');
+							$('.entityos-auth-info, .myds-auth-info').addClass('d-none hidden');
 							if (optionsAuth.caption != undefined || optionsAuth.note != undefined)
 							{
-								$('.myds-auth-info, .entityos-auth-info').removeClass('d-none');
+								$('.entityos-auth-info, .myds-auth-info').removeClass('d-none hidden');
 							}
 
-							$('.myds-auth-info-caption, .entityos-auth-info-caption').addClass('d-none');
+							$('.entityos-auth-info-caption, .myds-auth-info-caption').addClass('d-none hidden');
 							if (optionsAuth.caption != undefined)
 							{
-								$('.myds-auth-info-caption, .entityos-auth-info-caption').html(optionsAuth.caption);
-								$('.myds-auth-info-caption, .entityos-auth-info-caption').removeClass('d-none');
+								$('.entityos-auth-info-caption, .myds-auth-info-caption').html(optionsAuth.caption);
+								$('.entityos-auth-info-caption, .myds-auth-info-caption').removeClass('d-none hidden');
 							}
 						
-							$('.myds-auth-info-note').addClass('d-none');
+							$('.entityos-auth-info-note, .myds-auth-info-note').addClass('d-none hidden');
 							if (optionsAuth.note != undefined)
 							{
-								$('.myds-auth-info-note, .entityos-auth-info-note').html(optionsAuth.note);
-								$('.myds-auth-info-note, .entityos-auth-info-note').removeClass('d-none');
+								$('.entityos-auth-info-note, .myds-auth-info-note').html(optionsAuth.note);
+								$('.entityos-auth-info-note, .myds-auth-info-note').removeClass('d-none hidden');
 							}
 						}
 					}
@@ -1520,23 +1541,23 @@ entityos._util =
 						{
 							entityos._util.loadScript('/jscripts/md5-min.js')
 	
-							$(document).on('click', '#myds-logon, #entityos-logon', function(event)
+							$(document).on('click', '#entityos-logon, #myds-logon', function(event)
 							{
-								var logon = $('#myds-logonname').val();
-								if (logon == undefined) {logon = $('#entityos-logonname').val()};
+								var logon = $('#entityos-logonname').val();
+								if (logon == undefined) {logon = $('#myds-logonname').val()};
 
-								var password = $('#myds-logonpassword').val();
-								if (password == undefined) {password = $('#entityos-logonpassword').val()};
+								var password = $('#entityos-logonpassword').val();
+								if (password == undefined) {password = $('#myds-logonpassword').val()};
 
-								var code = $('#myds-logoncode').val();
-								if (code == undefined) {code = $('#entityos-logoncode').val()};
+								var code = $('#entityos-logoncode').val();
+								if (code == undefined) {code = $('#myds-logoncode').val()};
 
 								entityos.auth(
 								{
 									logon: logon,
 									password: password,
 									code: code
-								})
+								});
 							});							
 						}
 
@@ -1574,10 +1595,9 @@ entityos._util =
                                                 {
                                                     saml:
                                                     {
-                                                        id: (data.SAMLIdentityProviderId != undefined?data.SAMLIdentityProviderId:data.samlidentityproviderid),
-                                                        name: (data.SAMLIdentityProviderName != undefined?data.SAMLIdentityProviderName:data.samlidentityprovidername),
-                                                        url: (data.SAMLIdentityProviderURL != undefined?data.SAMLIdentityProviderURL:data.samlidentityproviderurl),
-                                                        usernamepath: data.samlidentityproviderusernamepath
+                                                        id: data.hashidentityproviderid,
+                                                        name: data.samlidentityprovidername,
+                                                        url: data.samlidentityproviderurl
                                                     }
                                                 },
                                                 serviceProvider:
@@ -1724,18 +1744,7 @@ entityos._util =
 										logon: logon
 									};	
 
-                                    if (_.has(entityos, '_scope.app.options.password.hashType'))
-                                    {
-                                        data.passwordhash = entityos._util.hash(
-                                        {
-                                            data: logon + password,
-                                            hashType: entityos._scope.app.options.password.hashType
-                                        });
-                                    }
-                                    else
-                                    {
-									    data.passwordhash = entityos._util.hash(logon + password);
-                                    }
+									data.passwordhash = entityos._util.hash(logon + password);
 									
 									entityos._util.sendToView(
 									{
@@ -1781,7 +1790,7 @@ entityos._util =
 												entityos._scope.authenticationDelivery = data.authenticationdelivery;
 												entityos._scope.authenticationUsingAccessToken = data.authenticationusingaccesstoken;
 
-												if (entityos._scope.authenticationLevel == 3)
+												if (entityos._scope.authenticationLevel == 3 || entityos._scope.authenticationLevel == 4)
 												{	
 													if (entityos._scope.authenticationDelivery == 1 || entityos._scope.authenticationDelivery == 2)
 													{
@@ -1856,7 +1865,7 @@ entityos._util =
 															var localAccessToken = app.invoke('util-local-cache-search',
 															{
 																persist: true,
-																key: 'entityos.access-token-' + window.btoa(logon)
+																key: 'myds.access-token-' + window.btoa(logon)
 															});
 
 															if (localAccessToken != undefined)
@@ -1920,7 +1929,7 @@ entityos._util =
 									{
 										data.passwordhash = entityos._util.hash(logon + password + entityos._scope.session.logonkey)
 									}
-									else if (authenticationLevel == 3)
+									else if (authenticationLevel == 3 || authenticationLevel == 4)
 									{
 										data.passwordhash = entityos._util.hash(logon + password + entityos._scope.session.logonkey + code)
 
@@ -1949,28 +1958,41 @@ entityos._util =
 										},
 										success: function (data)	
 										{		
-											if (data.status === 'ER')
+											if (data.status == 'ER')
 											{
-												var message = 'Logon name or password is incorrect.'
+                                                if (entityos._scope.authenticationLevel == 4 &&
+                                                        data.error.errornotes == 'Invalid ip address')
+                                                {
+                                                    entityos._util.sendToView(
+                                                    {
+                                                        from: 'entityos-logon-init',
+                                                        status: 'need-totp-code',
+                                                        message: entityos._scope.authenticationDelivery
+                                                    });
+                                                }
+                                                else
+                                                {
+                                                    var message = 'Logon name or password is incorrect.'
 
-												if (entityos._scope.authenticationDelivery == 3)
-												{
-													message = 'Logon name, password and/or code is incorrect.'
-												}
+                                                    if (entityos._scope.authenticationDelivery == 3)
+                                                    {
+                                                        message = 'Logon name, password and/or code is incorrect.'
+                                                    }
 
-												if (data.error.errornotes == 'LogonKey has not been requested')
-												{
-													message = 'There is an issue with your current browser session.  Please refresh the webpage and trying again.'
-												}
+                                                    if (data.error.errornotes == 'LogonKey has not been requested')
+                                                    {
+                                                        message = 'There is an issue with your current browser session.  Please refresh the webpage and trying again.'
+                                                    }
 
-												entityos._util.sendToView(
-												{
-													from: 'entityos-logon-send',
-													status: 'error',
-													message: message
-												});
+                                                    entityos._util.sendToView(
+                                                    {
+                                                        from: 'entityos-logon-send',
+                                                        status: 'error',
+                                                        message: message
+                                                    });
 
-												entityos._util.doCallBack(callback, {status: 'ER'});
+                                                    entityos._util.doCallBack(callback, {status: 'ER'});
+                                                }
 											}
 											else 
 											{		
@@ -2089,12 +2111,9 @@ entityos._util =
 					var uri = entityos._util.param.get(param, 'uri').value;
 					var refresh = entityos._util.param.get(param, 'refresh', {"default": true}).value;
 
-					if (uri == undefined)
+                    if (uri == undefined && _.has(entityos, '._scope.app.options.deauthURI'))
 					{
-						if (_.has(entityos, '_scope.app.options.deauthURI'))
-						{
-							uri = entityos._scope.app.options.deauthURI;
-						}
+					    uri = entityos._scope.app.options.deauthURI; //eg /deauth
 					}
 
 					if (uri == undefined)
@@ -2651,21 +2670,23 @@ entityos._util =
 								{
 									if ($(uriContext).length != 0)
 									{
-										if (_.isEmpty($('#myds-container, #entityos-container')))
+										if (_.isEmpty($('#entityos-container')) && _.isEmpty($('#myds-container')))
 										{
-											$('div.myds-view, div.entityos-view').addClass('hidden d-none');
+											$('div.entityos-view').addClass('hidden d-none');
+											$('div.myds-view').addClass('hidden d-none');
 											$(uriContext).removeClass('hidden d-none');
 										}
 										else
 										{	
 											var html = $(uriContext).clone();
-											var id = 'myds-container-' + html.attr('id');
-											html.attr('id', id).removeClass('hidden d-none');
-											$('#myds-container').html(html);
 
 											var id = 'entityos-container-' + html.attr('id');
 											html.attr('id', id).removeClass('hidden d-none');
 											$('#entityos-container').html(html);
+
+											var id = 'myds-container-' + html.attr('id');
+											html.attr('id', id).removeClass('hidden d-none');
+											$('#myds-container').html(html);
 										}	
 									}
 								}
@@ -2750,7 +2771,8 @@ entityos._util =
 											}
 											else if (view.selector != undefined)
 											{
-												$('div.myds-view, div.entityos-view').addClass('hidden d-none');
+												$('div.entityos-view').addClass('hidden d-none');
+												$('div.myds-view').addClass('hidden d-none');
 												$(view.selector).removeClass('hidden d-none');
 											}
 
@@ -3177,27 +3199,27 @@ entityos._util =
 
 									     			if (data[key] == '')
 										     		{
-										     			content = s.replaceAll(content, '{{' + 'myds-hide-if-empty-' + key.toLowerCase() + '}}', 'd-none');
-										     			content = s.replaceAll(content, '{{' + 'myds-hide-if-empty-' + key + '}}', 'd-none');
-										     			content = s.replaceAll(content, '{{' + 'myds-show-if-empty-' + key.toLowerCase() + '}}', '');
-										     			content = s.replaceAll(content, '{{' + 'myds-show-if-empty-' + key + '}}', '');
-
 														content = s.replaceAll(content, '{{' + 'entityos-hide-if-empty-' + key.toLowerCase() + '}}', 'd-none');
 										     			content = s.replaceAll(content, '{{' + 'entityos-hide-if-empty-' + key + '}}', 'd-none');
 										     			content = s.replaceAll(content, '{{' + 'entityos-show-if-empty-' + key.toLowerCase() + '}}', '');
 										     			content = s.replaceAll(content, '{{' + 'entityos-show-if-empty-' + key + '}}', '');
+
+										     			content = s.replaceAll(content, '{{' + 'myds-hide-if-empty-' + key.toLowerCase() + '}}', 'd-none');
+										     			content = s.replaceAll(content, '{{' + 'myds-hide-if-empty-' + key + '}}', 'd-none');
+										     			content = s.replaceAll(content, '{{' + 'myds-show-if-empty-' + key.toLowerCase() + '}}', '');
+										     			content = s.replaceAll(content, '{{' + 'myds-show-if-empty-' + key + '}}', '');
 										     		}
 										     		else
 										     		{
+														content = s.replaceAll(content, '{{' + 'entityos-hide-if-empty-' + key.toLowerCase() + '}}', '');
+														content = s.replaceAll(content, '{{' + 'entityos-hide-if-empty-' + key + '}}', '');
+														content = s.replaceAll(content, '{{' + 'entityos-show-if-empty-' + key.toLowerCase() + '}}', 'd-none');
+														content = s.replaceAll(content, '{{' + 'entityos-show-if-empty-' + key + '}}', 'd-none');
+
 										     			content = s.replaceAll(content, '{{' + 'myds-hide-if-empty-' + key.toLowerCase() + '}}', '');
 										     			content = s.replaceAll(content, '{{' + 'myds-hide-if-empty-' + key + '}}', '');
 										     			content = s.replaceAll(content, '{{' + 'myds-show-if-empty-' + key.toLowerCase() + '}}', 'd-none');
 										     			content = s.replaceAll(content, '{{' + 'myds-show-if-empty-' + key + '}}', 'd-none');
-
-														content = s.replaceAll(content, '{{' + 'entityos-hide-if-empty-' + key.toLowerCase() + '}}', '');
-										     			content = s.replaceAll(content, '{{' + 'entityos-hide-if-empty-' + key + '}}', '');
-										     			content = s.replaceAll(content, '{{' + 'mydentityoss-show-if-empty-' + key.toLowerCase() + '}}', 'd-none');
-										     			content = s.replaceAll(content, '{{' + 'entityos-show-if-empty-' + key + '}}', 'd-none');
 										     		}
 
 									     			keyData = String(data[key]);
@@ -3289,17 +3311,17 @@ entityos._util =
 									     		
 										     		if (data[key] == '')
 										     		{
+														_data['entityos-hide-if-empty-' + key] = 'd-none';
+														_data['entityos-show-if-empty-' + key] = '';
 										     			_data['myds-hide-if-empty-' + key] = 'd-none';
 										     			_data['myds-show-if-empty-' + key] = '';
-														_data['entityos-hide-if-empty-' + key] = 'd-none';
-										     			_data['entityos-show-if-empty-' + key] = '';
 										     		}
 										     		else
 										     		{
-										     			_data['myds-hide-if-empty-' + key] = '';
-										     			_data['myds-show-if-empty-' + key] = 'd-none';
-														_data['entityos-hide-if-empty-' + key] = '';
+										     			_data['entityos-hide-if-empty-' + key] = '';
 										     			_data['entityos-show-if-empty-' + key] = 'd-none';
+														_data['myds-hide-if-empty-' + key] = '';
+										     			_data['myds-show-if-empty-' + key] = 'd-none';
 										     		}
 									     		}
 									     	}
@@ -3335,11 +3357,11 @@ entityos._util =
 									var selector = $(selector);
 									if (selector.length != 0)
 									{
-										var focusElement = selector.find('.myds-setfocus:first');
+										var focusElement = selector.find('.entityos-setfocus:first');
 
 										if (focusElement.length == 0)
 										{
-											focusElement = selector.find('.entityos-setfocus:first');
+											focusElement = selector.find('.myds-setfocus:first');
 										}
 
 										if (focusElement.length == 0)
@@ -3436,23 +3458,22 @@ entityos._util =
 			
 												if (includeDates)
 												{
-													entityos._util.view.datepicker({selector: '.myds-date:visible', format: 'D MMM YYYY'});
-													entityos._util.view.datepicker({selector: '.myds-date-time:visible', format: 'D MMM YYYY LT'});
-													entityos._util.view.datepicker({selector: '.entityos-date:visible', format: 'D MMM YYYY'})
-													entityos._util.view.datepicker({selector: '.entityos-date-time:visible', format: 'D MMM YYYY LT'})
+													entityos._util.view.datepicker({selector: '.entityos-date:visible, .myds-date:visible', format: 'D MMM YYYY'})
+													entityos._util.view.datepicker({selector: '.entityos-date-time:visible, .myds-date-time:visible', format: 'D MMM YYYY LT'})
 												}
 
 												if (setInputs && _.isObject(data))
 												{
-													_.each($(selector + ' input.myds-check[data-context][data-id], ' + selector + ' input.entityos-check[data-context][data-id]'), function (element)
+													_.each($(selector + ' input.entityos-check[data-context][data-id], ' +
+																selector + ' input.myds-check[data-context][data-id]'), function (element)
 													{
 														var context = $(element).data('context');
 														var value = data[context];
 
 														if (value != undefined)
 														{
-															$(selector + ' input.myds-check[data-context="' + context + '"][data-id="' + value + '"]').attr('checked', 'checked');
-															$(selector + ' input.entityos-check[data-context="' + context + '"][data-id="' + value + '"]').attr('checked', 'checked')
+															$(selector + ' input.entityos-check[data-context="' + context + '"][data-id="' + value + '"], ' +
+																selector + ' input.myds-check[data-context="' + context + '"][data-id="' + value + '"]').attr('checked', 'checked');
 														}
 													});
 												}
@@ -4105,7 +4126,7 @@ entityos._util =
 						                '<input type="hidden" name="filetype0" id="{{context}}-attach-filetype0" value="">' +
 						                '<input type="hidden" name="title0" id="{{context}}-attach-title0" value="{{title}}">' +
 						                '<iframe style="display:none;" name="{{context}}-attach-proxy" id="{{context}}-attach-proxy" ' +
-						                'class="myds-util-attachment-upload entityos-util-attachment-upload" frameborder="0"></iframe>' +
+						                'class="entityos-util-attachment-upload, myds-util-attachment-upload" frameborder="0"></iframe>' +
 						                '<div class="form-group center-block">' +
 						                  '<div class="fileinput fileinput-new input-group" data-provides="fileinput"' +
 											' data-controller="{{controller}}">' +
@@ -4217,7 +4238,7 @@ entityos._util =
 								if (label != '') 
 								{
 									entityos._util.view.queue.add(
-										'<div id="' + context + '-attach-label" class="myds-util-attach-label entityos-util-attach-label" style="margin-bottom:10px;">' + label + '</div>',
+										'<div id="' + context + '-attach-label" class="entityos-util-attach-label myds-util-attach-label" style="margin-bottom:10px;">' + label + '</div>',
 										{queue: 'attachments-select-template'});
 								}	
 									
@@ -4248,7 +4269,7 @@ entityos._util =
 								}
 	
 								entityos._util.view.queue.add(
-											'<iframe style="display:none;" name="' + context + '-attach-proxy" id="' + context + '-attach-proxy" class="myds-util-attachment-upload entityos-util-attachment-upload" frameborder="0"></iframe>' +
+											'<iframe style="display:none;" name="' + context + '-attach-proxy" id="' + context + '-attach-proxy" class="entityos-util-attachment-upload myds-util-attachment-upload" frameborder="0"></iframe>' +
 											'</form>',
 						               {queue: 'attachments-select-template'});
 								
@@ -4517,7 +4538,7 @@ entityos._util =
 									{
 										from: 'entityos-util-attachments-upload',
 										status: 'error',
-										message: errorMessage
+										message: response.error.errornotes
 									});
 								});
 
@@ -4676,8 +4697,8 @@ entityos._util.svgToImage = function (param)
 	var serialise = entityos._util.param.get(param, 'serialise', {default: true}).value;
 	var showSVGURI = entityos._util.param.get(param, 'showSVGURI', {default: false}).value;
 	var svgData = entityos._util.param.get(param, 'svgData').value;
-	var onRenderController = mydigitalstructure._util.param.get(param, 'onRenderController').value;
-	
+	var onRenderController = entityos._util.param.get(param, 'onRenderController').value;
+
 	if (svgURI == undefined && attachmentLink != undefined)
 	{
 		svgURI = '/rpc/core/?method=CORE_IMAGE_SHOW&contenttype=image/svg%2Bxml&id=' + attachmentLink;
@@ -4692,11 +4713,22 @@ entityos._util.svgToImage = function (param)
 			if (serialise)
 			{
 				svgElement = document.getElementById(svgContainerID);
+				if (svgContainerID == 'entityos-svg' && svgElement == null)
+				{
+					svgContainerID = 'myds-svg';
+					svgElement = document.getElementById(svgContainerID);
+				}
 				svgData = (new XMLSerializer()).serializeToString(svgElement);
 			}
 			else
 			{
-				svgData = $('#' + svgContainerID).html();
+				svgElement = $('#' + svgContainerID);
+				if (svgContainerID == 'entityos-svg' && svgElement.length == 0)
+				{
+					svgContainerID = 'myds-svg';
+					svgElement = $('#' + svgContainerID);
+				}
+				svgData = svgElement.html();
 			}
 		}
 		else
@@ -4733,6 +4765,11 @@ entityos._util.svgToImage = function (param)
 
 			if (canvas == null)
 			{
+				canvas = document.getElementById("canvas.myds-image");
+			}
+
+			if (canvas == null)
+			{
 				canvas = document.createElement('canvas');
 			}
 
@@ -4755,6 +4792,7 @@ entityos._util.svgToImage = function (param)
 				context.drawImage(svgImage, 0, 0);
 				imageHTMLTemplate = imageHTMLTemplate.replace('{{src}}', canvas.toDataURL("image/png"));
 				$(imageContainerSelector).html(imageHTMLTemplate);
+
 				if (onRenderController != undefined)
 				{
 					entityos._util.controller.invoke(onRenderController, param);
@@ -4922,8 +4960,8 @@ entityos._util.svgAsImage = function (param)
 entityos._util.svgToCanvas = function (param)
 {
 	var svgURI = entityos._util.param.get(param, 'svgURI').value;
-	var svgContainerSelector = entityos._util.param.get(param, 'svgContainerSelector', {default: '#entityos-svg'}).value;
-	var canvasContainerID = entityos._util.param.get(param, 'svgContainerID', {default: 'entityos-svg'}).value;
+	var svgContainerSelector = entityos._util.param.get(param, 'svgContainerSelector', {default: '#myds-svg'}).value;
+	var canvasContainerID = entityos._util.param.get(param, 'svgContainerID', {default: 'myds-svg'}).value;
 	var svgContainerID = entityos._util.param.get(param, 'svgContainerID').value;
 	var convertUsing = 'SVG2Bitmap';
 
@@ -5062,6 +5100,16 @@ entityos._util.imageToBase64Data = function (param)
 		imageURI = '/rpc/core/?method=CORE_IMAGE_SHOW&contenttype=' + encodeURIComponent(imageType) + '&id=' + attachmentLink;
 	}
 
+	if ($(svgSelector).length == 0)
+	{
+		svgSelector = '#myds-svg'
+	}
+
+	if ($(imageContainerSelector).length == 0)
+	{
+		imageContainerSelector = '#myds-image-show'
+	}
+
 	if (imageURI == undefined && svgSelector != undefined)
 	{
 		if (clean)
@@ -5090,6 +5138,11 @@ entityos._util.imageToBase64Data = function (param)
 		image.onload = function()
 		{
 			var canvas = document.getElementById("canvas.entityos-image");
+
+			if (canvas == null)
+			{
+				canvas = document.getElementById("canvas.myds-image");
+			}
 
 			if (canvas == null)
 			{
