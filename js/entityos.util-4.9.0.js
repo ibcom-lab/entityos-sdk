@@ -1801,8 +1801,8 @@ if (typeof $.fn.modal == 'function')
 		}	
     }
 
-    $(document).off('shown.bs.modal', '.entityos-modal, .myds-modal')
-	.on('shown.bs.modal', '.entityos-modal, .myds-modal', entityos._util.view.handlers['entityos-modal-shown']);
+    $(document).off('shown.bs.modal')
+	.on('shown.bs.modal', entityos._util.view.handlers['entityos-modal-shown']);
 
 	entityos._util.view.handlers['entityos-modal-show'] = function (event)
 	{
@@ -1862,8 +1862,8 @@ if (typeof $.fn.modal == 'function')
 		}	
 	}
 
-	$(document).off('show.bs.modal', '.entityos-modal, .myds-modal')
-    .on('show.bs.modal', '.entityos-modal, .myds-modal' , entityos._util.view.handlers['entityos-modal-show']);
+	$(document).off('show.bs.modal')
+    .on('show.bs.modal' , entityos._util.view.handlers['entityos-modal-show']);
 }
 
 if (typeof $.fn.collapse == 'function')
