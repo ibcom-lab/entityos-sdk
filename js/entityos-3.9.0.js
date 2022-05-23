@@ -1744,7 +1744,18 @@ entityos._util =
 										logon: logon
 									};	
 
-									data.passwordhash = entityos._util.hash(logon + password);
+									if (_.has(entityos, '_scope.app.options.password.hashType'))
+									{
+										data.passwordhash = entityos._util.hash(
+										{
+											data: logon + password,
+											hashType: entityos._scope.app.options.password.hashType
+										});
+									}
+									else
+									{
+										data.passwordhash = entityos._util.hash(logon + password);
+									}
 									
 									entityos._util.sendToView(
 									{
@@ -1807,7 +1818,18 @@ entityos._util =
 															logon: logon
 														};
 
-														data.passwordhash = entityos._util.hash(logon + password + entityos._scope.session.logonkey);
+														if (_.has(entityos, '_scope.app.options.password.hashType'))
+														{
+															data.passwordhash = entityos._util.hash(
+															{
+																data: logon + password + entityos._scope.session.logonkey,
+																hashType: entityos._scope.app.options.password.hashType
+															});
+														}
+														else
+														{
+															data.passwordhash = entityos._util.hash(logon + password + entityos._scope.session.logonkey);
+														}
 
 														entityos._util.sendToView(
 														{
@@ -1921,22 +1943,37 @@ entityos._util =
 										localtime: moment().format('D MMM YYYY HH:mm:ss')
 									}	
 
+									var passwordHashData;
+
 									if (authenticationLevel == 1)
 									{
-										data.passwordhash = entityos._util.hash(logon + password);
+										passwordHashData = logon + password;
 									}
 									else if (authenticationLevel == 2)
 									{
-										data.passwordhash = entityos._util.hash(logon + password + entityos._scope.session.logonkey)
+										passwordHashData = logon + password + entityos._scope.session.logonkey;
 									}
 									else if (authenticationLevel == 3 || authenticationLevel == 4)
 									{
-										data.passwordhash = entityos._util.hash(logon + password + entityos._scope.session.logonkey + code)
+										passwordHashData = logon + password + entityos._scope.session.logonkey + code;
 
 										if (authenticationDelivery == 3)
 										{
 											data.passwordcode = code
 										}
+									}
+
+									if (_.has(entityos, '_scope.app.options.password.hashType'))
+									{
+										data.passwordhash = entityos._util.hash(
+										{
+											data: passwordHashData,
+											hashType: entityos._scope.app.options.password.hashType
+										});
+									}
+									else
+									{
+										data.passwordhash = entityos._util.hash(passwordHashData);
 									}
 									
 									entityos._util.sendToView(
