@@ -2416,6 +2416,8 @@ entityos._util =
                         
                                         cleanResponseText = cleanResponseText.replace(/[\u0092]/g,'\'');
                                         cleanResponseText = cleanResponseText.replace(/[\u0002]/g,' ');
+										cleanResponseText = cleanResponseText.replace(/\\/g,'\\\\');
+                                        cleanResponseText = cleanResponseText.replace(/[^\x20-\x7E]/g, '');
 
                                         response = JSON.parse(cleanResponseText);
 
