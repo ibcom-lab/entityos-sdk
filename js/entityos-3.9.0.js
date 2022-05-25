@@ -1587,7 +1587,7 @@ entityos._util =
                                             logonkey: data.logonkey,
                                         });
 
-                                        if (data.samlidentityproviderid != '')
+                                        if (_.isSet(data.samlidentityproviderid))
                                         {
                                             entityos._scope.session = _.assign(entityos._scope.session,
                                             {
