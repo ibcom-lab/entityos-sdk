@@ -908,10 +908,18 @@ entityos._util.factory.import = function (param)
 						});
 
 						$('#entityos-util-attachment-upload-import-objectcontext').val(response.id);
+						$('#myds-util-attachment-upload-import-objectcontext').val(response.id);
+
+						var context = 'entityos-util-attachment-upload-import';
+						
+						if ($('[name="' + context + '-attach-container"]').length == 0)
+						{
+							context = context.replaceAll('entityos', 'myds')
+						}
 
 						entityos._util.attachment.upload(
 						{
-							context: 'entityos-util-attachment-upload-import',
+							context: context,
 							id: response.id,
 							callback: 'util-import-upload-attach-process'
 						})

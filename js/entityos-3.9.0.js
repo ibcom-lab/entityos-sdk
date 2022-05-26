@@ -4659,6 +4659,11 @@ entityos._util =
 								});
 
 								var frame = document.getElementById(entityos._scope.data.attachment.context + '-attach-proxy');
+								if (frame == undefined)
+								{
+									entityos._scope.data.attachment.context = entityos._scope.data.attachment.context.replaceAll('entityos', 'myds');
+									frame = document.getElementById(entityos._scope.data.attachment.context + '-attach-proxy');
+								}
 								frame.contentDocument.body.innerHTML = '';
 
 								var form = document[entityos._scope.data.attachment.context + '-attach-container'];
