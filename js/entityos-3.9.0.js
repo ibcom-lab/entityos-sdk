@@ -976,6 +976,30 @@ entityos.cloud =
 	invoke: entityos.invoke
 }
 
+entityos.cloud.check = function (param, response)
+{
+	if (response == undefined)
+	{
+		entityos.invoke(
+		{
+			method: 'core_get_user_details',
+			callback: entityos.cloud.check,
+			callbackParam: param
+		});
+	}
+	else
+	{
+		if (response.status == 'ER')
+		{
+			entityos._util.logoff();
+		}
+		else
+		{
+			entityos._util.onComplete(param)
+		}
+	}
+}
+
 entityos.help = function ()
 {
 	return {scope: entityos._scope}

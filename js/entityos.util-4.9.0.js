@@ -2214,8 +2214,6 @@ if (typeof $.fn.dropdown == 'function')
 	{
 		if (event.relatedTarget != undefined)
 		{
-			var controller = $(event.relatedTarget).data('controller');
-
 			var param = {status: 'show'}
 
 			if (entityos._scope.app.uriContext != undefined)
@@ -2223,8 +2221,15 @@ if (typeof $.fn.dropdown == 'function')
 				param.context = (entityos._scope.app.uriContext).replace('#', '')
 			}
 
+			var controller = $(event.relatedTarget).data('controller');
 			param.dataContext = entityos._util.data.clean($(event.relatedTarget).data());
-			
+
+			if (controller == undefined && $(event.relatedTarget).parent().length > 0)
+			{
+				controller = $(event.relatedTarget).parent().data('controller');
+				param.dataContext = entityos._util.data.clean($(event.relatedTarget).parent().data());
+			}
+	
 			if (app.data[controller] == undefined) {app.data[controller] = {}}
 			app.data[controller].dataContext = param.dataContext;
 
@@ -7208,7 +7213,7 @@ entityos._util.factory.core = function (param)
 			}
 		},
 		{
-			name: 'util-cloud--invoke',
+			name: 'util-cloud-invoke',
 			code: function (param)
 			{
 				return entityos.cloud.invoke(param)
@@ -7219,6 +7224,13 @@ entityos._util.factory.core = function (param)
 			code: function (param)
 			{
 				return entityos.cloud.upload(param)
+			}
+		},
+		{
+			name: 'util-cloud-check',
+			code: function (param)
+			{
+				return entityos.cloud.check(param)
 			}
 		},
 		{
