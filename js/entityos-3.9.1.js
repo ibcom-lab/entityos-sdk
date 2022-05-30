@@ -5391,12 +5391,14 @@ entityos._util.convert =
 		var data;
 		var keyField = 'title';
 		var valueField = 'id';
-		
+		var cleanKey = false;
+
 		if (_.isPlainObject(param))
 		{
 			data = app._util.param.get(param, 'data').value;
 			keyField = app._util.param.get(param, 'keyField', {default: keyField}).value;
 			valueField = app._util.param.get(param, 'valueField', {default: valueField}).value;
+			cleanKey = app._util.param.get(param, 'cleanKey', {default: false}).value;
 		}
 		else
 		{
@@ -5406,7 +5408,15 @@ entityos._util.convert =
 
 		var returnObject = _.reduce(data , function(object, data)
 		{
-			object[data[keyField]] = data[valueField]
+			var _keyFieldData = data[keyField];
+			
+			if (cleanKey)
+			{
+				_keyFieldData = _.kebabCase(_keyFieldData).toLowerCase()
+			}
+
+			object[_keyFieldData] = data[valueField]
+			
 			return object;
 		}, {});
 
