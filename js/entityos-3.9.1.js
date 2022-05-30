@@ -5384,7 +5384,35 @@ entityos._util.convert =
 		}
 
 		return response
+	},
+
+	arrayToObject: function (param)
+	{
+		var data;
+		var keyField = 'title';
+		var valueField = 'id';
+		
+		if (_.isPlainObject(param))
+		{
+			data = app._util.param.get(param, 'data').value;
+			keyField = app._util.param.get(param, 'keyField', {default: keyField}).value;
+			valueField = app._util.param.get(param, 'valueField', {default: valueField}).value;
+		}
+		else
+		{
+			data = param;
+			
+		}
+
+		var returnObject = _.reduce(data , function(object, data)
+		{
+			object[data[keyField]] = data[valueField]
+			return object;
+		}, {});
+
+		return returnObject
 	}
+
 }	
 
 entityos._util.log = 
