@@ -232,6 +232,7 @@ entityos._util.protect =
         var cryptoInitialiseKey = entityos._util.param.get(param, 'cryptoInitialiseKey', {remove: true}).value;
         var cryptoKeyReference = entityos._util.param.get(param, 'cryptoKeyReference').value;
         var cryptoOutput = entityos._util.param.get(param, 'cryptoOutput', {default: 'Hex'}).value;
+        var cryptoKeyFormat = entityos._util.param.get(param, 'cryptoKeyFormat', {default: 'Hex'}).value;
 
         if (cryptoKey == undefined && cryptoKeyReference != undefined)
         {
@@ -242,12 +243,18 @@ entityos._util.protect =
         {
             var data = entityos._util.param.get(param, 'data', {remove: true}).value;
 
-            var _cryptoKey = CryptoJS.enc.Hex.parse(cryptoKey);
+            if (_.isPlainObject(data))
+            {
+                data = JSON.stringify(data);
+                data = _.escape(data);
+            }
+
+            var _cryptoKey = CryptoJS.enc[cryptoKeyFormat].parse(cryptoKey);
             var options = {};
 
             if (cryptoInitialiseKey != undefined)
             {
-                options.iv = CryptoJS.enc.Hex.parse(cryptoInitialiseKey);
+                options.iv = CryptoJS.enc[cryptoKeyFormat].parse(cryptoInitialiseKey);    
             }
 
             var protectedData = CryptoJS.AES.encrypt(data, _cryptoKey, options).toString(CryptoJS.format[cryptoOutput]);
@@ -288,6 +295,7 @@ entityos._util.protect =
         var cryptoInitialiseKey = entityos._util.param.get(param, 'cryptoInitialiseKey', {remove: true}).value;
         var cryptoKeyReference = entityos._util.param.get(param, 'cryptoKeyReference').value;
         var cryptoInput = entityos._util.param.get(param, 'cryptoInput', {default: 'Hex'}).value;
+        var cryptoKeyFormat = entityos._util.param.get(param, 'cryptoKeyFormat', {default: 'Hex'}).value;
 
         if (cryptoKey == undefined && cryptoKeyReference != undefined)
         {
@@ -296,12 +304,13 @@ entityos._util.protect =
 
         if (cryptoKey != undefined)
         {
-            var _cryptoKey = CryptoJS.enc.Hex.parse(cryptoKey);
+            var _cryptoKey = CryptoJS.enc[cryptoKeyFormat].parse(cryptoKey);
+
             var options = {};
 
             if (cryptoInitialiseKey != undefined)
             {
-                options.iv = CryptoJS.enc.Hex.parse(cryptoInitialiseKey);
+                options.iv = CryptoJS.enc[cryptoKeyFormat].parse(cryptoInitialiseKey);    
             }
 
             var protectedData = entityos._util.param.get(param, 'protectedData', {remove: true}).value;
