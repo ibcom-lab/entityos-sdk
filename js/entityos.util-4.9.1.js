@@ -5199,7 +5199,6 @@ entityos._util._clean = function(param)
 				returnVal = encodeURIComponent(val);
 			}
 
-			//val = String(val).replace(/[\u00A0-\u2666]/g, function(c)
 			val = String(val).replace(/[\u0099-\u2666]/g, function(c)
   			{
 				return '&#' + c.charCodeAt(0) + ';';
