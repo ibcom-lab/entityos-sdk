@@ -3552,7 +3552,7 @@ entityos._util.view._refresh = function (param)
 						if (elementValue == undefined) {elementValue = ''}
 
 						$(element).attr('data-value', elementValue);
-                        elementValue = _.unescape(elementValue);
+                        elementValue = entityos._util.decode(elementValue);
 						$(element).val(elementValue);
 					}
 				}
