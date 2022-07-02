@@ -482,21 +482,29 @@ entityos._util.factory.export = function (param)
 				controller: 'util-export-0',
 				context: 'filedata'
 			});
-		}	
+		}
+
+        //Go through the data and use exportParam.captions with source
+        // to create JSON object 
+        // then stringify 
+        // then save
+
+        /*var data = JSON.stringify(nextStepsLearnerApplication);
+		var filename = 'selfdriven-next-steps-application-' +
+							_.kebabCase(nextStepsApplication.contactpersontext) +
+							'-' + nextStepsApplication.guid +
+							'.json'
+
+		app.invoke('util-export-to-file',
+		{
+			data: data,
+			filename: filename
+		});
+        */
 
 		var csv = [];
 
-		if (exportParam.headers != undefined)
-		{	
-			$.each(exportParam.headers, function (h, header)
-			{
-				csv.push('"' + header.text + '"');
-				csv.push('\r\n');
-			});
-
-			csv.push('\r\n');
-		}
-
+		
 		if (exportParam.captions != undefined)
 		{
 			csv.push(_.map(exportParam.captions, function (caption)
@@ -532,7 +540,7 @@ entityos._util.factory.export = function (param)
 			var findParam;
 			var findValue;
 
-			$.each(fileData, function (r, row)
+			_.each(fileData, function (row, r)
 			{
 				rowData = [];
 
