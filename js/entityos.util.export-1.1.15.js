@@ -320,7 +320,14 @@ entityos._util.factory.export = function (param)
 					}
 				}
 
-				app.controller['util-export-data-to-csv'](param);
+                if (_.includes(filename, '.json'))
+                {
+                    app.controller['util-export-data-to-json'](param);
+                }
+                else
+                {
+                    app.controller['util-export-data-to-csv'](param);
+                }
 			}	
 		}
 	}
@@ -484,40 +491,7 @@ entityos._util.factory.export = function (param)
 			});
 		}
 
-        //Go through the data and use exportParam.captions with source
-        // to create JSON object 
-        // then stringify 
-        // then save
-
-        /*var data = JSON.stringify(nextStepsLearnerApplication);
-		var filename = 'selfdriven-next-steps-application-' +
-							_.kebabCase(nextStepsApplication.contactpersontext) +
-							'-' + nextStepsApplication.guid +
-							'.json'
-
-		app.invoke('util-export-to-file',
-		{
-			data: data,
-			filename: filename
-		});
-        */
-
-		var csv = [];
-
-		
-		if (exportParam.captions != undefined)
-		{
-			csv.push(_.map(exportParam.captions, function (caption)
-			{
-				caption._text = entityos._util.decode(caption.text);
-				caption._text = _.replaceAll(caption._text, '"', '""');
-				return '"' + caption._text + '"'
-			}).join(','));
-
-			csv.push('\r\n');
-		}
-		
-		if (fileData == undefined)
+        if (fileData == undefined)
 		{
 			fileData = exportParam.fileData;	
 		}
@@ -526,87 +500,38 @@ entityos._util.factory.export = function (param)
 		{
 			param.filename = exportParam.filename;	
 		}
+
+		var json = [];
+        var jsonItemTemplate = {};
 		
-		var sources;
-
-		if (_.size(_.filter(exportParam.captions, function (c) {return c.source != undefined})) != 0)
+		if (exportParam.captions != undefined)
 		{
-			sources = _.pluck(exportParam.captions, 'source');
+            _.each(exportParam.captions, function (caption)
+            {
+                if (_.isSet(caption.field))
+                {
+                    jsonItemTemplate[caption.text.toLowerCase()] = caption.field
+                }
+                else
+                {
+                    jsonItemTemplate[caption.text.toLowerCase()] = caption.name 
+                }
+            });
+
+            _.each(fileData, function (_fileData)
+            {
+                _jsonItemTemplate = _.cloneDeep(jsonItemTemplate);
+                _.each(_jsonItemTemplate, function (value, key)
+                {
+                    _jsonItemTemplate[key] = _fileData[value]
+                });
+				json.push(_jsonItemTemplate);
+            });
 		}
-
-		if (fileData != undefined)
-		{
-			var rowData;
-			var findParam;
-			var findValue;
-
-			_.each(fileData, function (row, r)
-			{
-				rowData = [];
-
-				//if there is one column with source, then all have to have source!
-				if (sources != undefined)
-				{
-					_.each(sources, function (source)
-					{
-						if (_.isObject(source))
-						{
-							findParam = source.find;
-							if(_.isObject(findParam))
-							{
-								findParam.id = row[findParam.context];
-								if (_.isUndefined(findParam.name)) {findParam.name = 'title'};
-								findValue = app._util.data.find(findParam);
-								findValue = _.toString(findValue);
-								findValue = $('<p>' + he.decode(findValue) + '</p>').text();
-								rowData.push('"' + (findValue==undefined?'':_.replaceAll(findValue,'"','\'')) + '"');
-							}
-							else
-							{
-								rowData.push('');
-							}
-						}
-						else
-						{
-							findValue = $('<p>' + he.decode(_.toString(row[source])) + '</p>').text();
-
-							var contents = $('<p>' + he.decode(_.toString(row[source])) + '</p>').contents();
-
-							contents = _.filter(contents, function (content)
-							{
-								return (!_.isUndefined(content.data) && content.data != '\n')
-							});
-
-							findValue = _.join(_.map(contents, function (content)
-							{
-								var r;
-								if (_.trim(content.data) != '') {r = content.data}		
-								return r
-							}), '; ')
-
-							rowData.push('"' + (row[source]==undefined?'':_.replaceAll(findValue,'"','\'')) + '"');
-						}	
-					})
-				}
-				else
-				{	
-					for (var key in row)
-			  		{
-			     		if (row.hasOwnProperty(key))
-			     		{
-			     			rowData.push('"' + he.decode(row[key]) + '"');
-			     		}  
-			     	}
-			    } 	
-
-		     	csv.push(rowData.join(','));
-		     	csv.push('\r\n');
-			});
-		}	
-
+		
 		if (param == undefined) {param = {}}
-		param.data = csv.join('');
-		app.controller['util-export-to-file'](param)
+		param.data = JSON.stringify(json, null, 4);
+		app.controller['util-export-to-file'](param);
 	}
 
 	app.controller['util-export-data-as-is-to-csv'] = function (param, data)
