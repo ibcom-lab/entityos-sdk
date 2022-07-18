@@ -3552,7 +3552,7 @@ entityos._util.view._refresh = function (param)
 						if (elementValue == undefined) {elementValue = ''}
 
 						$(element).attr('data-value', elementValue);
-                        elementValue = _.unescape(elementValue);
+                        elementValue = entityos._util.decode(elementValue);
 						$(element).val(elementValue);
 					}
 				}
@@ -5199,7 +5199,6 @@ entityos._util._clean = function(param)
 				returnVal = encodeURIComponent(val);
 			}
 
-			//val = String(val).replace(/[\u00A0-\u2666]/g, function(c)
 			val = String(val).replace(/[\u0099-\u2666]/g, function(c)
   			{
 				return '&#' + c.charCodeAt(0) + ';';
@@ -5247,6 +5246,8 @@ entityos._util._decode = function(value)
     var dataReturn = '';
 
 	if (_.isUndefined(value)) {value = ''};
+
+    value = _.toString(value);
 
     if (_.isObject(window.he))
     {
@@ -9244,6 +9245,34 @@ entityos._util.factory.core = function (param)
         code: function (param)
         {
             entityos._util.whenCan.invoke(param)
+        }
+    });
+
+    entityos._util.controller.add(
+    {
+        name: 'util-param-get',
+        code: function (param, data)
+        {
+            if (_.isString(param))
+            {
+                param = {name: param}
+            }
+
+            return entityos._util.param.get(data, param.name, param.options).value;
+        }
+    });
+
+    entityos._util.controller.add(
+    {
+        name: 'util-param-set',
+        code: function (param, data)
+        {
+            if (!_.isPlainObject(param))
+            {
+                param = {}
+            }
+
+            return entityos._util.param.set(data, param.name, param.value);
         }
     });
 
