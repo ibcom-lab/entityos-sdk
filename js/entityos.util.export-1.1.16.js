@@ -510,11 +510,11 @@ entityos._util.factory.export = function (param)
             {
                 if (_.isSet(caption.field))
                 {
-                    jsonItemTemplate[caption.text.toLowerCase()] = caption.field
+                    jsonItemTemplate[_.kebabCase(caption.text.toLowerCase())] = caption.field
                 }
                 else
                 {
-                    jsonItemTemplate[caption.text.toLowerCase()] = caption.name 
+                    jsonItemTemplate[_.kebabCase(caption.text.toLowerCase())] = caption.name 
                 }
             });
 
