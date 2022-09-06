@@ -5250,6 +5250,12 @@ entityos._util.imageToBase64Data = function (param)
 				canvasContext.msImageSmoothingEnabled = true;
 				canvasContext.imageSmoothingEnabled = true;
 			}
+
+			if (autoSetWidthHeight)
+			{
+				height = image.height;
+                width = image.width;
+			}
 		
 			canvas.width = width * scale;
 			canvas.height = height * scale;
