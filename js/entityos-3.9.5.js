@@ -1638,6 +1638,12 @@ entityos._util =
 									}
 									else
 									{
+										entityos._scope.session = _.assign(entityos._scope.session,
+										{
+											logonkey: data.logonkey,
+											sid: data.sid
+										});
+
 										entityos._scope.user = data;
 										entityos._scope.user.id = data.user;
 
