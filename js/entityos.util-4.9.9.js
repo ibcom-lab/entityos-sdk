@@ -7535,7 +7535,7 @@ entityos._util.factory.core = function (param)
 			var clearOptions = entityos._util.param.get(param, 'clearOptions', {default: true}).value;
 			var rows = entityos._util.param.get(param, 'rows').value;
             var customOptions = entityos._util.param.get(param, 'customOptions').value;
-			var searchOnlyIfSearchText = entityos._util.param.get(param, 'searchOnlyIfSearchText ', {default: true}).value;
+			var searchMinimumCharacters = mydigitalstructure._util.param.get(param, 'searchMinimumCharacters', {default: 1}).value;
 
 			if (defaultValue == undefined)
 			{
@@ -7688,7 +7688,7 @@ entityos._util.factory.core = function (param)
 						    return 'Searching ...';
 						  }
 						},
-						placeholder: 'Start typing to search...'
+						minimumInputLength: searchMinimumCharacters
 					}
 
 					selectParam = _.assign(selectParam, param.options);
