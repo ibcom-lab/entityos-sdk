@@ -618,6 +618,7 @@ entityos._util.protect.oauth =
 			var object = entityos._util.param.get(param, 'object', { default: 22 }).value;
 			var objectContext = entityos._util.param.get(param, 'objectContext').value;
 			var accessContext = entityos._util.param.get(param, 'accessContext').value;
+            var consentURL = entityos._util.param.get(param, 'consentURL', { default: 'https://oauth2.ibcom.biz' }).value;
 
 			if (objectContext == undefined)
 			{
@@ -693,7 +694,7 @@ entityos._util.protect.oauth =
 							entityos._util.protect.oauth.connect.data.c = entityos._util.protect.oauth.connect.data.access.guid;
 							
 							entityos._util.protect.oauth.connect.data.url = 
-								'https://oauth2.entityos.io' + 
+								consentURL + 
 								'?s=' + entityos._util.protect.oauth.connect.data.s +
 								'&h=' + entityos._util.protect.oauth.connect.data.h +
 								'&c=' + entityos._util.protect.oauth.connect.data.c;
