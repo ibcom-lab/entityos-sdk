@@ -296,14 +296,14 @@ entityos._util.view.handlers['entityos-click'] = function (event)
 			}
 
 			param.dataContext = data;
-			app.data[controller] = _.assign(app.data[controller], data);
+			entityos._scope.data[controller] = _.assign(entityos._scope.data[controller], data);
 
-			if (app.data[controller] == undefined) {app.data[controller] = {}}
+			if (entityos._scope.data[controller] == undefined) {entityos._scope.data[controller] = {}}
 
 			if (scope != undefined)
 			{	
-				if (app.data[scope] == undefined) {app.data[scope] = {}};
-				app.data[scope] = _.assign(app.data[scope], data);
+				if (entityos._scope.data[scope] == undefined) {entityos._scope.data[scope] = {}};
+				entityos._scope.data[scope] = _.assign(entityos._scope.data[scope], data);
 			}
 
 			entityos._util.controller.invoke({name: controller}, param);
@@ -312,7 +312,7 @@ entityos._util.view.handlers['entityos-click'] = function (event)
 		{
 			if (id != '')
 			{	
-				if (entityos._util.controller.code[id] != undefined)
+				if (entityos._util.controller.exists(id))
 				{	
 					var param = {}
 
@@ -323,10 +323,10 @@ entityos._util.view.handlers['entityos-click'] = function (event)
 
 					var data = entityos._util.data.clean(element.data());
 					param.dataContext = data;
-					entityos_scope.data[id] = _.assign(app.data[id], data);
+					entityos._scope.data[id] = _.assign(entityos._scope.data[id], data);
 
-					if (entityos_scope.data[id] == undefined) {entityos_scope.data[id] = {}}
-					entityos._util.code[id](param);
+					if (entityos._scope.data[id] == undefined) {entityos._scope.data[id] = {}}
+					entityos._util.controller(id, param);
 				}
 			}
 		}	
@@ -429,7 +429,7 @@ entityos._util.view.handlers['entityos-navigate'] = function (event)
 			}
 
 			param.dataContext = entityos._util.data.clean($(this).data());
-			app.data[controller] = entityos._util.data.clean($(this).data());
+			entityos._scope.data[controller] = entityos._util.data.clean($(this).data());
 
 			var locationHash = '#' + controller;
 
@@ -496,7 +496,7 @@ entityos._util.view.handlers['entityos-invoke'] = function (event)
 		if (controller != undefined)
 		{
 			var param = {dataContext: entityos._util.data.clean($(this).data())};
-			app.data[controller] = entityos._util.data.clean($(this).data());
+			entityos._scope.data[controller] = entityos._util.data.clean($(this).data());
 
 			entityos._util.controller.invoke(
 			{
@@ -538,7 +538,7 @@ entityos._util.view.handlers['entityos-export-table'] = function(event)
 
 	if (!disabled)
 	{
-		app.controller['util-export-table'](
+		entityos_util.controller.invoke('util-export-table',
 		{
 			context: context,
 			filename: filename,
@@ -661,23 +661,23 @@ entityos._util.view.handlers['entityos-dropdown'] = function (event)
 			param.dataContext = _.assign(otherData, entityos._util.data.clean($(this).data()));
 			param._dataContext = _.assign(otherData, entityos._util.data.clean($(this).data()));
 			
-			if (app.data[controller] == undefined) {app.data[controller] = {}}
-			app.data[controller].dataContext = _.assign(otherData, entityos._util.data.clean($(this).data()));
+			if (entityos._scope.data[controller] == undefined) {entityos._scope.data[controller] = {}}
+			entityos._scope.data[controller].dataContext = _.assign(otherData, entityos._util.data.clean($(this).data()));
 
 			if (scope != undefined)
 			{
-				if (app.data[scope] == undefined) {app.data[scope] = {}}
+				if (entityos._scope.data[scope] == undefined) {entityos._scope.data[scope] = {}}
 			}
 
 			if (context != undefined && $(this).data('id') != undefined)
 			{
-				app.data[controller][context] = $(this).data('id');
-				app.data[controller]['_' + context] = [$(this).data('id')];
+				entityos._scope.data[controller][context] = $(this).data('id');
+				entityos._scope.data[controller]['_' + context] = [$(this).data('id')];
 
 				if (scope != undefined)
 				{
-					app.data[scope][context] = $(this).data('id');
-					app.data[scope]['_' + context] = [$(this).data('id')];
+					entityos._scope.data[scope][context] = $(this).data('id');
+					entityos._scope.data[scope]['_' + context] = [$(this).data('id')];
 				}
 			}	
 
