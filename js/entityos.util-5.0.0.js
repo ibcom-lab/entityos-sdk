@@ -233,14 +233,14 @@ entityos._util.view.handlers['entityos-enter'] = function(e)
                     }
 
                     param.dataContext = data;
-                    app.data[controller] = _.assign(app.data[controller], data);
+                    entityos._scope.data[controller] = _.assign(entityos._scope.data[controller], data);
 
-                    if (app.data[controller] == undefined) {app.data[controller] = {}}
+                    if (entityos._scope.data[controller] == undefined) {entityos._scope.data[controller] = {}}
 
                     if (scope != undefined)
                     {	
-                        if (app.data[scope] == undefined) {app.data[scope] = {}};
-                        app.data[scope] = _.assign(app.data[scope], data);
+                        if (entityos._scope.data[scope] == undefined) {entityos._scope.data[scope] = {}};
+                        entityos._scope.data[scope] = _.assign(entityos._scope.data[scope], data);
                     }
 
                     entityos._util.controller.invoke({name: controller}, param);
@@ -711,10 +711,10 @@ entityos._util.view.handlers['entityos-range'] = function (event)
 		
 		if (context != undefined)
 		{
-			if (app.data[scope] == undefined) {app.data[scope] = {}}
+			if (entityos._scope.data[scope] == undefined) {entityos._scope.data[scope] = {}}
 
-			app.data[scope][context] = $(this).val();
-			app.data[scope]['_' + context] = $(this).data();
+			entityos._scope.data[scope][context] = $(this).val();
+			entityos._scope.data[scope]['_' + context] = $(this).data();
 		}	
 
 		if (controller != '')
@@ -748,27 +748,27 @@ entityos._util.view.handlers['entityos-list'] = function (event)
 			var param = {}
 			param.dataContext = element.data();
 			
-			if (app.data[controller] == undefined) {app.data[controller] = {}}
-			app.data[controller].dataContext = element.data();
+			if (entityos._scope.data[controller] == undefined) {entityos._scope.data[controller] = {}}
+			entityos._scope.data[controller].dataContext = element.data();
 
 			if (context != undefined)
 			{
-				app.data[controller][context] = element.data('id');
-				app.data[controller]['_' + context] = [element.data('id')];
+				entityos._scope.data[controller][context] = element.data('id');
+				entityos._scope.data[controller]['_' + context] = [element.data('id')];
 			}	
 
-			app.controller[controller](param);
+			entityos._util.controller.code[controller](param);
 		}
 		else
 		{
 			if (id != '')
 			{	
-				if (app.controller[id] != undefined)
+				if (entityos._util.controller.code[id] != undefined)
 				{	
 					var param = {}
 					param.dataContext = element.data();
-					if (app.data[controller] == undefined) {app.data[controller] = {}}
-					app.controller[id](param);
+					if (entityos._scope.data[controller] == undefined) {entityos._scope.data[controller] = {}}
+					entityos._util.controller.code[id](param);
 				}
 			}
 		}	
@@ -812,7 +812,7 @@ entityos._util.view.handlers['entityos-check'] = function (event)
 
 		if ((controller != undefined || scope != undefined) && context != undefined)
 		{	
-			if (app.data[scope] == undefined) {app.data[scope] = {}}
+			if (entityos._scope.data[scope] == undefined) {entityos._scope.data[scope] = {}}
 
 			var selected = $(this).prop('checked');
 
@@ -847,7 +847,7 @@ entityos._util.view.handlers['entityos-check'] = function (event)
 
 			if (controllerBefore != undefined)
 			{
-				app.controller[controllerBefore](param);
+				entityos._util.controller.code[controllerBefore](param);
 			}
 
 			var ids = [];
@@ -931,12 +931,12 @@ entityos._util.view.handlers['entityos-check'] = function (event)
 				}
 			}
 			
-			app.data[scope]['dataID'] = dataID;
-	 		app.data[scope][context] = (ids.length==0?'':ids.join(','));
-	 		app.data[scope]['_' + context] = ids;
+			entityos._scope.data[scope]['dataID'] = dataID;
+	 		entityos._scope.data[scope][context] = (ids.length==0?'':ids.join(','));
+	 		entityos._scope.data[scope]['_' + context] = ids;
 
-	 		app.data[scope][context + '-unselected'] = (uncheckedids.length==0?'':uncheckedids.join(','));
-	 		app.data[scope]['_' + context + '-unselected'] = uncheckedids;
+	 		entityos._scope.data[scope][context + '-unselected'] = (uncheckedids.length==0?'':uncheckedids.join(','));
+	 		entityos._scope.data[scope]['_' + context + '-unselected'] = uncheckedids;
 
 			if (controller != undefined)
 			{	
@@ -984,33 +984,33 @@ entityos._util.view.handlers['entityos-text'] = function (event)
 
 		if (scope != undefined && context != undefined)
 		{
-			if (app.data[scope] == undefined) {app.data[scope] = {}}
-	 		app.data[scope][context] = val;
-	 		app.data[scope]['_' + context] = data;
+			if (entityos._scope.data[scope] == undefined) {entityos._scope.data[scope] = {}}
+	 		entityos._scope.data[scope][context] = val;
+	 		entityos._scope.data[scope]['_' + context] = data;
 		}
 		
 		if (controller != undefined && context != undefined)
 		{	
-	 		if (app.data[controller] == undefined) {app.data[controller] = {}}
+	 		if (entityos._scope.data[controller] == undefined) {entityos._scope.data[controller] = {}}
 
-	 		app.data[controller][context] = val;
-	 		app.data[controller]['_' + context] = data;
-	 		app.data[controller]['_' + context]._type = 'keyup';
-	 		app.data[controller]['_' + context]._source = event.target.id;
-	 		app.data[controller]['_' + context]._value = val;
+	 		entityos._scope.data[controller][context] = val;
+	 		entityos._scope.data[controller]['_' + context] = data;
+	 		entityos._scope.data[controller]['_' + context]._type = 'keyup';
+	 		entityos._scope.data[controller]['_' + context]._source = event.target.id;
+	 		entityos._scope.data[controller]['_' + context]._value = val;
 
-			if (app.controller[controller] != undefined)
+			if (entityos._util.controller.code[controller] != undefined)
 			{	
-				if (app.data[controller].timerText != 0) {clearTimeout(app.data[controller].timerText)};
+				if (entityos._scope.data[controller].timerText != 0) {clearTimeout(entityos._scope.data[controller].timerText)};
 				
 				var param = JSON.stringify(
 				{
-					dataContext: app.data[controller][context],
+					dataContext: entityos._scope.data[controller][context],
 					_type: 'keyup',
-					_dataContext: app.data[controller]['_' + context],
+					_dataContext: entityos._scope.data[controller]['_' + context],
 				});
 
-				app.data[controller].timerText = setTimeout('app.controller["' + controller + '"](' + param + ')', 500);
+				entityos._scope.data[controller].timerText = setTimeout('entityos._util.controller.code["' + controller + '"](' + param + ')', 500);
 			}
 		}
 	}
@@ -1072,14 +1072,14 @@ entityos._util.view.handlers['entityos-date-time'] = function (event)
 	
 	if (controller != undefined && context != undefined)
 	{	
- 		if (app.data[controller] == undefined) {app.data[controller] = {}}
+ 		if (entityos._scope.data[controller] == undefined) {entityos._scope.data[controller] = {}}
 
- 		app.data[controller][context] = event.format();
- 		app.data[controller]['_' + context] = event;
+ 		entityos._scope.data[controller][context] = event.format();
+ 		entityos._scope.data[controller]['_' + context] = event;
 
-		if (app.controller[controller] != undefined)
+		if (entityos._util.controller.code[controller] != undefined)
 		{	
-			if (app.data[controller].timerText != 0) {clearTimeout(app.data[controller].timerText)};
+			if (entityos._scope.data[controller].timerText != 0) {clearTimeout(entityos._scope.data[controller].timerText)};
 			
 			var param = {dataContext: $(this).children('input').data()};
 
@@ -1092,7 +1092,7 @@ entityos._util.view.handlers['entityos-date-time'] = function (event)
 
 			param.dataContext = _.assign(param.dataContext, $(this).children('input').data())
 
-			app.data[controller].timerText = setTimeout('app.controller["' + controller + '"](' + JSON.stringify(param) + ')', 500);
+			entityos._scope.data[controller].timerText = setTimeout('entityos._util.controller.code["' + controller + '"](' + JSON.stringify(param) + ')', 500);
 		}
 	}
 	
@@ -1120,26 +1120,26 @@ entityos._util.view.handlers['entityos-focus'] = function (event)
 	
 	if (scope != undefined && context != undefined)
 	{
-		if (app.data[scope] == undefined) {app.data[scope] = {}}
- 		app.data[scope][context] = val;
- 		app.data[scope]['_' + context] = data;
+		if (entityos._scope.data[scope] == undefined) {entityos._scope.data[scope] = {}}
+ 		entityos._scope.data[scope][context] = val;
+ 		entityos._scope.data[scope]['_' + context] = data;
 	}
 
 	if (controller != undefined && context != undefined)
 	{	
- 		if (app.data[controller] == undefined) {app.data[controller] = {}}
+ 		if (entityos._scope.data[controller] == undefined) {entityos._scope.data[controller] = {}}
 
-		app.data[controller][context] = val;
- 		app.data[controller]['_' + context] = data;
- 		app.data[controller]['_' + context]._type = 'focusout';
- 		app.data[controller]['_' + context][context] = val;
- 		app.data[controller]['_' + context]._value = val;
+		entityos._scope.data[controller][context] = val;
+ 		entityos._scope.data[controller]['_' + context] = data;
+ 		entityos._scope.data[controller]['_' + context]._type = 'focusout';
+ 		entityos._scope.data[controller]['_' + context][context] = val;
+ 		entityos._scope.data[controller]['_' + context]._value = val;
  	
-		if (app.controller[controller] != undefined)
+		if (entityos._util.controller.code[controller] != undefined)
 		{	
-			app.controller[controller](
+			entityos._util.controller.code[controller](
 			{
-				dataContext: app.data[controller]['_' + context],
+				dataContext: entityos._scope.data[controller]['_' + context],
 				_type: 'focusout',
 				_class: 'entityos-text',
 				_xhtmlElementID: $(this).attr('id')
@@ -1161,7 +1161,7 @@ entityos._util.view.handlers['entityos-text-select-focus-out'] = function (event
 		
 		if (scope != undefined && context != undefined)
 		{
-			if (!_.isUndefined(app.data[scope])) {app.data[scope][context] = ''}
+			if (!_.isUndefined(entityos._scope.data[scope])) {entityos._scope.data[scope][context] = ''}
 			$(this).attr('data-id', '');
 		}
 	}
@@ -1220,101 +1220,101 @@ entityos._util.view.handlers['entityos-text-select-change'] = function (event)
 		
 		if (scope != undefined && context != undefined)
 		{
-			if (app.data[scope] == undefined) {app.data[scope] = {}}
+			if (entityos._scope.data[scope] == undefined) {entityos._scope.data[scope] = {}}
 			
 			if (val == '')
 			{
-				app.data[scope]['_' + context] = undefined;
-				app.data[scope][context] = '';
+				entityos._scope.data[scope]['_' + context] = undefined;
+				entityos._scope.data[scope][context] = '';
 
 				if (contextText != undefined)
 				{
-					app.data[scope][contextText] = '';
+					entityos._scope.data[scope][contextText] = '';
 				}
 
 				if ($(this).attr('data-none') != undefined)
 				{
-					app.data[scope][context] = $(this).attr('data-none');
+					entityos._scope.data[scope][context] = $(this).attr('data-none');
 				}
 			}
 			else
 			{
 				if (typeof $.fn.typeahead == 'function')
 				{
-					app.data[scope]['_' + context] = $(this).typeahead("getActive")
+					entityos._scope.data[scope]['_' + context] = $(this).typeahead("getActive")
 
-					if (app.data[scope]['_' + context] != undefined)
+					if (entityos._scope.data[scope]['_' + context] != undefined)
 					{
-						app.data[scope][context] = app.data[scope]['_' + context].id
-						$(this).attr('data-id', app.data[scope][context].id);
+						entityos._scope.data[scope][context] = entityos._scope.data[scope]['_' + context].id
+						$(this).attr('data-id', entityos._scope.data[scope][context].id);
 					}
 				}
 				else
 				{
-		 			app.data[scope][context] = val;
+		 			entityos._scope.data[scope][context] = val;
 		 			if (contextText != undefined && data != undefined)
 					{
-						app.data[scope][contextText] = data.text;
+						entityos._scope.data[scope][contextText] = data.text;
 					}
 
 		 			$(this).attr('data-id', val);
-		 			app.data[scope]['_' + context] = data;
-		 			app.data[scope]['_' + context]._type = 'change';
-		 			app.data[scope]['_' + context][context] = val;
-		 			app.data[scope]['_' + context]._value = val;
+		 			entityos._scope.data[scope]['_' + context] = data;
+		 			entityos._scope.data[scope]['_' + context]._type = 'change';
+		 			entityos._scope.data[scope]['_' + context][context] = val;
+		 			entityos._scope.data[scope]['_' + context]._value = val;
 		 		}	
 		 	}
 		}
 
 		if (controller != undefined && context != undefined)
 		{	
-	 		if (app.data[controller] == undefined) {app.data[controller] = {}}
+	 		if (entityos._scope.data[controller] == undefined) {entityos._scope.data[controller] = {}}
 
 			if (typeof $.fn.typeahead == 'function')
 			{
 				var set = $(this).attr('data-context-set');
 
-				app.data[controller]['_' + context] = $(this).typeahead("getActive");
+				entityos._scope.data[controller]['_' + context] = $(this).typeahead("getActive");
 
 				if (set == 'id')
 				{
-					app.data[controller][context] = app.data[controller]['_' + context].id;
+					entityos._scope.data[controller][context] = entityos._scope.data[controller]['_' + context].id;
 				}
 				else
 				{
-					app.data[controller][context] = $(this).typeahead("getActive");
-					app.data[controller][context + '-id'] = app.data[controller][context].id;
+					entityos._scope.data[controller][context] = $(this).typeahead("getActive");
+					entityos._scope.data[controller][context + '-id'] = entityos._scope.data[controller][context].id;
 				}
 					
-				$(this).attr('data-id', app.data[controller][context].id);
+				$(this).attr('data-id', entityos._scope.data[controller][context].id);
 			}
 			else
 			{
-	 			app.data[controller][context] = val;
+	 			entityos._scope.data[controller][context] = val;
 	 			
 	 			if (contextText != undefined && data != undefined)
 				{
-					app.data[scope][contextText] = data.text;
+					entityos._scope.data[scope][contextText] = data.text;
 				}
 
-	 			app.data[controller]['_' + context] = data;
-	 			delete app.data[controller]['_' + context].chosen;  //?
-	 			app.data[controller]['_' + context]._type = 'change';
-	 			app.data[controller]['_' + context][context] = val;
-	 			app.data[controller]['_' + context]._value = val;
+	 			entityos._scope.data[controller]['_' + context] = data;
+	 			delete entityos._scope.data[controller]['_' + context].chosen;  //?
+	 			entityos._scope.data[controller]['_' + context]._type = 'change';
+	 			entityos._scope.data[controller]['_' + context][context] = val;
+	 			entityos._scope.data[controller]['_' + context]._value = val;
 	 		}	
 
-			if (app.controller[controller] != undefined)
+			if (entityos._util.controller.code[controller] != undefined)
 			{				
 				var param =
 				{
-					dataContext: app.data[controller]['_' + context],
+					dataContext: entityos._scope.data[controller]['_' + context],
 					_type: 'change',
 					_class: 'entityos-text-select',
 					_xhtmlElementID: $(this).attr('id')
 				}
 
-				app.controller[controller](param);
+				entityos._util.controller.code[controller](param);
 			}
 		}		
 	}
@@ -1348,31 +1348,31 @@ entityos._util.view.handlers['entityos-select'] = function (event)
 	
 	if (scope != undefined && context != undefined)
 	{
-		if (app.data[scope] == undefined) {app.data[scope] = {}}
- 		app.data[scope][context] = val;
- 		app.data[scope]['_' + context] = data;
+		if (entityos._scope.data[scope] == undefined) {entityos._scope.data[scope] = {}}
+ 		entityos._scope.data[scope][context] = val;
+ 		entityos._scope.data[scope]['_' + context] = data;
 
  		if (contextText != undefined)
  		{
- 			app.data[scope][contextText] = $(this).find('option:selected').text();
+ 			entityos._scope.data[scope][contextText] = $(this).find('option:selected').text();
  		}
 	}
 
 	if (controller != undefined && context != undefined)
 	{	
- 		if (app.data[controller] == undefined) {app.data[controller] = {}}
+ 		if (entityos._scope.data[controller] == undefined) {entityos._scope.data[controller] = {}}
 
-		app.data[controller][context] = val;
- 		app.data[controller]['_' + context] = data;
+		entityos._scope.data[controller][context] = val;
+ 		entityos._scope.data[controller]['_' + context] = data;
 
  		if (contextText != undefined)
  		{
- 			app.data[controller][contextText] = $(this).find('option:selected').text();
+ 			entityos._scope.data[controller][contextText] = $(this).find('option:selected').text();
  		}
  	
-		if (app.controller[controller] != undefined)
+		if (entityos._util.controller.code[controller] != undefined)
 		{	
-			app.controller[controller]({dataContext: app.data[controller]['_' + context]});
+			entityos._util.controller.code[controller]({dataContext: entityos._scope.data[controller]['_' + context]});
 		}
 	}		
 }
@@ -1400,15 +1400,15 @@ entityos._util.view.handlers['entityos-change'] = function (event)
 
 		if (controller != undefined && context != undefined)
 		{	
-	 		if (app.data[controller] == undefined) {app.data[controller] = {}}
+	 		if (entityos._scope.data[controller] == undefined) {entityos._scope.data[controller] = {}}
 
-	 		app.data[controller][context] = val;
-	 		app.data[controller]['_' + context] = data;
+	 		entityos._scope.data[controller][context] = val;
+	 		entityos._scope.data[controller]['_' + context] = data;
 
-			if (app.controller[controller] != undefined)
+			if (entityos._util.controller.code[controller] != undefined)
 			{	
-				var param = {dataContext: app.data[controller][context]}
-				app.controller[controller](param);
+				var param = {dataContext: entityos._scope.data[controller][context]}
+				entityos._util.controller.code[controller](param);
 			}
 		}
 	}
@@ -1461,16 +1461,16 @@ entityos._util.view.handlers['entityos-sort'] = function (event)
 
 	if (controller != undefined && context != undefined)
 	{	
- 		if (app.data[controller] == undefined) {app.data[controller] = {}}
+ 		if (entityos._scope.data[controller] == undefined) {entityos._scope.data[controller] = {}}
 
- 		app.data[controller][context] = {name: sort, direction: sortDirection};
- 		app.data[controller]['_' + context] = data;
+ 		entityos._scope.data[controller][context] = {name: sort, direction: sortDirection};
+ 		entityos._scope.data[controller]['_' + context] = data;
 
-		if (app.controller[controller] != undefined)
+		if (entityos._util.controller.code[controller] != undefined)
 		{	
-			var param = {sort: app.data[controller][context]}
+			var param = {sort: entityos._scope.data[controller][context]}
 			param.context = context;
-			app.controller[controller](param);
+			entityos._util.controller.code[controller](param);
 		}
 	}		
 }
@@ -1512,16 +1512,16 @@ entityos._util.view.handlers['entityos-page-rows'] = function (event)
 
 	if (controller != undefined && context != undefined)
 	{	
- 		if (app.data[controller] == undefined) {app.data[controller] = {}}
+ 		if (entityos._scope.data[controller] == undefined) {entityos._scope.data[controller] = {}}
 
- 		app.data[controller][context] = {count: rowsperpage};
- 		app.data[controller]['_' + context] = data;
+ 		entityos._scope.data[controller][context] = {count: rowsperpage};
+ 		entityos._scope.data[controller]['_' + context] = data;
 
-		if (app.controller[controller] != undefined)
+		if (entityos._util.controller.code[controller] != undefined)
 		{	
-			var param = {rowsPerPage: app.data[controller][context]}
+			var param = {rowsPerPage: entityos._scope.data[controller][context]}
 			param.context = context;
-			app.controller[controller](param);
+			entityos._util.controller.code[controller](param);
 		}
 	}		
 }
@@ -1573,16 +1573,16 @@ entityos._util.view.handlers['entityos-date-time-picker'] = function(event)
 
 		if (controller != undefined && context != undefined)
 		{	
-	 		if (app.data[controller] == undefined) {app.data[controller] = {}}
+	 		if (entityos._scope.data[controller] == undefined) {entityos._scope.data[controller] = {}}
 
-	 		app.data[controller][context] = val;
-	 		app.data[controller]['_' + context] = data;
+	 		entityos._scope.data[controller][context] = val;
+	 		entityos._scope.data[controller]['_' + context] = data;
 
-	 		app.data[controller] = _.assign(app.data[controller],  element.data());
+	 		entityos._scope.data[controller] = _.assign(entityos._scope.data[controller],  element.data());
 
 			if (entityos._util.controller.code[controller] != undefined)
 			{	
-				var param = {dataContext: app.data[controller][context]}
+				var param = {dataContext: entityos._scope.data[controller][context]}
 				param._dataContext = element.data();
 
 				entityos._util.controller.invoke(controller, param);
@@ -1616,19 +1616,19 @@ entityos._util.view.handlers['entityos-file-input'] = function(event)
 
 		if (controller != undefined)
 		{	
-			if (app.data[controller] == undefined) {app.data[controller] = {}}
+			if (entityos._scope.data[controller] == undefined) {entityos._scope.data[controller] = {}}
 
 			if (elementInput.length > 0)
 			{
-				app.data[controller][context] = {id: elementInput.attr('id')};
-				app.data[controller]['_' + context] = elementInput;
+				entityos._scope.data[controller][context] = {id: elementInput.attr('id')};
+				entityos._scope.data[controller]['_' + context] = elementInput;
 			}
 
 			if (entityos._util.controller.code[controller] != undefined)
 			{	
-				var param = {dataContext: app.data[controller][context]}
+				var param = {dataContext: entityos._scope.data[controller][context]}
 				entityos._util.controller.invoke(controller, param);
-				//19J:app.controller[controller](param);
+				//19J:entityos._util.controller.code[controller](param);
 			}
 		}
 	}
@@ -1733,16 +1733,16 @@ if (typeof $.fn.tab == 'function')
 					dataContext: $(event.target).data()
 				}
 
-				app.data[controller] = param;
+				entityos._scope.data[controller] = param;
 
 				entityos._util.controller.invoke(controller, param);
-				//19J:app.controller[controller](param);
+				//19J:entityos._util.controller.code[controller](param);
 			}
 			else
 			{
 				if (entityos._util.controller.code[uriContext] != undefined)
 				{
-					if (app.data[uriContext] == undefined) {app.data[uriContext] = {}};
+					if (entityos._scope.data[uriContext] == undefined) {entityos._scope.data[uriContext] = {}};
 
 					entityos._util.controller.invoke(uriContext, param);
 				}
@@ -1752,7 +1752,7 @@ if (typeof $.fn.tab == 'function')
 
 					if (entityos._util.controller.code[uriContext[0]] != undefined)
 					{
-						if (app.data[uriContext[0]] == undefined) {app.data[uriContext[0]] = {}};
+						if (entityos._scope.data[uriContext[0]] == undefined) {entityos._scope.data[uriContext[0]] = {}};
 						entityos._util.controller.invoke(uriContext[0], {context: uriContext[1]});
 					}
 				}
@@ -1793,11 +1793,11 @@ if (typeof $.fn.modal == 'function')
 				param = $.extend(true, param, {dataContext: entityos._scope.app.dataContext})
 			}
 
-			if (app.data[id] == undefined) {app.data[id] = {}};
-			app.data[id] = _.extend(app.data[id], param);
+			if (entityos._scope.data[id] == undefined) {entityos._scope.data[id] = {}};
+			entityos._scope.data[id] = _.extend(entityos._scope.data[id], param);
 
-			if (app.data[controller] == undefined) {app.data[controller] = {}};
-			app.data[controller] = _.extend(app.data[controller], param);
+			if (entityos._scope.data[controller] == undefined) {entityos._scope.data[controller] = {}};
+			entityos._scope.data[controller] = _.extend(entityos._scope.data[controller], param);
 
 			if (_.has(entityos._scope.app.view, 'data'))
 			{
@@ -1860,14 +1860,14 @@ if (typeof $.fn.modal == 'function')
 				param = $.extend(true, param, {dataContext: entityos._scope.app.dataContext})
 			}
 
-			if (app.data[id] == undefined) {app.data[id] = {}};
-			app.data[id] = _.extend(app.data[id], param);
+			if (entityos._scope.data[id] == undefined) {entityos._scope.data[id] = {}};
+			entityos._scope.data[id] = _.extend(entityos._scope.data[id], param);
 		}	
 
 		if (controller != undefined)
 		{	
-			if (app.data[controller] == undefined) {app.data[controller] = {}};
-			app.data[controller] = _.extend(app.data[controller], param);
+			if (entityos._scope.data[controller] == undefined) {entityos._scope.data[controller] = {}};
+			entityos._scope.data[controller] = _.extend(entityos._scope.data[controller], param);
 
 			if (entityos._util.controller.exists(controller))
 			{
@@ -1915,8 +1915,8 @@ if (typeof $.fn.collapse == 'function')
 
                 if (controller != undefined)
                 {
-                    if (app.data[controller] == undefined) {app.data[controller] = {}};
-                    app.data[controller] = _.extend(app.data[controller], {viewStatus: 'hidden'});
+                    if (entityos._scope.data[controller] == undefined) {entityos._scope.data[controller] = {}};
+                    entityos._scope.data[controller] = _.extend(entityos._scope.data[controller], {viewStatus: 'hidden'});
 
                     if (entityos._util.controller.exists(controller))
                     {
@@ -2007,9 +2007,9 @@ if (typeof $.fn.collapse == 'function')
 
 		if (scope != undefined)
 		{
-			if (app.data[scope] == undefined) {app.data[scope] = {}};
-			app.data[scope].viewStatus = 'shown';
-			app.data[scope].dataContext = $(event.target).data();
+			if (entityos._scope.data[scope] == undefined) {entityos._scope.data[scope] = {}};
+			entityos._scope.data[scope].viewStatus = 'shown';
+			entityos._scope.data[scope].dataContext = $(event.target).data();
 		}
 
         var refresh = ($(event.target).attr('data-reset') == 'true')
@@ -2059,9 +2059,9 @@ if (typeof $.fn.collapse == 'function')
 
 				if (controller != undefined)
 				{
-					if (app.data[controller] == undefined) {app.data[controller] = {}};
-					app.data[controller].viewStatus = 'show';
-					app.data[controller].dataContext = $(event.target).data();
+					if (entityos._scope.data[controller] == undefined) {entityos._scope.data[controller] = {}};
+					entityos._scope.data[controller].viewStatus = 'show';
+					entityos._scope.data[controller].dataContext = $(event.target).data();
 
 					entityos._util.controller.invoke(controller,
 					{
@@ -2120,7 +2120,7 @@ if (typeof $.fn.popover == 'function')
 
 			if (controller != undefined)
 			{
-				if (app.data[controller] == undefined) {app.data[controller] = {}};
+				if (entityos._scope.data[controller] == undefined) {entityos._scope.data[controller] = {}};
 
 				if (entityos._util.controller.exists(controller))
 				{
@@ -2182,7 +2182,7 @@ if (typeof $.fn.carousel == 'function')
 
 				if (controller != undefined)
 				{
-					if (app.data[controller] == undefined) {app.data[controller] = {}};
+					if (entityos._scope.data[controller] == undefined) {entityos._scope.data[controller] = {}};
 					entityos._util.controller.invoke(controller, param);
 				}
 			}
@@ -2222,7 +2222,7 @@ if (typeof $.fn.carousel == 'function')
 
 			if (controller != undefined)
 			{
-				if (app.data[controller] == undefined) {app.data[controller] = {}};
+				if (entityos._scope.data[controller] == undefined) {entityos._scope.data[controller] = {}};
 				entityos._util.controller.invoke(controller, param);
 			}
 		}	
@@ -2254,8 +2254,8 @@ if (typeof $.fn.dropdown == 'function')
 				param.dataContext = entityos._util.data.clean($(event.relatedTarget).parent().data());
 			}
 	
-			if (app.data[controller] == undefined) {app.data[controller] = {}}
-			app.data[controller].dataContext = param.dataContext;
+			if (entityos._scope.data[controller] == undefined) {entityos._scope.data[controller] = {}}
+			entityos._scope.data[controller].dataContext = param.dataContext;
 
 			entityos._util.controller.invoke(controller, param)
 		}	
@@ -2298,8 +2298,8 @@ entityos._util.view.handlers['entityos-more'] = function (event)
 
 	if (controller != undefined)
 	{
-		if (app.data[controller] == undefined) {app.data[controller] = {}}
-		app.data[controller].dataContext = entityos._util.data.clean($(this).data());
+		if (entityos._scope.data[controller] == undefined) {entityos._scope.data[controller] = {}}
+		entityos._scope.data[controller].dataContext = entityos._util.data.clean($(this).data());
 	}
 
 	entityos._util.view.moreSearch(
@@ -2331,8 +2331,8 @@ entityos._util.view.handlers['entityos-page'] = function (event)
 
 	if (controller != undefined)
 	{
-		if (app.data[controller] == undefined) {app.data[controller] = {}}
-		app.data[controller].dataContext = entityos._util.data.clean($(this).data());
+		if (entityos._scope.data[controller] == undefined) {entityos._scope.data[controller] = {}}
+		entityos._scope.data[controller].dataContext = entityos._util.data.clean($(this).data());
 	}
 	
 	entityos._util.view.showPage(
@@ -2709,7 +2709,7 @@ entityos._util.view.more = function (response, param)
 	{
 		queue = containerID;
 		param = entityos._util.param.set(param, 'queue', queue);
-		app.vq.clear({queue: queue})
+		entityos._util.view.queue.clear({queue: queue})
 	}
 
 	if (_.isObject(styles))
@@ -2733,7 +2733,7 @@ entityos._util.view.more = function (response, param)
 	{
 		if (response.morerows == 'true' && !_.isUndefined(scope))
 		{
-			app.vq.add('<div class="text-center m-b m-t mb-2 mt-2">' +
+			entityos._util.view.queue.add('<div class="text-center m-b m-t mb-2 mt-2">' +
       					'<button class="' + buttonClass + ' entityos-more myds-more" data-id="' + response.moreid + '"' +
       					' data-start="' + (_.toNumber(response.startrow) + _.toNumber(response.rows)) + '"' +
       					' data-rows="' + response.rows + '"' +
@@ -2741,14 +2741,14 @@ entityos._util.view.more = function (response, param)
       					' data-controller="' + controller + '">' +
         					'Show More</button></div>', param);
 
-			if (_.isObject(app.data[scope]))
+			if (_.isObject(entityos._scope.data[scope]))
 			{
-				if (!_.isUndefined(app.data[scope].count))
+				if (!_.isUndefined(entityos._scope.data[scope].count))
 				{
 					if (showFooter)
 					{
-						app.vq.add('<div class="text-center m-b mb-2 small text-muted"><span class="entityos-info myds-info" data-id="' + response.moreid + '">' +
-										(_.toNumber(response.startrow) + _.toNumber(response.rows)) + ' of ' + app.data[scope].count + '</span></div>', param);
+						entityos._util.view.queue.add('<div class="text-center m-b mb-2 small text-muted"><span class="entityos-info myds-info" data-id="' + response.moreid + '">' +
+										(_.toNumber(response.startrow) + _.toNumber(response.rows)) + ' of ' + entityos._scope.data[scope].count + '</span></div>', param);
 					}
 				};
 			}
@@ -2760,8 +2760,8 @@ entityos._util.view.more = function (response, param)
 		{
 			if (showFooter)
 			{
-				app.vq.add('<div class="text-center m-b m-t mb-2 mb-2 small text-muted">' +
-									'All ' + app.data[scope].count + ' shown</div>', param);
+				entityos._util.view.queue.add('<div class="text-center m-b m-t mb-2 mb-2 small text-muted">' +
+									'All ' + entityos._scope.data[scope].count + ' shown</div>', param);
 			}
 		}
 	}
@@ -3005,7 +3005,7 @@ entityos._util.view.more = function (response, param)
 			}	
 		}
 
-		app.vq.add('<div class="text-center small text-muted" data-id="' + response.moreid + '">' + 
+		entityos._util.view.queue.add('<div class="text-center small text-muted" data-id="' + response.moreid + '">' + 
 									html.join('') + '</div>', param);
 
 		var html = [];
@@ -3034,7 +3034,7 @@ entityos._util.view.more = function (response, param)
 						'</div>');
 		}
 
-		app.vq.add('<div class="text-center m-b mb-2 small text-muted" data-id="' + response.moreid + '">' + 
+		entityos._util.view.queue.add('<div class="text-center m-b mb-2 small text-muted" data-id="' + response.moreid + '">' + 
 									html.join('') + '</div>', param);
 	}
 
@@ -3042,7 +3042,7 @@ entityos._util.view.more = function (response, param)
 	{
 		if (showAlways || allPagesTotal != 1)
 		{
-			app.vq.render('#' + containerID, param);
+			entityos._util.view.queue.render('#' + containerID, param);
 		}	
 	}
 }
@@ -3197,7 +3197,7 @@ entityos._util.view.moreSearch = function (param)
 	{
 		if (!_.isFunction(controller))
 		{
-			controller = app.controller[controller];
+			controller = entityos._util.controller.code[controller];
 		}
 
 		if (_.isFunction(controller))
@@ -3242,14 +3242,14 @@ entityos._util.data.find = function (param)
 	{
 		if (id == undefined && controller != undefined)
 		{
-			id = app._util.data.get(
+			id = entityos._util.data.get(
 			{
 				controller: controller,
 				context: context
 			});
 		}
 		
-		var data = app._util.data.get(
+		var data = entityos._util.data.get(
 		{
 			controller: dataController,
 			context: dataContext
@@ -3492,7 +3492,7 @@ entityos._util.view._refresh = function (param)
 
 	if (template)
 	{
-		app._util.view.queue.templateRender(param);
+		entityos._util.view.queue.templateRender(param);
 
 		var context;
 		var value;
@@ -4018,7 +4018,7 @@ entityos._util.data.param =
 	{
 		if (controller != undefined)
 		{
-			var _param = app._util.data.get(
+			var _param = entityos._util.data.get(
 			{
 				controller: controller,
 				context: '_param'
@@ -4163,7 +4163,7 @@ entityos._util.whoami = function (param)
 
 	if (_.has(app, 'data'))
 	{
-		whoamiData.thisInstanceOfMe.data = app.data
+		whoamiData.thisInstanceOfMe.data = entityos._scope.data
 	}
 
 	var userRoleTitle = 'Template';
@@ -4233,9 +4233,9 @@ entityos._util.whoami = function (param)
 	{
 		whoamiData.thisInstanceOfMe.storage.local = 
 		{
-			scopes: _.keys(app.data),
-			count: _.keys(app.data).length,
-			_storage: app.data
+			scopes: _.keys(entityos._scope.data),
+			count: _.keys(entityos._scope.data).length,
+			_storage: entityos._scope.data
 		}
 	}
 
@@ -4610,12 +4610,12 @@ entityos._util.data =
 				
 				if (controller != undefined)
 				{
-					app.data[controller] = {}
+					entityos._scope.data[controller] = {}
 				}
 				
 				if (scope != undefined)
 				{
-					app.data[scope] = {}
+					entityos._scope.data[scope] = {}
 				}
 			},
 	
@@ -4638,19 +4638,19 @@ entityos._util.data =
 					{
 						if (name != undefined)
 						{
-							if (app.data[controller] != undefined)
+							if (entityos._scope.data[controller] != undefined)
 							{
-								if (app.data[controller][context] != undefined)
+								if (entityos._scope.data[controller][context] != undefined)
 								{
-									delete app.data[controller][context][name];
+									delete entityos._scope.data[controller][context][name];
 								}
 							}
 						}
 						else 
 						{
-							if (app.data[controller] != undefined)
+							if (entityos._scope.data[controller] != undefined)
 							{
-								delete app.data[controller][context];
+								delete entityos._scope.data[controller][context];
 							}
 						}	
 					}
@@ -4658,14 +4658,14 @@ entityos._util.data =
 					{
 						if (name != undefined)
 						{
-							if (app.data[controller] != undefined)
+							if (entityos._scope.data[controller] != undefined)
 							{
-								delete app.data[controller][name];
+								delete entityos._scope.data[controller][name];
 							}
 						}
 						else
 						{
-							delete app.data[controller];
+							delete entityos._scope.data[controller];
 						}
 					}	
 				}
@@ -4706,11 +4706,11 @@ entityos._util.data =
 
 					//if (_.isUndefined(app.data)) {app.data = {}}
 						
-					if (app.data[controller] == undefined) {app.data[controller] = {}}
+					if (entityos._scope.data[controller] == undefined) {entityos._scope.data[controller] = {}}
 
 					if (context != undefined)
 					{
-						if (app.data[controller][context] == undefined) {app.data[controller][context] = {}}
+						if (entityos._scope.data[controller][context] == undefined) {entityos._scope.data[controller][context] = {}}
 					}
 
 					if (context != undefined)
@@ -4719,37 +4719,37 @@ entityos._util.data =
 						{
                             if (_.isFunction(value) && !valueAsIs)
                             {
-                                value = value(app.data[controller][context][name])
+                                value = value(entityos._scope.data[controller][context][name])
                             }
 
-							if (merge && _.isObject(value) && _.isObject(app.data[controller][context][name]))
+							if (merge && _.isObject(value) && _.isObject(entityos._scope.data[controller][context][name]))
 							{
-								app.data[controller][context][name] = _.assign(app.data[controller][context][name], value);
+								entityos._scope.data[controller][context][name] = _.assign(entityos._scope.data[controller][context][name], value);
 							}
 							else
 							{
-								app.data[controller][context][name] = value;
+								entityos._scope.data[controller][context][name] = value;
 							}
 
-							data = app.data[controller][context][name];
+							data = entityos._scope.data[controller][context][name];
 						}
 						else 
 						{
                             if (_.isFunction(value) && !valueAsIs)
                             {
-                                value = value(app.data[controller][context])
+                                value = value(entityos._scope.data[controller][context])
                             }
 
-							if (merge && _.isObject(value) && _.isObject(app.data[controller][context]))
+							if (merge && _.isObject(value) && _.isObject(entityos._scope.data[controller][context]))
 							{
-								app.data[controller][context] = _.assign(app.data[controller][context], value);
+								entityos._scope.data[controller][context] = _.assign(entityos._scope.data[controller][context], value);
 							}
 							else
 							{
-								app.data[controller][context] = value;
+								entityos._scope.data[controller][context] = value;
 							}
 
-							data = app.data[controller][context];
+							data = entityos._scope.data[controller][context];
 						}	
 					}
 					else
@@ -4758,37 +4758,37 @@ entityos._util.data =
 						{
                             if (_.isFunction(value) && !valueAsIs)
                             {
-                                value = value(app.data[controller][name])
+                                value = value(entityos._scope.data[controller][name])
                             }
 
-							if (merge && _.isObject(value) && _.isObject(app.data[controller][name]))
+							if (merge && _.isObject(value) && _.isObject(entityos._scope.data[controller][name]))
 							{
-								app.data[controller][name] = _.assign(app.data[controller][name], value);
+								entityos._scope.data[controller][name] = _.assign(entityos._scope.data[controller][name], value);
 							}
 							else
 							{
-								app.data[controller][name] = value;
+								entityos._scope.data[controller][name] = value;
 							}
 
-							data = app.data[controller][name]
+							data = entityos._scope.data[controller][name]
 						}
 						else
 						{
                             if (_.isFunction(value) && !valueAsIs)
                             {
-                                value = value(app.data[controller])
+                                value = value(entityos._scope.data[controller])
                             }
 
-							if (merge && _.isObject(value) && _.isObject(app.data[controller]))
+							if (merge && _.isObject(value) && _.isObject(entityos._scope.data[controller]))
 							{
-								app.data[controller] = _.assign(app.data[controller], value);
+								entityos._scope.data[controller] = _.assign(entityos._scope.data[controller], value);
 							}
 							else
 							{
-								app.data[controller] = value;
+								entityos._scope.data[controller] = value;
 							}
 
-							data = app.data[controller];
+							data = entityos._scope.data[controller];
 						}	
 					}
 				}
@@ -4830,21 +4830,21 @@ entityos._util.data =
 
 				if (controller != undefined)
 				{
-					if (_.isUndefined(app.data)) {app.data = {}}
+					if (_.isUndefined(entityos._scope.data)) {entityos._scope.data = {}}
 						
-					if (app.data[controller] != undefined)
+					if (entityos._scope.data[controller] != undefined)
 					{
 						if (context != undefined)
 						{
-							if (app.data[controller][context] != undefined)
+							if (entityos._scope.data[controller][context] != undefined)
 							{	
 								if (name != undefined)
 								{
-									value = app.data[controller][context][name];
+									value = entityos._scope.data[controller][context][name];
 								}
 								else 
 								{
-									value = app.data[controller][context];
+									value = entityos._scope.data[controller][context];
 								}
 							}
 						}
@@ -4852,11 +4852,11 @@ entityos._util.data =
 						{
 							if (name != undefined)
 							{
-								value = app.data[controller][name];
+								value = entityos._scope.data[controller][name];
 							}
 							else
 							{
-								value = app.data[controller];
+								value = entityos._scope.data[controller];
 							}
 						}
 					}	
@@ -4986,14 +4986,14 @@ entityos._util.data =
 				{
 					if (id == undefined && controller != undefined)
 					{
-						id = app._util.data.get(
+						id = entityos._util.data.get(
 						{
 							controller: controller,
 							context: context
 						});
 					}
 					
-					var data = app._util.data.get(
+					var data = entityos._util.data.get(
 					{
 						controller: dataController,
 						context: dataContext
@@ -5106,11 +5106,11 @@ entityos._util.reset = function (param)
 
 	if (data)
 	{
-		app._util.data.reset(param);
+		entityos._util.data.reset(param);
 
 		if (includeNew)
 		{
-			app._util.data.reset({scope: scope + '-'});
+			entityos._util.data.reset({scope: scope + '-'});
 		}
 	}
 	
@@ -5125,7 +5125,7 @@ entityos._util.reset = function (param)
     $('#' + controller + ' .myds-text').val('');
 	$('#' + controller + ' .myds-check').attr('checked', false);
 	$('#' + controller + ' .myds-data').html('...');
-	$('#' + controller + ' .myds-data-view').html(app.options.working);
+	$('#' + controller + ' .myds-data-view').html(entityos._scope.app.options.working);
 	$('#' + controller + ' .myds-text-select').val('');
 	$('#' + controller + ' .myds-text-select').removeAttr('data-id');
 	$('#' + controller + ' input').removeClass('myds-validate-error');
@@ -5933,25 +5933,25 @@ entityos._util.validate =
 		
 		if (scope != undefined && context != undefined)
 		{
-			if (_.isUndefined(app.data[scope]))
+			if (_.isUndefined(entityos._scope.data[scope]))
 			{
-				app.data[scope] = {}
+				entityos._scope.data[scope] = {}
 			}
 
-			if (_.isUndefined(app.data[scope]['validate']))
+			if (_.isUndefined(entityos._scope.data[scope]['validate']))
 			{
-				app.data[scope]['validate'] = {}
+				entityos._scope.data[scope]['validate'] = {}
 			}
 
-			app.data[scope]['validate'][context] = {_id: element.attr('id')}
-			app.data[scope]['validate'][context]['errors'] = {}
+			entityos._scope.data[scope]['validate'][context] = {_id: element.attr('id')}
+			entityos._scope.data[scope]['validate'][context]['errors'] = {}
 
 			if (element.attr('data-validate-mandatory') != undefined)
 			{
 				if (elementValue == '')
 				{
 					errors.push('mandatory')
-					app.data[scope]['validate'][context]['errors']['mandatory'] = true
+					entityos._scope.data[scope]['validate'][context]['errors']['mandatory'] = true
 				}
 			}
 
@@ -5962,7 +5962,7 @@ entityos._util.validate =
 					if (_.isNull(numeral(elementValue).value()))
 					{
 						errors.push('numeral')
-						app.data[scope]['validate'][context]['errors']['numeral'] = true
+						entityos._scope.data[scope]['validate'][context]['errors']['numeral'] = true
 					}	
 				}
 
@@ -5975,7 +5975,7 @@ entityos._util.validate =
 						if (numeral(elementValue).value() > numeral(maximum).value())
 						{
 							errors.push('numeral-maximum')
-							app.data[scope]['validate'][context]['errors']['numeral-maximum'] = true;
+							entityos._scope.data[scope]['validate'][context]['errors']['numeral-maximum'] = true;
 						}
 					}	
 				}
@@ -5989,7 +5989,7 @@ entityos._util.validate =
 						if (numeral(elementValue).value() < numeral(minimum).value())
 						{
 							errors.push('numeral-minimum')
-							app.data[scope]['validate'][context]['errors']['numeral-minimum'] = true;
+							entityos._scope.data[scope]['validate'][context]['errors']['numeral-minimum'] = true;
 						}
 					}
 				}
@@ -6001,7 +6001,7 @@ entityos._util.validate =
 					if (numeral(elementValue.length).value() > numeral(maximumLength).value())
 					{
 						errors.push('maximum-length')
-						app.data[scope]['validate'][context]['errors']['maximum-length'] = true
+						entityos._scope.data[scope]['validate'][context]['errors']['maximum-length'] = true
 					}
 				}
 
@@ -6012,7 +6012,7 @@ entityos._util.validate =
 					if (numeral(elementValue.length).value() < numeral(minimumLength).value())
 					{
 						errors.push('minimum-length')
-						app.data[scope]['validate'][context]['errors']['minimum-length'] = true
+						entityos._scope.data[scope]['validate'][context]['errors']['minimum-length'] = true
 					}
 				}
 				
@@ -6021,7 +6021,7 @@ entityos._util.validate =
 					if (!entityos._util.validate.isEmail(elementValue))
 					{
 						errors.push('email')
-						app.data[scope]['validate'][context]['errors']['email'] = true
+						entityos._scope.data[scope]['validate'][context]['errors']['email'] = true
 					}
 				}
 
@@ -6030,16 +6030,16 @@ entityos._util.validate =
 					if (!entityos._util.validate.isDate(elementValue))
 					{
 						errors.push('date')
-						app.data[scope]['validate'][context]['errors']['date'] = true
+						entityos._scope.data[scope]['validate'][context]['errors']['date'] = true
 					}
 				}
 			}
 
-			app.data[scope]['validate'][context]['_errors'] = errors;
+			entityos._scope.data[scope]['validate'][context]['_errors'] = errors;
 
 			var scopeValidateErrors = false;
 
-			_.each(app.data[scope]['validate'], function (value, key)
+			_.each(entityos._scope.data[scope]['validate'], function (value, key)
 			{
 				if (!scopeValidateErrors && key != 'errors')
 				{
@@ -6047,15 +6047,15 @@ entityos._util.validate =
 				}
 			});
 
-			app.data[scope]['validate']['errors'] = scopeValidateErrors;
+			entityos._scope.data[scope]['validate']['errors'] = scopeValidateErrors;
 
-			app.invoke(controller,
+			entityos._util.controller.invoke(controller,
 			{
 				_id: element.attr('id'),
 				scope: scope,
 				context: context,
 				_errors: errors,
-				errors: app.data[scope]['validate'][context]['errors'],
+				errors: entityos._scope.data[scope]['validate'][context]['errors'],
 				scopeErrors: scopeValidateErrors
 			});
 		}
@@ -6178,6 +6178,86 @@ entityos._util.whenCan =
     }			
 }
 
+entityos._util.isNotSet = function (value)
+{
+	return (value === undefined ||
+		value === null ||
+		(typeof value === "object" && Object.keys(value).length === 0) ||
+		(typeof value === "string" && value.trim().length === 0))
+}
+
+	entityos._util.controller.add(
+	{
+		name: 'util-is-not-set',
+		code: function (param, response)
+		{
+			return entityos._util.isNotSet(value)
+		}
+	});
+
+entityos._util.isSet = function (value) {return !_.isNotSet(value)}
+
+entityos._util.controller.add(
+{
+	name: 'util-is-set',
+	code: function (param, response)
+	{
+		return entityos._util.isSet(value)
+	}
+});
+
+entityos._util.hex.toBuffer = function(base16Text)
+{
+	return new Uint8Array(base16Text.match(/../g).map(h=>parseInt(h,16))).buffer
+}
+
+entityos._util.controller.add(
+{
+	name: 'util-convert-hex-to-buffer',
+	code: function (param)
+	{
+		return entityos._util.hex.toBuffer (param)
+	}
+});
+
+entityos._util.hex.CBORtoArray = function(param)
+{
+	var data = '!! CBOR Not Available [https://github.com/paroga/cbor-js]'
+
+	if (_.isPlainObject(window.CBOR))
+	{
+		var dataAsBuffer = entityos._util.hex.toBuffer(param);
+		data = CBOR.decode(dataAsBuffer);
+	}
+
+	return data;
+}
+
+entityos._util.controller.add(
+{
+	name: 'util-convert-hex-to-array',
+	code: function (param)
+	{
+		return entityos._util.hex.CBORtoArray(param)
+	}
+});
+
+entityos._util.convert.charCodesToText = function(chars)
+{
+	var arrayChars = chars.split(',');
+	var text = String.fromCharCode.apply(null, arrayChars);
+	return text;
+}
+
+entityos._util.controller.add(
+{
+	name: 'util-convert-charcodes-to-text',
+	code: function (param)
+	{
+		return entityos._util.convert.charCodesToText(param)
+	}
+});
+
 entityos._util.factory = {};
 
 entityos._util.factory.core = function (param)
@@ -6261,15 +6341,15 @@ entityos._util.factory.core = function (param)
 					}
 
 					param.dataContext = entityos._util.data.clean($(this).data());
-					app.data[controller] = entityos._util.data.clean($(this).data());
+					entityos._scope.data[controller] = entityos._util.data.clean($(this).data());
 
 					var locationHash = '#' + controller;
 
 					if (context != undefined)
 					{
-						if (app.data[controller] != undefined)
+						if (entityos._scope.data[controller] != undefined)
 						{
-							app.data[controller]['context'] = context;
+							entityos._scope.data[controller]['context'] = context;
 						}
 
 						locationHash = locationHash + '/' + context
@@ -6312,7 +6392,7 @@ entityos._util.factory.core = function (param)
 					 	uriContext = window.location.hash;
 					}
 
-					if (!data.isLoggedOn && (app.options.authURIIsHome && uriPath == '/'))
+					if (!data.isLoggedOn && (entityos._scope.app.options.authURIIsHome && uriPath == '/'))
 					{
 						if (entityos._scope.app.view == undefined) {entityos._scope.app.view = {}}
 						if (uri != undefined) {entityos._scope.app.view.uri = uri}
@@ -6347,7 +6427,7 @@ entityos._util.factory.core = function (param)
 							}
 							else
 							{
-								if (uri != app.options.authURI)
+								if (uri != entityos._scope.app.options.authURI)
 								{
 									entityos._scope.route.targetURI = uri;
 									entityos._scope.route.targetURIContext = uriContext;
@@ -6363,15 +6443,15 @@ entityos._util.factory.core = function (param)
 							}
 							
 							//add any context that the current URL has. ie entityos._scope.app.dataContext
-							uri = app.options.authURI;
+							uri = entityos._scope.app.options.authURI;
 
 							if (entityos._scope.route.target != undefined)
 							{
-								uriContext = app.options.authURIContext + '|' + entityos._scope.route.target;
+								uriContext = entityos._scope.app.options.authURIContext + '|' + entityos._scope.route.target;
 							}
 							else
 							{
-								uriContext = app.options.authURIContext;
+								uriContext = entityos._scope.app.options.authURIContext;
 							}
 						}	
 						else
@@ -6395,8 +6475,8 @@ entityos._util.factory.core = function (param)
 								}
 								else
 								{
-									if (_.isEmpty(uri)) {uri = app.options.startURI;}
-									if (_.isEmpty(uriContext)) {uriContext = app.options.startURIContext;}
+									if (_.isEmpty(uri)) {uri = entityos._scope.app.options.startURI;}
+									if (_.isEmpty(uriContext)) {uriContext = entityos._scope.app.options.startURIContext;}
 								}	
 							}
 						}
@@ -6495,41 +6575,41 @@ entityos._util.factory.core = function (param)
 					
 				var controller = entityos._scope.app.uriContext.replace('#', '');
 
-				if (app.data[controller] == undefined) {app.data[controller] = {}}
-				app.data[controller].uriContext = undefined
+				if (entityos._scope.data[controller] == undefined) {entityos._scope.data[controller] = {}}
+				entityos._scope.data[controller].uriContext = undefined
 
 				if (entityos._scope.app.dataContext != undefined)
 				{
-					app.data[controller].uriContext = 
+					entityos._scope.data[controller].uriContext = 
 						decodeURI(entityos._scope.app.dataContext);
 
-					app.data[controller].uriDataContext = 
+					entityos._scope.data[controller].uriDataContext = 
 						decodeURI(entityos._scope.app.dataContext);
 
-					if (_.startsWith(app.data[controller].uriContext, '{') ||
-							_.startsWith(app.data[controller].uriContext, '['))
+					if (_.startsWith(entityos._scope.data[controller].uriContext, '{') ||
+							_.startsWith(entityos._scope.data[controller].uriContext, '['))
 					{
-						if (!_.isError(_.attempt(JSON.parse.bind(null, app.data[controller].uriContext))))
+						if (!_.isError(_.attempt(JSON.parse.bind(null, entityos._scope.data[controller].uriContext))))
 						{
-							app.data[controller].dataContext = _.assign(app.data[controller].dataContext,
-								_.attempt(JSON.parse.bind(null, app.data[controller].uriContext)));
+							entityos._scope.data[controller].dataContext = _.assign(entityos._scope.data[controller].dataContext,
+								_.attempt(JSON.parse.bind(null, entityos._scope.data[controller].uriContext)));
 
-							app.data[controller] = _.assign(app.data[controller],
-								_.attempt(JSON.parse.bind(null, app.data[controller].uriContext)));
+							entityos._scope.data[controller] = _.assign(entityos._scope.data[controller],
+								_.attempt(JSON.parse.bind(null, entityos._scope.data[controller].uriContext)));
 						}
 						else
 						{
-							app.data[controller].dataContext = app.data[controller].uriContext;
+							entityos._scope.data[controller].dataContext = entityos._scope.data[controller].uriContext;
 						}
 					}
 					else
 					{
-						app.data[controller].dataContext = app.data[controller].uriContext;
+						entityos._scope.data[controller].dataContext = entityos._scope.data[controller].uriContext;
 					}
 
-					if (_.isString(app.data[controller].dataContext))
+					if (_.isString(entityos._scope.data[controller].dataContext))
 					{
-						app.data[controller].id = app.data[controller].dataContext
+						entityos._scope.data[controller].id = entityos._scope.data[controller].dataContext
 					}
 				}	
 
@@ -6584,7 +6664,7 @@ entityos._util.factory.core = function (param)
 
 								if (instructionMatch && instruction.onlyApplyIfDataIsEmpty)
 								{
-									instructionMatch = _.isEmpty(app.data[controller])
+									instructionMatch = _.isEmpty(entityos._scope.data[controller])
 								}
 
 								if (instructionMatch && !instruction.applyEvenIfReload)
@@ -6624,7 +6704,7 @@ entityos._util.factory.core = function (param)
 
 									if (instructionMatch && !instruction.applyEvenIfDataIsEmpty)
 									{
-										instructionMatch = _.isEmpty(app.data[controller].controller)
+										instructionMatch = _.isEmpty(entityos._scope.data[controller].controller)
 									}
 
 									if (instructionMatch && !instruction.applyEvenIfNotReload)
@@ -6692,7 +6772,7 @@ entityos._util.factory.core = function (param)
 					}
 				}
 
-				if (_.isObject(app.view))
+				if (_.has(app, 'view'))
 				{
 					if (app.view[uriContext.replace('#', '')] != undefined)
 					{
@@ -6700,11 +6780,11 @@ entityos._util.factory.core = function (param)
 					}
 				}
 
-				if (_.isObject(app.controller))
+				if (_.isObject(entityos._util.controller))
 				{
-					if (app.controller[uriContext.replace('#', '')] != undefined)
+					if (entityos._util.controller.code[uriContext.replace('#', '')] != undefined)
 					{
-						app.controller[uriContext.replace('#', '')](param);
+						entityos._util.controller.code[uriContext.replace('#', '')](param);
 					}
 				}
 
@@ -6759,7 +6839,7 @@ entityos._util.factory.core = function (param)
 							if (instructionMatch && instruction.onlyApplyIfDataIsEmpty)
 							{
 								var controller = entityos._scope.app.uriContext.replace('#', '');
-								instructionMatch = _.isEmpty(app.data[controller])
+								instructionMatch = _.isEmpty(entityos._scope.data[controller])
 							}
 
 							if (instructionMatch && !instruction.applyEvenIfReload)
@@ -6800,7 +6880,7 @@ entityos._util.factory.core = function (param)
 			{
 				if (selector != undefined)
 				{
-					$(selector).html(app.options.working);
+					$(selector).html(entityos._scope.app.options.working);
 				}
 			}
 		},
@@ -6928,10 +7008,10 @@ entityos._util.factory.core = function (param)
 					dismiss = '<i class="fa fa-times text-muted" style="font-size:1rem;">'
 				}
 
-				if (message == undefined && app.data['notify-message'] != undefined)
+				if (message == undefined && entityos._scope.data['notify-message'] != undefined)
 				{
-					message = app.data['notify-message'];
-					app.data['notify-message'] = undefined;
+					message = entityos._scope.data['notify-message'];
+					entityos._scope.data['notify-message'] = undefined;
 				}
 
 				if (typeof $.notify == 'function')
@@ -7163,7 +7243,7 @@ entityos._util.factory.core = function (param)
 			{
 				var context = entityos._util.param.get(param, 'context').value;
 				var target = entityos._util.param.get(param.dataContext, 'target', {default: '#util-attachment-upload-container'}).value;
-				var typeRequired = app._util.param.get(param.dataContext, 'typeRequired', {default: false}).value;
+				var typeRequired = entityos._util.param.get(param.dataContext, 'typeRequired', {default: false}).value;
 				var anywhere = entityos._util.param.get(param.dataContext, 'anywhere', {default: false}).value;
 				if (anywhere) {target = 'document.body'}
 
@@ -7180,7 +7260,7 @@ entityos._util.factory.core = function (param)
 
 				if (type == '' && typeRequired)
 				{
-					app.notify({type: 'error', message: 'You must set a type before uploading.'})
+					entityos._util.controller.invoke('app-notify', {type: 'error', message: 'You must set a type before uploading.'})
 				}
 				else
 				{
@@ -7318,9 +7398,9 @@ entityos._util.factory.core = function (param)
 			
 			var id = param.dataContext.id;
 			
-			if (app.data['util-attachment-check']._file.length > 0)
+			if (entityos._scope.data['util-attachment-check']._file.length > 0)
 			{
-				if (app.data['util-attachment-check']._file[0].files != undefined)
+				if (entityos._scope.data['util-attachment-check']._file[0].files != undefined)
 				{
 					fileSize = _namespace.data['util-attachment-check']._file[0].files[0].size
 				}
@@ -7328,22 +7408,22 @@ entityos._util.factory.core = function (param)
 			
 			var status = s.replaceAll(id, '-file0', '-status');
 			
-			if (app.controller[status] != undefined)
+			if (entityos._util.controller.code[status] != undefined)
 			{
 				param.fileOverSize = (fileSize > fileSizeMax);
 				param.fileSize = fileSize;
 				param.fileSizeMax = fileSizeMax;
-				app.controller[status](param);	
+				entityos._util.controller.code[status](param);	
 			}
 			else
 			{
-				app.vq.show('#' + s.replaceAll(id, '-file0', '-status'), '');
+				entityos._util.view.queue.show('#' + s.replaceAll(id, '-file0', '-status'), '');
 
 				if (fileSize > fileSizeMax)
 				{
-					app.vq.clear({queue: 'util-attachment-check'});
-					app.vq.add('<div class="alert alert-danger m-b" role="alert">The file you are about to upload is large, so it may take some time to upload.  Please do not close the web-browser until the upload is completed.  Thank you.</div>', {queue: 'util-attachment-check'})
-					app.vq.render('#' + s.replaceAll(id, '-file0', '-status'), {queue: 'util-attachment-check'});
+					entityos._util.view.queue.clear({queue: 'util-attachment-check'});
+					entityos._util.view.queue.add('<div class="alert alert-danger m-b" role="alert">The file you are about to upload is large, so it may take some time to upload.  Please do not close the web-browser until the upload is completed.  Thank you.</div>', {queue: 'util-attachment-check'})
+					entityos._util.view.queue.render('#' + s.replaceAll(id, '-file0', '-status'), {queue: 'util-attachment-check'});
 				}
 			}
 		}
@@ -7364,10 +7444,10 @@ entityos._util.factory.core = function (param)
 
 		 	if (controller != undefined)
 			{	
-		 		if (app.controller[controller] != undefined)
+		 		if (entityos._util.controller.code[controller] != undefined)
 		 		{
-		 			app.data[controller] = {}
-		 			app.controller[controller]({dataContext: {}})
+		 			entityos._scope.data[controller] = {}
+		 			entityos._util.controller.code[controller]({dataContext: {}})
 		 		}
 		 	}
 		}
@@ -7378,7 +7458,7 @@ entityos._util.factory.core = function (param)
 		name: 'util-user-switches',
 		code: function (param, response)
 		{
-			var switchSpaces = app._util.data.get(
+			var switchSpaces = entityos._util.data.get(
 			{
 				controller: 'util-user-switches',
 				context: 'switchSpaces'
@@ -7425,7 +7505,7 @@ entityos._util.factory.core = function (param)
 						controller: 'util-user-switches',
 						data: 'switchSpaces'
 					},
-					callback: app.controller['util-user-switches']
+					callback: entityos._util.controller.code['util-user-switches']
 				})
 			}
 			else
@@ -7439,7 +7519,7 @@ entityos._util.factory.core = function (param)
 					value: switchSpaces
 				});
 
-				var view = app._util.data.get(
+				var view = entityos._util.data.get(
 				{
 					controller: 'util-user-switches',
 					context: 'view'
@@ -7447,9 +7527,9 @@ entityos._util.factory.core = function (param)
 
 				if (view == undefined) {view = '#nav-user-switch-view'}
 
-				app.vq.clear({queue: 'util-user-switches'});
+				entityos._util.view.queue.clear({queue: 'util-user-switches'});
 				
-				app.vq.add('<li><a href="#" class="myds" style="padding-top:3px;padding-bottom:3px;" data-controller="util-user-switch-to" data-context="{{context}}" data-id="{{id}}"' +
+				entityos._util.view.queue.add('<li><a href="#" class="myds" style="padding-top:3px;padding-bottom:3px;" data-controller="util-user-switch-to" data-context="{{context}}" data-id="{{id}}"' +
 						   ' data-contactbusiness="{{targetusercontactbusiness}}"' +
 						   ' data-contactbusinesstext="{{targetusercontactbusinesstext}}"' +
 						   '>{{country}}</li>',
@@ -7457,27 +7537,27 @@ entityos._util.factory.core = function (param)
 
 				if (_.size(switchSpaces) != 0)
 				{
-					//app.vq.add('<div class="text-muted text-center m-t m-b-0">Switch to</div>', {queue: 'util-user-switches'});
+					//entityos._util.view.queue.add('<div class="text-muted text-center m-t m-b-0">Switch to</div>', {queue: 'util-user-switches'});
 				
-					app.vq.add('<div class="nav nav-stacked">', {queue: 'util-user-switches'});
+					entityos._util.view.queue.add('<div class="nav nav-stacked">', {queue: 'util-user-switches'});
 					
 					_.each(switchSpaces, function (switchSpace)
 					{
-						var member = _.find(app.data.members, function (m) {return m.tradename == switchSpace.targetusercontactbusinesstext});
+						var member = _.find(entityos._scope.data.members, function (m) {return m.tradename == switchSpace.targetusercontactbusinesstext});
 
 						if (member != undefined)
 						{
 							switchSpace.context = 'switch';
 							switchSpace.country = member.streetcountry;
 							//switchspace.targetusercontactbusinesstext = _.unescapeHTML(switchspace.targetusercontactbusinesstext);
-							app.vq.add({queue: 'util-user-switches', useTemplate: true}, switchSpace);
+							entityos._util.view.queue.add({queue: 'util-user-switches', useTemplate: true}, switchSpace);
 						}	
 					});
 
 					var countryName = entityos._scope._user.context.countryName;
 					if (countryName == '') {countryName = 'Switch back'}
 
-					app.vq.add({queue: 'util-user-switches', useTemplate: true},
+					entityos._util.view.queue.add({queue: 'util-user-switches', useTemplate: true},
 					{
 						id: '',
 						targetusercontactbusiness: entityos._scope._user.contactbusiness,
@@ -7487,9 +7567,9 @@ entityos._util.factory.core = function (param)
 					});
 				}
 				
-				app.vq.add('</div>', {queue: 'util-user-switches', type: 'template'});
+				entityos._util.view.queue.add('</div>', {queue: 'util-user-switches', type: 'template'});
 
-				app.vq.render(view, {queue: 'util-user-switches'});
+				entityos._util.view.queue.render(view, {queue: 'util-user-switches'});
 			}
 		}
 	});
@@ -7524,14 +7604,14 @@ entityos._util.factory.core = function (param)
 				{
 					object: 'core_space',
 					data: data,
-					callback: app.controller['util-user-switch-to']
+					callback: entityos._util.controller.code['util-user-switch-to']
 				});
 			}
 			else
 			{
 				if (response.status == 'OK')
 				{
-					var switchData = app._util.data.get(
+					var switchData = entityos._util.data.get(
 					{
 						controller: 'util-user-switch-to'
 					});
@@ -8031,7 +8111,7 @@ entityos._util.factory.core = function (param)
 
 			if (userHasAccess)
 			{
-				var dataCache = app._util.data.get(
+				var dataCache = entityos._util.data.get(
 				{
 					scope: 'util-view-table-cache',
 					context: context
@@ -8070,7 +8150,7 @@ entityos._util.factory.core = function (param)
 						var sort = param.sort;
 						var rowsPerPage = param.rowsPerPage;
 
-						param = app._util.data.get(
+						param = entityos._util.data.get(
 						{
 							scope: context,
 							context: '_param'
@@ -8100,7 +8180,7 @@ entityos._util.factory.core = function (param)
 
 						if (refreshContext != undefined)
 						{
-							var _param = app._util.data.get(
+							var _param = entityos._util.data.get(
 							{
 								scope: refreshContext,
 								context: '_param'
@@ -8114,7 +8194,7 @@ entityos._util.factory.core = function (param)
 
 							if (goToPageNumber == undefined)
 							{
-								var _paging = app._util.data.get(
+								var _paging = entityos._util.data.get(
 								{
 									scope: 'util-view-table',
 									context: refreshContext
@@ -8140,7 +8220,7 @@ entityos._util.factory.core = function (param)
 							clearContext = '_table-' + container;
 						}
 
-						/*app._util.data.clear(
+						/*entityos._util.data.clear(
 						{
 							scope: 'util-view-table',
 							context: clearContext
@@ -8227,7 +8307,7 @@ entityos._util.factory.core = function (param)
 							if (column.paramList == undefined) {column.paramList = column.fields}
 						})
 						
-						var dataSort = app._util.data.get(
+						var dataSort = entityos._util.data.get(
 						{
 							controller: 'util-view-table',
 							context: context,
@@ -8301,7 +8381,7 @@ entityos._util.factory.core = function (param)
 
 							if (rows == undefined)
 							{
-								rows = (options.rows!=undefined ? options.rows : app.options.rows);
+								rows = (options.rows!=undefined ? options.rows : entityos._scope.app.options.rows);
 							}
 
 							var search = 
@@ -8359,7 +8439,7 @@ entityos._util.factory.core = function (param)
 							}
 							else
 							{
-								var data = app._util.data.get(
+								var data = entityos._util.data.get(
 								{
 									scope: context,
 									valueDefault: {}
@@ -8391,7 +8471,7 @@ entityos._util.factory.core = function (param)
 									});
 								}
 								
-								if (_.eq(app.data[context].count, 0)) //nothing to show
+								if (_.eq(entityos._scope.data[context].count, 0)) //nothing to show
 								{
 									var noDataText = options.noDataText;
 									if (noDataText == undefined) {noDataText = 'No data'}
@@ -8402,7 +8482,7 @@ entityos._util.factory.core = function (param)
 										noDataClass = ' ' + containerClass
 									}
 									
-									app.vq.show('#' + container, '<div class="text-muted mx-auto text-center entityos-no-data myds-no-data' + noDataClass + '">' + noDataText + '</div>', {queue: context});
+									entityos._util.view.queue.show('#' + container, '<div class="text-muted mx-auto text-center entityos-no-data myds-no-data' + noDataClass + '">' + noDataText + '</div>', {queue: context});
 								} 
 								else
 								{	
@@ -8414,7 +8494,7 @@ entityos._util.factory.core = function (param)
 											{
 												row._index = r;
 
-												row._previous = app._util.data.get(
+												row._previous = entityos._util.data.get(
 												{
 													controller: context,
 													context: 'lastProcessedRow',
@@ -8438,7 +8518,7 @@ entityos._util.factory.core = function (param)
 											{
 												row._index = r;
 
-												row._previous = app._util.data.get(
+												row._previous = entityos._util.data.get(
 												{
 													scope: context,
 													context: 'lastProcessedRow',
@@ -8468,7 +8548,7 @@ entityos._util.factory.core = function (param)
 									}
 									else
 									{
-										app.data[context].all = _.concat(app.data[context].all, response.data.rows);
+										entityos._scope.data[context].all = _.concat(entityos._scope.data[context].all, response.data.rows);
 									}
 
 									var captions = $.map(format.columns, function (column)
@@ -8478,7 +8558,7 @@ entityos._util.factory.core = function (param)
 
 									if (init || options.orientation == 'horizontal')
 									{
-										app.vq.clear({queue: context});
+										entityos._util.view.queue.clear({queue: context});
 									}
 
 									if (init)
@@ -8608,7 +8688,7 @@ entityos._util.factory.core = function (param)
 											'<td colspan="' + captions.length + '" id="' + options.containerController + '-{{id}}-container-view"></td></tr>')
 										}
 
-										app.vq.add(html.join(''), {type: 'template', queue: context});
+										entityos._util.view.queue.add(html.join(''), {type: 'template', queue: context});
 									}
 
 									if (init || options.orientation == 'horizontal')
@@ -8641,9 +8721,9 @@ entityos._util.factory.core = function (param)
 										{
 											if (response.error.errorcode == 3)
 											{
-												if (app.data['util-view-table'] != undefined)
+												if (entityos._scope.data['util-view-table'] != undefined)
 												{
-													var dataContext = app.data['util-view-table'].dataContext;
+													var dataContext = entityos._scope.data['util-view-table'].dataContext;
 													startRow = dataContext.start;
 													pageRows = dataContext.rows;
 													rowsCurrent = parseInt(_.toNumber(startRow) + _.toNumber(pageRows));
@@ -8666,85 +8746,85 @@ entityos._util.factory.core = function (param)
 											}
 										}
 										
-										app.vq.add('<div class="entityos-page-view myds-page-view" data-page="' + currentPage + '"', {queue: context});
+										entityos._util.view.queue.add('<div class="entityos-page-view myds-page-view" data-page="' + currentPage + '"', {queue: context});
 										
 										if (context != undefined)
 										{
-											app.vq.add(' data-context="' + context + '"', {queue: context})
+											entityos._util.view.queue.add(' data-context="' + context + '"', {queue: context})
 										}
 
-										app.vq.add('>', {queue: context});
+										entityos._util.view.queue.add('>', {queue: context});
 
-										app.vq.add('<table class="table ' + tableClass + ' mb-0 m-b-0">', {queue: context});
+										entityos._util.view.queue.add('<table class="table ' + tableClass + ' mb-0 m-b-0">', {queue: context});
 
 										if (response.data.rows.length != 0)
 										{
 											if (_.size(captions) != 0 && tableHeader)
 											{
-												app.vq.add('<thead>', {queue: context});
-												app.vq.add('<tr', {queue: context})
+												entityos._util.view.queue.add('<thead>', {queue: context});
+												entityos._util.view.queue.add('<tr', {queue: context})
 
 												if (controller != undefined)
 												{
-													app.vq.add(' data-controller="util-view-table"', {queue: context})
+													entityos._util.view.queue.add(' data-controller="util-view-table"', {queue: context})
 												}
 
 												if (context != undefined)
 												{
-													app.vq.add(' data-context="' + context + '"', {queue: context})
+													entityos._util.view.queue.add(' data-context="' + context + '"', {queue: context})
 												}
 
 												if (format.header != undefined)
 												{
 													if (format.header.class != undefined)
 													{
-														app.vq.add(' class="' + format.header.class + '"', {queue: context})
+														entityos._util.view.queue.add(' class="' + format.header.class + '"', {queue: context})
 													}
 												}
 
-												app.vq.add('>', {queue: context});
+												entityos._util.view.queue.add('>', {queue: context});
 
 												if (!_.isEmpty(select))
 												{
-													app.vq.add('<th', {queue: context});
+													entityos._util.view.queue.add('<th', {queue: context});
 
 													if (select.containerClass != undefined)
 													{
-														app.vq.add(' class="' + select.containerClass + '"', {queue: context});
+														entityos._util.view.queue.add(' class="' + select.containerClass + '"', {queue: context});
 													}
 
-													app.vq.add('>', {queue: context});
+													entityos._util.view.queue.add('>', {queue: context});
 
 													if (select.selectAll != false)
 													{
-														app.vq.add('<input class="entityos-view-table-select-all myds-view-table-select-all', {queue: context});
+														entityos._util.view.queue.add('<input class="entityos-view-table-select-all myds-view-table-select-all', {queue: context});
 
 														if (select.class != undefined)
 														{
-															app.vq.add(' ' + select.class + '"', {queue: context});
+															entityos._util.view.queue.add(' ' + select.class + '"', {queue: context});
 														}
 
-														app.vq.add('" type="checkbox" id="' + context + '-select-all"' +
+														entityos._util.view.queue.add('" type="checkbox" id="' + context + '-select-all"' +
 															' data-context="' + context + '"', {queue: context})
 
 														if (select.selected)
 														{
-															app.vq.add(' checked="checked"', {queue: context});
+															entityos._util.view.queue.add(' checked="checked"', {queue: context});
 														}
 
 														if (select.controller != undefined)
 														{
-															app.vq.add(' data-controller="' + select.controller + '"', {queue: context});
+															entityos._util.view.queue.add(' data-controller="' + select.controller + '"', {queue: context});
 														}
 
-														app.vq.add('>', {queue: context});
+														entityos._util.view.queue.add('>', {queue: context});
 													}
 													else
 													{
-														app.vq.add(select.caption, {queue: context});
+														entityos._util.view.queue.add(select.caption, {queue: context});
 													}
 
-													app.vq.add('</th>', {queue: context});
+													entityos._util.view.queue.add('</th>', {queue: context});
 												}
 
 												var captionClass;
@@ -8772,10 +8852,10 @@ entityos._util.factory.core = function (param)
 														captionClass = 'class="' + captionClass + '"';
 													}
 
-													app.vq.add('<th ' + captionClass + ' ' + captionData + '>' + caption.name + '</th>', {queue: context});
+													entityos._util.view.queue.add('<th ' + captionClass + ' ' + captionData + '>' + caption.name + '</th>', {queue: context});
 												});
 
-												app.vq.add('</tr></thead>', {queue: context});	
+												entityos._util.view.queue.add('</tr></thead>', {queue: context});	
 											}	
 										}
 									}
@@ -8802,7 +8882,7 @@ entityos._util.factory.core = function (param)
 														row[column.name] = column.method(row)
 													}
 
-													if (typeof app.controller[column.controller] == 'function')
+													if (typeof entityos._util.controller.code[column.controller] == 'function')
 													{
 
 														columnData = entityos._util.controller.invoke({name: column.controller}, column, row);
@@ -8815,24 +8895,24 @@ entityos._util.factory.core = function (param)
 
 									if (response.data.rows.length == 0)
 									{
-										app.vq.add('<tr><td class="text-center text-muted p-t-md p-b-md" colspan="' + captions.length + '">No more data</td></tr>', {queue: context});
+										entityos._util.view.queue.add('<tr><td class="text-center text-muted p-t-md p-b-md" colspan="' + captions.length + '">No more data</td></tr>', {queue: context});
 									}
 									else
 									{
 										_.each(response.data.rows, function (row)
 										{
-											app.vq.add({useTemplate: true, queue: context}, row);
+											entityos._util.view.queue.add({useTemplate: true, queue: context}, row);
 										});
 									}
 									
 									if (init || options.orientation == 'horizontal')
 									{
-										app.vq.add('</table></div>', {queue: context})
+										entityos._util.view.queue.add('</table></div>', {queue: context})
 									}
 
 									if (init)
 									{
-										app.vq.add('<div id="' + controller + '-navigation" class="mx-auto w-50"></div>', {queue: context})
+										entityos._util.view.queue.add('<div id="' + controller + '-navigation" class="mx-auto w-50"></div>', {queue: context})
 									}
 
 									if (options.orientation == 'horizontal')
@@ -8843,7 +8923,7 @@ entityos._util.factory.core = function (param)
 									var append = !init;
 									var appendSelector = (options.orientation=='horizontal'?'div.entityos-page-view:last':'table tr:last');
 
-									app.vq.render('#' + container, {append: append, queue: context, appendSelector: appendSelector}, data);
+									entityos._util.view.queue.render('#' + container, {append: append, queue: context, appendSelector: appendSelector}, data);
 
 									if (containerClass != undefined)
 									{
@@ -8931,7 +9011,7 @@ entityos._util.factory.core = function (param)
 
 								if (options.orientation == 'horizontal' && !options.progressive && goToPageWhenCan && goToPageNumber == undefined)
 								{
-									var dataStatus = app._util.data.get(
+									var dataStatus = entityos._util.data.get(
 									{
 										scope: 'util-view-table',
 										context: context
@@ -9231,34 +9311,6 @@ entityos._util.factory.core = function (param)
         }
     ]);
 
-	entityos._util.isNotSet = function (value)
-	{
-  		return (value === undefined ||
-          value === null ||
-          (typeof value === "object" && Object.keys(value).length === 0) ||
-          (typeof value === "string" && value.trim().length === 0))
-	}
-
-	entityos._util.controller.add(
-	{
-		name: 'util-is-not-set',
-		code: function (param, response)
-		{
-			return entityos._util.isNotSet(value)
-		}
-	});
-
-	entityos._util.isSet = function (value) {return !_.isNotSet(value)}
-
-	entityos._util.controller.add(
-	{
-		name: 'util-is-set',
-		code: function (param, response)
-		{
-			return entityos._util.isSet(value)
-		}
-	});
-
     entityos._util.controller.add(
     {
         name: 'util-view-notify-hide',
@@ -9396,16 +9448,18 @@ entityos._util.factory.core = function (param)
         }
     });
 
-
-	app._util = entityos._util;
-	app.invoke = entityos._util.controller.invoke;
-	app.add = entityos._util.controller.add;
-	app.find = entityos._util.data.find;
-	app.set = entityos._util.data.set;
-	app.get = entityos._util.data.get;
-	app.refresh = entityos._util.view.refresh;
-	app.vq = entityos._util.view.queue;
-	app.show = app.vq.show;
+	if (_.isObject(window.app))
+	{
+		app._util = entityos._util;
+		app.invoke = entityos._util.controller.invoke;
+		app.add = entityos._util.controller.add;
+		app.find = entityos._util.data.find;
+		app.set = entityos._util.data.set;
+		app.get = entityos._util.data.get;
+		app.refresh = entityos._util.view.refresh;
+		app.vq = entityos._util.view.queue;
+		app.show = entityos._util.view.queue.show;
+	}
 
 	_.mixin(
 	{
