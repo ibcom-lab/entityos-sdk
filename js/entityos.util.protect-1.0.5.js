@@ -708,6 +708,9 @@ entityos._util.protect.util =
 // -- PUBLIC-KEY / RSA etc
 // https://github.com/juhoen/hybrid-crypto-js
 
+// Sign if need to verify public data (other party = public)
+// Sign & Encrypt to verify private data (between other parties)
+
 // entityos._util.protect.advanced.keys.create.pair()
 
 //entityos._util.protect.advanced.init({then: 'createKeys'});
@@ -731,7 +734,7 @@ entityos._util.protect.advanced =
 			entropy = entityos._util.protect.util.random();
 		}
 
-		var md = entityos._util.param.get(param, 'md', {default:'sha512'}).value;
+		var md = entityos._util.param.get(param, 'md', {default:'sha256'}).value;
 
 		entityos._util.protect.advanced.util.crypt = new Crypt({ entropy: entropy, md: md});
 		entityos._util.protect.advanced.util.rsa = new RSA({ entropy: entropy });
@@ -773,7 +776,12 @@ entityos._util.protect.advanced =
 		{
 			pair: function (param)
 			{
+				//Sign|Verify; Private Key to Signing a Message - So that it can be verified use the Public Key - proofing valid data/"message"
+				//Encrypt|Decrypt; Public Key for Encrypting - so can be decrypted using the Private Key
+				//Combine for proof that "A" sent it and only "B" can read it.
+
 				var saveToCloud = entityos._util.param.get(param, 'saveToCloud').value;
+				var keySize = entityos._util.param.get(param, 'keySize', {default: 2048}).value;
 
 				if (saveToCloud == undefined)
 				{
@@ -791,7 +799,7 @@ entityos._util.protect.advanced =
 
 				if (rsa == undefined)
 				{
-					var rsa = new RSA();
+					var rsa = new RSA({keySize: keySize});
 				}
 
 				// Generate RSA key pair, default key size is 4096 bit
@@ -800,7 +808,15 @@ entityos._util.protect.advanced =
 					//var publicKey = keys.publicKey;
 					//var privateKey = keys.privateKey;
 
-					console.log(keys);
+					keys.privateKey = _.replaceAll(keys.privateKey, '\r', '');
+					keys.privateKey = _.replaceAll(keys.privateKey, '\n', '')
+
+					keys.publicKey = _.replaceAll(keys.publicKey, '\r\n', '');
+					keys.publicKey = _.replaceAll(keys.publicKey, '\n', '');
+
+					console.log(keys.privateKey);
+					console.log(keys.publicKey);
+
 					param = entityos._util.param.set(param, 'keys', keys);
 
 					if (saveInSession)
@@ -856,9 +872,12 @@ entityos._util.protect.advanced =
 
 	sign: function (param)
 	{
-		var message = entityos._util.param.get(param, 'message').value;
-		var privateKey = entityos._util.param.get(param, 'privateKey').value;
+		//https://github.com/juhoen/hybrid-crypto-js#signatures
+		//entityos._util.protect.advanced.init({then: 'sign', message: 'Hello World'});
 
+		var message = entityos._util.param.get(param, 'message').value;
+
+		var privateKey = entityos._util.param.get(param, 'privateKey').value;
 		if (privateKey == undefined && _.has(entityos._util.protect.advanced.data.keys, 'privateKey'))
 		{
 			privateKey = entityos._util.protect.advanced.data.keys.privateKey;
@@ -873,18 +892,170 @@ entityos._util.protect.advanced =
 		else
 		{
 			var signature = crypt.signature(privateKey, message);
+
+			entityos._util.protect.advanced.data.signature = signature;
+			entityos._util.protect.advanced.data.message = message;
 			console.log(signature);
 		}
+	},
 
-		
-		
-		//https://github.com/juhoen/hybrid-crypto-js#signatures
+	verify: function (param)
+	{
+		//https://github.com/juhoen/hybrid-crypto-js#verifying
+		//entityos._util.protect.advanced.init({then: 'verify', message: 'Hello World'}, signature: '...', publicKey: '...');
 
+		var message = entityos._util.param.get(param, 'message').value;
+		if (message == undefined && _.has(entityos._util.protect.advanced.data, 'message'))
+		{
+			message = entityos._util.protect.advanced.data.message;
+		}
+
+		var signature = entityos._util.param.get(param, 'signature').value;
+		if (signature == undefined && _.has(entityos._util.protect.advanced.data, 'signature'))
+		{
+			signature = entityos._util.protect.advanced.data.signature;
+		}
+
+		if (!_.isPlainObject(signature))
+		{
+			signature = JSON.stringify({signature: signature, md: "sha256"})
+		}
+
+		var publicKey = entityos._util.param.get(param, 'publicKey').value;
+		if (publicKey == undefined && _.has(entityos._util.protect.advanced.data.keys, 'publicKey'))
+		{
+			publicKey = entityos._util.protect.advanced.data.keys.publicKey;
+		}
+
+		var crypt = entityos._util.protect.advanced.util.crypt;
+
+		if (crypt == undefined)
+		{
+			console.log('!!! You need to call using .init with {then: }');
+		}
+		else
+		{
+			var verified = crypt.verify(
+				publicKey,
+				signature,
+				message,
+			);
+
+			console.log(verified);
+		}
+	},
+
+	encrypt: function (param)
+	{
+		//https://github.com/juhoen/hybrid-crypto-js#encryption
+		//entityos._util.protect.advanced.init({then: 'encrypt', message: 'Hello World'});
+
+		var message = entityos._util.param.get(param, 'message').value;
+		if (message == undefined && _.has(entityos._util.protect.advanced.data, 'message'))
+		{
+			message = entityos._util.protect.advanced.data.message;
+		}
+
+		var publicKey = entityos._util.param.get(param, 'publicKey').value;
+		if (publicKey == undefined && _.has(entityos._util.protect.advanced.data.keys, 'publicKey'))
+		{
+			publicKey = entityos._util.protect.advanced.data.keys.publicKey;
+		}
+
+		var signature = entityos._util.param.get(param, 'signature').value;
+		if (signature == undefined && _.has(entityos._util.protect.advanced.data, 'signature'))
+		{
+			signature = entityos._util.protect.advanced.data.signature;
+		}
+
+		if (signature != undefined)
+		{
+			if (!_.isPlainObject(signature))
+			{
+				signature = JSON.stringify({signature: signature, md: "sha256"})
+			}
+		}
+
+		var crypt = entityos._util.protect.advanced.util.crypt;
+
+		if (crypt == undefined)
+		{
+			console.log('!!! You need to call using .init with {then: }');
+		}
+		else
+		{
+			if (_.isPlainObject(signature))
+			{
+				var encrypted = crypt.encrypt(
+					publicKey,
+					message,
+					signature);
+			}
+			else
+			{
+				var encrypted = crypt.encrypt(
+					publicKey,
+					message);
+			}
+		
+			entityos._util.protect.advanced.data.encryptedMessage = encrypted;
+			console.log(encrypted);
+		}
+	},
+
+	decrypt: function (param)
+	{
+		//https://github.com/juhoen/hybrid-crypto-js#decryption
+
+		var encryptedMessage = entityos._util.param.get(param, 'encryptedMessage').value;
+		if (encryptedMessage == undefined && _.has(entityos._util.protect.advanced.data, 'encryptedMessage'))
+		{
+			encryptedMessage = entityos._util.protect.advanced.data.encryptedMessage;
+		}
+
+		var privateKey = entityos._util.param.get(param, 'privateKey').value;
+		if (privateKey == undefined && _.has(entityos._util.protect.advanced.data.keys, 'privateKey'))
+		{
+			privateKey = entityos._util.protect.advanced.data.keys.privateKey;
+		}
+
+		var signature = entityos._util.param.get(param, 'signature').value;
+		if (signature == undefined && _.has(entityos._util.protect.advanced.data, 'signature'))
+		{
+			signature = entityos._util.protect.advanced.data.signature;
+		}
+
+		if (_.isPlainObject(encryptedMessage))
+		{
+			encryptedMessage = JSON.stringify(
+			{
+				cipher: encryptedMessage,
+			})
+		}
+
+		var crypt = entityos._util.protect.advanced.util.crypt;
+
+		if (crypt == undefined)
+		{
+			console.log('!!! You need to call using .init with {then: }');
+		}
+		else
+		{
+			var decrypted = crypt.decrypt(
+				privateKey,
+				encryptedMessage);
+			
+			console.log(decrypted);
+		}
 	}
 }
+
 
 entityos._util.protect.advanced.methods = 
 {
 	createKeys: entityos._util.protect.advanced.keys.create.pair,
-	sign: entityos._util.protect.advanced.sign
+	sign: entityos._util.protect.advanced.sign,
+	verify: entityos._util.protect.advanced.verify,
+	encrypt: entityos._util.protect.advanced.encrypt,
+	decrypt: entityos._util.protect.advanced.decrypt
 }
