@@ -700,13 +700,17 @@ entityos._util.protect.util =
 	{
 		//const array = new Uint32Array(10);
 		//self.crypto.getRandomValues(array);
-		entityos._util.protect.pk.data.random = entityos._util.controller.invoke('util-uuid');
-		return entityos._util.protect.pk.data.random;
+		entityos._util.protect.advanced.data.random = entityos._util.controller.invoke('util-uuid');
+		return entityos._util.protect.advanced.data.random;
 	}
 }
 
 // -- PUBLIC-KEY / RSA etc
 // https://github.com/juhoen/hybrid-crypto-js
+
+// entityos._util.protect.advanced.keys.create.pair()
+
+//entityos._util.protect.advanced.init({then: 'createKeys'});
 
 entityos._util.protect.advanced =
 {
@@ -720,10 +724,31 @@ entityos._util.protect.advanced =
 
 	init: function (param)
 	{
-		var entropy = entityos._util.protect.util.random();
-		entityos._util.protect.advanced.util.crypt = new Crypt({ entropy: entropy, md: 'sha512' });
+		var entropy = entityos._util.param.get(param, 'entropy').value;
+
+		if (entropy == undefined)
+		{
+			entropy = entityos._util.protect.util.random();
+		}
+
+		var md = entityos._util.param.get(param, 'md', {default:'sha512'}).value;
+
+		entityos._util.protect.advanced.util.crypt = new Crypt({ entropy: entropy, md: md});
 		entityos._util.protect.advanced.util.rsa = new RSA({ entropy: entropy });
-		entityos._util.onComplete(param)
+
+		var thenMethod = entityos._util.param.get(param, 'then').value;
+
+		if (thenMethod != undefined)
+		{
+			if (_.has(entityos._util.protect.advanced.methods, thenMethod))
+			{
+				entityos._util.protect.advanced.methods[thenMethod](param);
+			}
+		}
+		else
+		{
+			entityos._util.onComplete(param);
+		}
 
 		/*
 			 // Select default message digest
@@ -748,7 +773,19 @@ entityos._util.protect.advanced =
 		{
 			pair: function (param)
 			{
-				var saveToCloud = entityos._util.param.get(param, 'saveToCloud', {default: true}).value;
+				var saveToCloud = entityos._util.param.get(param, 'saveToCloud').value;
+
+				if (saveToCloud == undefined)
+				{
+					saveToCloud = _.has(entityos, 'user');
+				}
+
+				var saveInSession = entityos._util.param.get(param, 'saveToCloud').value;
+
+				if (saveInSession == undefined)
+				{
+					saveInSession = !_.has(entityos, 'user');
+				}
 
 				var rsa = entityos._util.protect.advanced.util.rsa;
 
@@ -766,6 +803,11 @@ entityos._util.protect.advanced =
 					console.log(keys);
 					param = entityos._util.param.set(param, 'keys', keys);
 
+					if (saveInSession)
+					{
+						entityos._util.protect.advanced.data.keys = keys;
+					}
+
 					if (entityos._util.param.get(param, 'onComplete').exists)
 					{
 						entityos._util.onComplete(param);
@@ -774,6 +816,7 @@ entityos._util.protect.advanced =
 					{
 						entityos._util.protect.advanced.keys.cloud.save(param);
 					}
+					
 				});
 			}
 		},
@@ -814,8 +857,34 @@ entityos._util.protect.advanced =
 	sign: function (param)
 	{
 		var message = entityos._util.param.get(param, 'message').value;
-		var signature = crypt.signature(issuerPrivateKey, message);
+		var privateKey = entityos._util.param.get(param, 'privateKey').value;
+
+		if (privateKey == undefined && _.has(entityos._util.protect.advanced.data.keys, 'privateKey'))
+		{
+			privateKey = entityos._util.protect.advanced.data.keys.privateKey;
+		}
+
+		var crypt = entityos._util.protect.advanced.util.crypt;
+
+		if (crypt == undefined)
+		{
+			console.log('!!! You need to call using .init with {then: }');
+		}
+		else
+		{
+			var signature = crypt.signature(privateKey, message);
+			console.log(signature);
+		}
+
+		
+		
 		//https://github.com/juhoen/hybrid-crypto-js#signatures
 
 	}
+}
+
+entityos._util.protect.advanced.methods = 
+{
+	createKeys: entityos._util.protect.advanced.keys.create.pair,
+	sign: entityos._util.protect.advanced.sign
 }
