@@ -4,6 +4,7 @@
 	OAuth
 
 	Uses entityos.protect namespace
+	
 */
 
 entityos._util.identity =
@@ -286,6 +287,10 @@ if (_.has(entityos, '_util.protect.oauth'))
 {
 	entityos._util.protect.oauth = entityos._util.identity.oauth
 }
+
+
+//SSI
+//https://docs.walt.id/v/ssikit/ssi-kit/what-is-ssi/technologies-and-concepts/verifiable-credentials-vcs-and-verifiable-presentations-vps
 
 entityos._util.factory.identity = function (param)
 {

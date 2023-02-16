@@ -705,15 +705,15 @@ entityos._util.protect.util =
 	}
 }
 
-// -- PUBLIC-KEY / RSA etc
+// -- PUBLIC-KEY / RSA / AES etc
 // https://github.com/juhoen/hybrid-crypto-js
 
 // Sign if need to verify public data (other party = public)
 // Sign & Encrypt to verify private data (between other parties)
 
-// entityos._util.protect.advanced.keys.create.pair()
-
-//entityos._util.protect.advanced.init({then: 'createKeys'});
+//Sign|Verify; Private Key to Signing a Message - So that it can be verified use the Public Key - proofing valid data/"message"
+//Encrypt|Decrypt; Public Key for Encrypting - so can be decrypted using the Private Key
+//Combine for proof that "A" sent it and only "B" can read it.
 
 entityos._util.protect.advanced =
 {
@@ -734,10 +734,32 @@ entityos._util.protect.advanced =
 			entropy = entityos._util.protect.util.random();
 		}
 
-		var md = entityos._util.param.get(param, 'md', {default:'sha256'}).value;
+		var md = entityos._util.param.get(param, 'md', {default: 'sha256'}).value;
+		entityos._util.protect.advanced.data.md = md;
 
-		entityos._util.protect.advanced.util.crypt = new Crypt({ entropy: entropy, md: md});
-		entityos._util.protect.advanced.util.rsa = new RSA({ entropy: entropy });
+		var aesStandard = entityos._util.param.get(param, 'aesStandard', {default: 'AES-CBC'}).value;
+		// AES-ECB, AES-CBC, AES-CFB, AES-OFB, AES-CTR, AES-GCM, 3DES-ECB, 3DES-CBC, DES-ECB, DES-CBC
+		
+		var rsaStandard = entityos._util.param.get(param, 'rsaStandard', {default: 'RSA-OAEP'}).value;
+		// RSA-OAEP, RSAES-PKCS1-V1_5
+
+		var aesKeySize = entityos._util.param.get(param, 'aesKeySize', {default: 256}).value;
+
+		entityos._util.protect.advanced.data.logToConsole = entityos._util.param.get(param, 'logToConsole', {default: false}).value;
+
+		entityos._util.protect.advanced.util.crypt = new Crypt(
+		{
+			entropy: entropy,
+			aesStandard: aesStandard,
+			rsaStandard: rsaStandard,
+			aesKeySize: aesKeySize,
+			md: md
+		});
+
+		entityos._util.protect.advanced.util.rsa = new RSA(
+		{
+			entropy: entropy
+		});
 
 		var thenMethod = entityos._util.param.get(param, 'then').value;
 
@@ -747,26 +769,15 @@ entityos._util.protect.advanced =
 			{
 				entityos._util.protect.advanced.methods[thenMethod](param);
 			}
+			else
+			{
+				console.log('!!! Invalid then:')
+			}
 		}
 		else
 		{
 			entityos._util.onComplete(param);
 		}
-
-		/*
-			 // Select default message digest
-			 var crypt = new Crypt({ md: 'sha512' });
- 
-			 // Select AES or RSA standard
-			 var crypt = new Crypt({
-			 // Default AES standard is AES-CBC. Options are:
-			 // AES-ECB, AES-CBC, AES-CFB, AES-OFB, AES-CTR, AES-GCM, 3DES-ECB, 3DES-CBC, DES-ECB, DES-CBC
-			 aesStandard: 'AES-CBC',
-			 // Default RSA standard is RSA-OAEP. Options are:
-			 // RSA-OAEP, RSAES-PKCS1-V1_5
-			 rsaStandard: 'RSA-OAEP',
-			 });
-	 */
 	},
 
 	keys:
@@ -776,9 +787,7 @@ entityos._util.protect.advanced =
 		{
 			pair: function (param)
 			{
-				//Sign|Verify; Private Key to Signing a Message - So that it can be verified use the Public Key - proofing valid data/"message"
-				//Encrypt|Decrypt; Public Key for Encrypting - so can be decrypted using the Private Key
-				//Combine for proof that "A" sent it and only "B" can read it.
+				//entityos._util.protect.advanced.init({then: 'createKeys'});
 
 				var saveToCloud = entityos._util.param.get(param, 'saveToCloud').value;
 				var keySize = entityos._util.param.get(param, 'keySize', {default: 2048}).value;
@@ -802,20 +811,19 @@ entityos._util.protect.advanced =
 					var rsa = new RSA({keySize: keySize});
 				}
 
-				// Generate RSA key pair, default key size is 4096 bit
-				rsa.generateKeyPair(function (keys) {
-					// Callback function receives new key pair as a first argument
-					//var publicKey = keys.publicKey;
-					//var privateKey = keys.privateKey;
-
+				rsa.generateKeyPair(function (keys)
+				{
 					keys.privateKey = _.replaceAll(keys.privateKey, '\r', '');
 					keys.privateKey = _.replaceAll(keys.privateKey, '\n', '')
 
-					keys.publicKey = _.replaceAll(keys.publicKey, '\r\n', '');
+					keys.publicKey = _.replaceAll(keys.publicKey, '\r', '');
 					keys.publicKey = _.replaceAll(keys.publicKey, '\n', '');
 
-					console.log(keys.privateKey);
-					console.log(keys.publicKey);
+					if (entityos._util.protect.advanced.data.logToConsole)
+					{
+						console.log(keys.privateKey);
+						console.log(keys.publicKey);
+					}
 
 					param = entityos._util.param.set(param, 'keys', keys);
 
@@ -864,7 +872,7 @@ entityos._util.protect.advanced =
 				}
 				else
 				{
-					console.log(response)
+					entityos._util.onComplete(param);
 				}
 			}
 		}
@@ -895,7 +903,14 @@ entityos._util.protect.advanced =
 
 			entityos._util.protect.advanced.data.signature = signature;
 			entityos._util.protect.advanced.data.message = message;
-			console.log(signature);
+
+			if (entityos._util.protect.advanced.data.logToConsole)
+			{
+				console.log(signature);
+			}
+
+			param = entityos._util.param.set(param, 'signature', signature);
+			entityos._util.onComplete(param);
 		}
 	},
 
@@ -918,7 +933,7 @@ entityos._util.protect.advanced =
 
 		if (!_.isPlainObject(signature))
 		{
-			signature = JSON.stringify({signature: signature, md: "sha256"})
+			signature = JSON.stringify({signature: signature, md: entityos._util.protect.advanced.data.md})
 		}
 
 		var publicKey = entityos._util.param.get(param, 'publicKey').value;
@@ -941,7 +956,13 @@ entityos._util.protect.advanced =
 				message,
 			);
 
-			console.log(verified);
+			if (entityos._util.protect.advanced.data.logToConsole)
+			{
+				console.log(verified);
+			}
+
+			param = entityos._util.param.set(param, 'signature', signature);
+			entityos._util.onComplete(param);
 		}
 	},
 
@@ -972,7 +993,7 @@ entityos._util.protect.advanced =
 		{
 			if (!_.isPlainObject(signature))
 			{
-				signature = JSON.stringify({signature: signature, md: "sha256"})
+				signature = JSON.stringify({signature: signature, md: entityos._util.protect.advanced.data.md})
 			}
 		}
 
@@ -999,7 +1020,11 @@ entityos._util.protect.advanced =
 			}
 		
 			entityos._util.protect.advanced.data.encryptedMessage = encrypted;
-			console.log(encrypted);
+
+			if (entityos._util.protect.advanced.data.logToConsole)
+			{
+				console.log(encrypted);
+			}
 		}
 	},
 
@@ -1045,7 +1070,10 @@ entityos._util.protect.advanced =
 				privateKey,
 				encryptedMessage);
 			
-			console.log(decrypted);
+			if (entityos._util.protect.advanced.data.logToConsole)
+			{
+				console.log(decrypted);
+			}
 		}
 	}
 }
