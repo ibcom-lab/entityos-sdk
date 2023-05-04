@@ -56,15 +56,16 @@ entityos._util.factory.search = function (param)
 			{
 				template =
 				[
-		 			'<div class="{{class}} entityos-click myds-click" data-name="{{name}}" data-controller="{{controller}}">',
-						'<div class="card">',
-							'<div class="ibox-title">',
+		 			'<div class="{{class}} entityos-click myds-click" data-name="{{name}}" data-controller="{{controller}}"',
+                        ' id="{{id}}">',
+						'<div class="card mb-4">',
+							'<div class="card-header">',
 								'<div class="ibox-tools">',
 		                      '{{icon}}',
 	                  	'</div>',
 								'<h3 class="ml-1">{{caption}}</h3>',
 							'</div>',
-							'<div class="ibox-content">',
+							'<div class="card-body">',
 								'<div class="text-muted">{{notes}}</div>',
 							'</div>',
 						'</div>',
@@ -120,6 +121,27 @@ entityos._util.factory.search = function (param)
 				if (search.userFilterValues == undefined) {search.userFilterValues = {}}
 
 				search._userFilterValues = search.userFilterValues[nameUserFilterValues];
+
+                if (_.has(entityos._util.whoami().mySetup, 'spaceSettings.ui'))
+                {
+                    var searchSetting = _.find(entityos._util.whoami().mySetup.spaceSettings.ui.searches, function (_search)
+                    {
+                        return (_search.name == search.name)
+                    });
+
+                    if (searchSetting != undefined)
+                    {
+                        if (searchSetting.hidden != undefined)
+                        {
+                            search.hidden = (searchSetting.hidden == 'true')
+                        }
+
+                        if (searchSetting.show != undefined)
+                        {
+                            search.hidden = !(searchSetting.show == 'true')
+                        }
+                    }
+                }
 
                 if (search.hidden != true)
                 {
