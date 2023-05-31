@@ -2419,6 +2419,17 @@ entityos._util =
 								}
 							}
 
+                            if (_.has(entityos, '_scope.app.options.dataProcessController'))
+                            {
+                                _.each(data, function (value, field)
+								{
+                                    param._value = value;
+                                    param._field = field;
+                                    param._mode = 'send';
+                                    data[field] = entityos._util.controller.invoke(entityos._scope.app.options.dataProcessController, param, value)
+                                });
+                            }
+
 							$.ajax(
 							{
 								type: type,
@@ -2514,7 +2525,10 @@ entityos._util =
 													{
 														if (_.has(entityos, '_scope.app.options.dataProcessController'))
 														{
-															entityos._util.controller.invoke(entityos._scope.app.options.dataProcessController, {value: value}, value)
+                                                            param._value = value;
+                                                            param._field = field;
+                                                            param._mode = 'response';
+															row[field] = entityos._util.controller.invoke(entityos._scope.app.options.dataProcessController, param, value)
 														}
 														else
 														{
