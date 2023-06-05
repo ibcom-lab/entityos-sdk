@@ -5704,8 +5704,8 @@ entityos._util.view.spinner =
 		if (element != undefined)
 		{
 			var margin = '';
-			if (mode == 'prepend') {margin = 'mr-1'}
-			if (mode == 'append') {margin = 'ml-1'}
+			if (mode == 'prepend') {margin = ' mr-1'}
+			if (mode == 'append') {margin = ' ml-1'}
 
 			var html = '<span class="spinner-border spinner-border-sm entityos-spinner myds-spinner' + margin + '" role="status" aria-hidden="true"></span>';
 
