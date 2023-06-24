@@ -1102,6 +1102,7 @@ entityos._util.view.handlers['entityos-text-enter'] = function (event)
 {
 	var enter = $(this).data('enter');
 	var disabled = $(this).hasClass('disabled');
+    var enterController = $(this).data('entercontroller');
 
     if (enter == undefined)
     { 
@@ -1110,10 +1111,17 @@ entityos._util.view.handlers['entityos-text-enter'] = function (event)
 		
 	if (!disabled)
 	{
-		if (event.which == '13' && enter == 'stop')
+		if (event.which == '13')
 		{
-			event.preventDefault();
-			return false
+            if (enter == 'stop')
+            {
+			    event.preventDefault();
+			    return false
+            }
+            else if (enterController != undefined)
+            {
+                entityos._util.controller.invoke(enterController, {_event: event, dataContext: $(this).data()})
+            }
 		}
 	}
 }
