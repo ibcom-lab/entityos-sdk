@@ -334,7 +334,7 @@ entityos._util.view.handlers['entityos-click'] = function (event)
 					entityos._scope.data[id] = _.assign(entityos._scope.data[id], data);
 
 					if (entityos._scope.data[id] == undefined) {entityos._scope.data[id] = {}}
-					entityos._util.controller(id, param);
+					entityos._util.controller.invoke(id, param);
 				}
 			}
 		}	
