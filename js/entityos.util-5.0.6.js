@@ -6491,24 +6491,51 @@ entityos._util.view.theme =
 
         if (_.isSet(cssURI))
         {
-            if ($("#entityos-theme-css").length == 0)
-            {
-                $("head").append("<link>");
+			if (_.isArray(cssURI))
+			{
+				_.each(cssURI, function (_cssURI)
+				{
+					if ($('#entityos-theme-css-' + _cssURI.name).length == 0)
+					{
+						$('head').append('<link>');
 
-                var cssLink = $("head").children(":last");
+						var cssLink = $('head').children(":last");
 
-                cssLink.attr(
-                {
-                    id: "entityos-theme-css",
-                    rel:  "stylesheet",
-                    type: "text/css",
-                    href: cssURI
-                });
-            }
-            else
-            {
-                $("#entityos-theme-css").attr("href", cssURI);
-            }
+						cssLink.attr(
+						{
+							id: 'entityos-theme-css' + _cssURI.name,
+							rel:  "stylesheet",
+							type: "text/css",
+							href: _cssURI.url
+						});
+					}
+					else
+					{
+						$('#entityos-theme-css-' + _cssURI.name).attr('href', _cssURI.url);
+					}
+				});
+			}
+			else
+			{
+				if ($('#entityos-theme-css').length == 0)
+				{
+					$('head').append("<link>");
+
+					var cssLink = $("head").children(":last");
+
+					cssLink.attr(
+					{
+						id: "entityos-theme-css",
+						rel:  "stylesheet",
+						type: "text/css",
+						href: cssURI
+					});
+				}
+				else
+				{
+					$('#entityos-theme-css').attr('href', cssURI);
+				}
+			}
         }
 
         if (_.isNotSet(themeMode))
