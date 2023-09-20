@@ -1455,7 +1455,7 @@ entityos._util.factory.search = function (param)
     
                 if (_.has(userFilter, 'storage'))
                 {
-                    if (userFilter.storage.object == undefined || userFilter.storage.object == object)
+                    if ((userFilter.storage.object == undefined && !objectOnly) || userFilter.storage.object == object)
                     {
                         searchFilters.push(
                         {
