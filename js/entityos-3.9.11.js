@@ -2195,16 +2195,30 @@ entityos._util =
 										onlyIfNoKey = entityos._util.param.get(options, 'onlyIfNoKey').value
 									}
 
-									if (param === undefined) {param = {}}
+									if (param == undefined) {param = {}}
 
-									if (param.hasOwnProperty(key))
-									{
-										if (!onlyIfNoKey) {param[key] = value};
-									}
-									else
-									{
-										param[key] = value;
-									}
+                                    if (_.contains(key, '.'))
+                                    {
+                                        if (_.has(param, key))
+                                        {
+                                            if (!onlyIfNoKey) {_.set(param, key, value)};
+                                        }
+                                        else
+                                        {
+                                           _.set(param, key, value);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (param.hasOwnProperty(key))
+                                        {
+                                            if (!onlyIfNoKey) {param[key] = value};
+                                        }
+                                        else
+                                        {
+                                            param[key] = value;
+                                        }
+                                    }
 										
 									return param
 								}									
