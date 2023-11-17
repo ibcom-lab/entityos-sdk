@@ -4254,7 +4254,7 @@ entityos._util.whoami = function (param)
 
 	var userRoleTitle = 'Template';
 
-    if (_.has(entityos, 'scope.user.roles.rows'))
+    if (_.has(entityos, '_scope.user.roles.rows'))
     {
         if (entityos._scope.user.roles.rows.length > 0)
         {
