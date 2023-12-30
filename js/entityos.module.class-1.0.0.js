@@ -19,8 +19,8 @@ class EntityOS {
 		return entityos._util.view.queue.init(param)
 	}
 
-	param(param) {
-		return entityos._util.param.get(param);
+	param(param, fieldName, options) {
+		return entityos._util.param.get(param, fieldName, options);
 	}
 }
 
