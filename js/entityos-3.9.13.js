@@ -1711,10 +1711,7 @@ entityos._util =
 											}
 											else
 											{
-												if (_.isFunction(app.controller[entityos._scope.app.viewStart]))
-												{
-													app.controller[entityos._scope.app.viewStart](param)
-												}
+												entityos._util.controller.invoke(entityos._scope.app.viewStart, param)
 											}
 										}
 										else
@@ -1825,147 +1822,152 @@ entityos._util =
 										},
 										success: function (data)
 										{
-											if (data.status === 'ER')
-											{
-												entityos._util.sendToView(
-												{
-													from: 'entityos-logon-send',
-													status: 'error',
-													message: 'Logon name or password is incorrect.'
-												});
+                                            if (data.status == 'ER' && callback != undefined)
+                                            {
+                                                 entityos._util.doCallBack(callback, data);
+                                            }
+                                            else
+                                            {
+                                                if (data.status === 'ER')
+                                                {
+                                                    entityos._util.sendToView(
+                                                    {
+                                                        from: 'entityos-logon-send',
+                                                        status: 'error',
+                                                        message: 'Logon name or password is incorrect.'
+                                                    });
+                                                }
+                                                else 
+                                                {		
+                                                    entityos._scope.session.logonkey = data.logonkey;
 
-												entityos._util.doCallBack(callback, {status: 'ER'});
-											}
-											else 
-											{		
-												entityos._scope.session.logonkey = data.logonkey;
+                                                    entityos._util.sendToView(
+                                                    {
+                                                        from: 'entityos-logon-init',
+                                                        status: 'end'
+                                                    });
 
-												entityos._util.sendToView(
-												{
-													from: 'entityos-logon-init',
-													status: 'end'
-												});
+                                                    entityos._scope.authenticationLevel = data.authenticationlevel;
+                                                    entityos._scope.authenticationDelivery = data.authenticationdelivery;
+                                                    entityos._scope.authenticationUsingAccessToken = data.authenticationusingaccesstoken;
 
-												entityos._scope.authenticationLevel = data.authenticationlevel;
-												entityos._scope.authenticationDelivery = data.authenticationdelivery;
-												entityos._scope.authenticationUsingAccessToken = data.authenticationusingaccesstoken;
+                                                    if (entityos._scope.authenticationLevel == 3 || entityos._scope.authenticationLevel == 4)
+                                                    {	
+                                                        if (entityos._scope.authenticationDelivery == 1 || entityos._scope.authenticationDelivery == 2)
+                                                        {
+                                                            entityos._util.sendToView(
+                                                            {
+                                                                from: 'entityos-logon-init',
+                                                                status: 'need-code',
+                                                                message: (data.authenticationdelivery==1?'email':'SMS')
+                                                            });
 
-												if (entityos._scope.authenticationLevel == 3 || entityos._scope.authenticationLevel == 4)
-												{	
-													if (entityos._scope.authenticationDelivery == 1 || entityos._scope.authenticationDelivery == 2)
-													{
-														entityos._util.sendToView(
-														{
-															from: 'entityos-logon-init',
-															status: 'need-code',
-															message: (data.authenticationdelivery==1?'email':'SMS')
-														});
+                                                            var data = 
+                                                            {
+                                                                method: 'LOGON_SEND_PASSWORD_CODE',
+                                                                logon: logon
+                                                            };
 
-														var data = 
-														{
-															method: 'LOGON_SEND_PASSWORD_CODE',
-															logon: logon
-														};
+                                                            if (_.has(entityos, '_scope.app.options.password.hashType'))
+                                                            {
+                                                                data.passwordhash = entityos._util.hash(
+                                                                {
+                                                                    data: logon + password + entityos._scope.session.logonkey,
+                                                                    hashType: entityos._scope.app.options.password.hashType
+                                                                });
+                                                            }
+                                                            else
+                                                            {
+                                                                data.passwordhash = entityos._util.hash(logon + password + entityos._scope.session.logonkey);
+                                                            }
 
-														if (_.has(entityos, '_scope.app.options.password.hashType'))
-														{
-															data.passwordhash = entityos._util.hash(
-															{
-																data: logon + password + entityos._scope.session.logonkey,
-																hashType: entityos._scope.app.options.password.hashType
-															});
-														}
-														else
-														{
-															data.passwordhash = entityos._util.hash(logon + password + entityos._scope.session.logonkey);
-														}
+                                                            entityos._util.sendToView(
+                                                            {
+                                                                from: 'entityos-logon-init',
+                                                                status: 'code-sent'
+                                                            });
 
-														entityos._util.sendToView(
-														{
-															from: 'entityos-logon-init',
-															status: 'code-sent'
-														});
+                                                            $.ajax(
+                                                            {
+                                                                type: 'POST',
+                                                                url: '/rpc/logon/',
+                                                                global: false,
+                                                                data: data,
+                                                                dataType: 'json',
+                                                                success: function (data)
+                                                                {
+                                                                    entityos._util.sendToView(
+                                                                    {
+                                                                        from: 'entityos-logon-init',
+                                                                        status: 'end'
+                                                                    });
 
-														$.ajax(
-														{
-															type: 'POST',
-															url: '/rpc/logon/',
-															global: false,
-															data: data,
-															dataType: 'json',
-															success: function (data)
-															{
-																entityos._util.sendToView(
-																{
-																	from: 'entityos-logon-init',
-																	status: 'end'
-																});
+                                                                    if (data.status == 'ER')
+                                                                    {	
+                                                                        entityos._util.sendToView(
+                                                                        {
+                                                                            from: 'entityos-logon-init',
+                                                                            status: 'error',
+                                                                            message: 'There is an issue with your user account (' + data.error.errornotes + ').'
+                                                                        });
+                    
+                                                                        entityos._util.doCallBack(callback, {status: 'error', message: data.error.errornotes});
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        entityos._util.sendToView(
+                                                                        {
+                                                                            from: 'entityos-logon-init',
+                                                                            status: 'end'
+                                                                        });
 
-																if (data.status == 'ER')
-																{	
-																	entityos._util.sendToView(
-																	{
-																		from: 'entityos-logon-init',
-																		status: 'error',
-																		message: 'There is an issue with your user account (' + data.error.errornotes + ').'
-																	});
-				
-																	entityos._util.doCallBack(callback, {status: 'error', message: data.error.errornotes});
-																}
-																else
-																{
-																	entityos._util.sendToView(
-																	{
-																		from: 'entityos-logon-init',
-																		status: 'end'
-																	});
+                                                                        entityos._scope.logonInitialised = true;
+                                                                        entityos._util.doCallBack(callback, {status: 'get2ndFactorCode', codeDelivery: entityos._scope.authenticationDelivery});
+                                                                    }	
+                                                                }
+                                                            });
+                                                        }
+                                                        else
+                                                        {
+                                                            entityos._scope.logonInitialised = true;
+                                                            entityos._scope.needTOTPCode = true;
 
-																	entityos._scope.logonInitialised = true;
-																	entityos._util.doCallBack(callback, {status: 'get2ndFactorCode', codeDelivery: entityos._scope.authenticationDelivery});
-																}	
-															}
-														});
-													}
-													else
-													{
-														entityos._scope.logonInitialised = true;
-														entityos._scope.needTOTPCode = true;
+                                                            if (entityos._scope.authenticationUsingAccessToken == 2)
+                                                            {
+                                                                var localAccessToken = entityos._util.controller.invoke('util-local-cache-search',
+                                                                {
+                                                                    persist: true,
+                                                                    key: 'myds.access-token-' + window.btoa(logon)
+                                                                });
 
-														if (entityos._scope.authenticationUsingAccessToken == 2)
-														{
-															var localAccessToken = entityos._util.controller.invoke('util-local-cache-search',
-															{
-																persist: true,
-																key: 'myds.access-token-' + window.btoa(logon)
-															});
-
-															if (localAccessToken != undefined)
-															{
-																entityos._scope.needTOTPCode = false
-															}
-														}
-														
-														if (entityos._scope.needTOTPCode)
-														{
-															entityos._util.sendToView(
-															{
-																from: 'entityos-logon-init',
-																status: 'need-totp-code',
-																message: entityos._scope.authenticationDelivery
-															});
-														}
-														else
-														{
-															param = entityos._util.param.set(param, 'code', localAccessToken);
-															entityos._util.logon.send(param);
-														}
-													}	
-												}
-												else
-												{	
-													entityos._util.logon.send(param);
-												}
-											}	
+                                                                if (localAccessToken != undefined)
+                                                                {
+                                                                    entityos._scope.needTOTPCode = false
+                                                                }
+                                                            }
+                                                            
+                                                            if (entityos._scope.needTOTPCode)
+                                                            {
+                                                                entityos._util.sendToView(
+                                                                {
+                                                                    from: 'entityos-logon-init',
+                                                                    status: 'need-totp-code',
+                                                                    message: entityos._scope.authenticationDelivery
+                                                                });
+                                                            }
+                                                            else
+                                                            {
+                                                                param = entityos._util.param.set(param, 'code', localAccessToken);
+                                                                entityos._util.logon.send(param);
+                                                            }
+                                                        }	
+                                                    }
+                                                    else
+                                                    {	
+                                                        entityos._util.logon.send(param);
+                                                    }
+                                                }
+                                            }
 										}	
 									});
 								},
