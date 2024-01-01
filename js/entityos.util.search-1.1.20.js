@@ -286,7 +286,7 @@ entityos._util.factory.search = function (param)
 						[
 							'<div class="col-sm-4">',
 								'<div>',
-	          					'<label class="text-muted mb-1 mt-2 ml-1" for="util-view-search-user-filter-', userFilter.name, '">',
+	          					'<label class="text-secondary mb-1 mt-2 ml-1" for="util-view-search-user-filter-', userFilter.name, '">',
 	          						userFilter.caption,
 	          					'</label>'
 		          		],
@@ -472,7 +472,7 @@ entityos._util.factory.search = function (param)
 					app.vq.add(
 					[
 						'<div class="col-10">',
-							'<div class="container-fluid px-0">',
+							'<div class="x-container-fluid">',
 								'<div class="row">',
 									app.vq.get({queue: 'util-view-search-show-user-filters'}),
 								'</div>',
@@ -630,7 +630,7 @@ entityos._util.factory.search = function (param)
 								'</div>',
 								app.vq.get({queue: 'util-view-search-show-user-filters-container'}),
 								'<div class="card-body p-0" id="util-view-search-show-view">',
-								(search.searchOnChange?'':'<div class="ml-2"><em class="text-muted">Set your filters and then click Search.</em></div>'),
+								(search.searchOnChange?'':'<div class="px-3 py-4 ml-3"><em class="text-secondary">Set your filters and then click Search.</em></div>'),
 								'</div>',
 								'<div class="card-footer" id="util-view-search-show-footer">',
 									search.footerTemplate,
