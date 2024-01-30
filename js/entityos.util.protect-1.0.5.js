@@ -571,8 +571,10 @@ else
 							data: _.clone(param)
 						});
 				}
-				else {
-					if (response == undefined) {
+				else
+				{
+					if (response == undefined)
+					{
 						var filters =
 						{
 							object: object,
@@ -581,20 +583,22 @@ else
 							category: 2
 						}
 
-						if (accessContext != undefined) {
+						if (accessContext != undefined)
+						{
 							filters.guid = accessContext
 						}
 
 						entityos.cloud.search(
-							{
-								object: 'core_protect_key',
-								fields: ['guid'],
-								filters: filters,
-								callback: entityos._util.protect.oauth.connect.show,
-								callbackParam: param
-							});
+						{
+							object: 'core_protect_key',
+							fields: ['guid'],
+							filters: filters,
+							callback: entityos._util.protect.oauth.connect.show,
+							callbackParam: param
+						});
 					}
-					else {
+					else
+					{
 						if (response.status == 'ER') {
 							console.log('!!! ER: ' + response.error.errornotes)
 						}
