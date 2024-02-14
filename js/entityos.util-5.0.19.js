@@ -9954,7 +9954,12 @@ entityos._util.factory.core = function (param)
                         }
                         else
                         {
-                            param.fields.push('id');
+                            _.each(param.fields, function (field, fi)
+                            {
+								param.fields[fi] = _.toLower(field);
+							}); 
+							
+							param.fields.push('id');
 
                             var log = [_.join(param.fields, ',')];
                             var table = []
@@ -9966,7 +9971,6 @@ entityos._util.factory.core = function (param)
 
                                 _.each(param.fields, function (field)
                                 {
-									field = _.toLowerCase(field);
                                     _log.push(_data[field]);
                                     _table[field] = _data[field]
                                 });
