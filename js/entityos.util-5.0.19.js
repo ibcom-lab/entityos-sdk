@@ -6390,6 +6390,11 @@ entityos._util.base64 =
     {
         var dataBase64;
 
+		if (_.isPlainObject(data))
+		{
+			data = JSON.stringify(data)
+		}
+
         if (window.Base64 != undefined)
         {
             dataBase64 = Base64.encode(data);
@@ -6402,9 +6407,10 @@ entityos._util.base64 =
         return dataBase64;
     },
 
-    from: function (dataBase64)
+    from: function (dataBase64, options)
     {
         var data;
+		var json = _.get(options, 'json', false)
         
         if (window.Base64 != undefined)
         {
@@ -6414,6 +6420,11 @@ entityos._util.base64 =
         {
             data = atob(dataBase64);
         }
+
+		if (json)
+		{
+			data = JSON.parse(data)
+		}
 
         return data;
     }
