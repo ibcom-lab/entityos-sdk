@@ -80,7 +80,7 @@ entityos._util.factory.search = function (param)
 				[
 		 			'<div class="{{class}} entityos-click myds-click" data-name="{{name}}" data-controller="{{controller}}"',
                         ' id="{{id}}">',
-						'<div class="card mb-4 shadow-lg">',
+						'<div class="card mb-4 shadow">',
 							'<div class="card-header">',
                                 '<h3 class="float-left mb-0">{{caption}}</h3>',
 								'<div class="float-right text-secondary">',
@@ -688,7 +688,7 @@ entityos._util.factory.search = function (param)
 					template =
 					[
 			 			'<div class="col-lg-12" data-name="{{name}}">',
-							'<div class="card shadow-lg">',
+							'<div class="card shadow">',
 								'<div class="card-body">',
                                     '<div class="float-left">',
                                         '<h1 class="', (!_.isEmpty(search.notes)?' mt-0 mb-0':'') , '">{{caption}}</h1>',
