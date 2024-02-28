@@ -38,7 +38,7 @@ entityos._util.factory.search = function (param)
 			{
 				searches = _.filter(searches, function (search)
 				{
-					return (_.includes(search.caption, searchText) || (_.includes(search.notes, searchText)))
+					return (_.includes(_.toLower(search.caption), _.toLower(searchText)) || (_.includes(_.toLower(search.notes), _.toLower(searchText))))
 				});
 
 				if (_.isNotSet(includeSearch)) {includeSearch = true};
@@ -116,7 +116,7 @@ entityos._util.factory.search = function (param)
 				[
 					'<div class="container-fluid">',
 						'<div class="row">',
-							'<div class="col-sm-12 px-0 mb-1">',
+							'<div class="col-sm-12 mb-1">',
 								'<form autocomplete="off">',
 									'<div class="form-group">',
 										'<input type="text" class="form-control myds-text" placeholder="Search for a report" ',
@@ -126,6 +126,7 @@ entityos._util.factory.search = function (param)
 										'>',
 									'</div>',
 								'</form>',
+							'</div>',
 						'</div>'
 				],
 				{
