@@ -276,6 +276,13 @@ entityos._util.view.handlers['entityos-click'] = function (event)
 		element.closest('li').addClass('active');
 	}
 
+	const prevent = (element.data('prevent') != undefined);
+
+	if (prevent)
+	{
+		event.preventDefault()
+	}
+
 	if (!disabled)
 	{
 		var spinner = element.attr('data-spinner');
