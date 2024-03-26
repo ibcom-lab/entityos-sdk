@@ -2183,9 +2183,9 @@ if (typeof $.fn.collapse == 'function')
 	entityos._util.view.handlers['entityos-collapse-toggle'] = function (event)
 	{
 		var button = $(event.target);
-		if ($(event.target).data()['relatedSelector'] != undefined)
+		if ($(event.currentTarget).data()['relatedSelector'] != undefined)
 		{
-			button = $($(event.target).data()['relatedSelector']);
+			button = $($(event.currentTarget).data()['relatedSelector']);
 		}
 
 		if (!button.is('i'))
