@@ -2074,8 +2074,6 @@ if (typeof $.fn.collapse == 'function')
 			entityos._events[eventHash] = event.timeStamp;
 		}
 
-		console.log(processEvent)
-
 		var id = event.target.id;
 
 		var controller = $(event.target).attr('data-controller')
