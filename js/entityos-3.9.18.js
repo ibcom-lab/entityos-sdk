@@ -3429,8 +3429,21 @@ entityos._util =
 														return '&#' + c.charCodeAt(0) + ';';
 													});
 
-									     			content = s.replaceAll(content, '{{!' + key.toLowerCase() + '}}', 'base64:' + btoa(keyData));
-									     			content = s.replaceAll(content, '{{!' + key + '}}',  'base64:' + btoa(keyData));
+													if (_.isString(keyData))
+													{
+														var encode = window.btoa;
+
+														if (typeof(Base64) == 'object')
+														{
+															if (typeof(Base64.encode) == 'function')
+															{
+																encode = Base64.encode;
+															}
+														}
+
+														content = s.replaceAll(content, '{{!' + key.toLowerCase() + '}}', 'base64:' + encode(keyData));
+														content = s.replaceAll(content, '{{!' + key + '}}',  'base64:' + encode(keyData));
+													}
 									     		}
 									     	}
 
