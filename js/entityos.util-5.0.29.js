@@ -5605,7 +5605,7 @@ entityos._util.generateRandomText = function (param)
 			length = 6
 		}
 
-		for (let i = 0; i < 6; i++) {
+		for (let i = 0; i < length; i++) {
 			const randomIndex = Math.floor(Math.random() * charset.length);
 			generatedText += charset[randomIndex];
 		}
