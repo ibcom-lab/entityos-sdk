@@ -1334,8 +1334,7 @@ entityos._util.view.handlers['entityos-text-select-change'] = function (event)
 			{
 				if (data.choice == 'active')
 				{
-					//$(this).data('choices') == 'active'
-					//https://github.com/Choices-js/Choices?tab=readme-ov-file#methods
+					//https://github.com/Choices-js/Choices
 
 					entityos._scope.data[scope]['_' + context] = _.map(val, function (v) {return v});
 
