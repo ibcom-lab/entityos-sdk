@@ -8365,7 +8365,33 @@ entityos._util.factory.core = function (param)
 					fields = [{name: field, sortBy: true}]
 				}
 
-				if (typeof $.fn.select2 == 'function')
+				var selectType = element.data('type');
+
+				if (selectType == undefined)
+				{
+					if (typeof $.fn.select2 == 'function')
+					{
+						selectType = 'select2';
+					}
+				}
+
+				if (selectType == undefined)
+				{
+					if (typeof $.fn.chosen == 'function')
+					{
+						selectType = 'chosen';
+					}
+				}
+
+				if (selectType == undefined)
+				{
+					if (typeof $.fn.typeahead == 'function')
+					{
+						selectType = 'typeahead';
+					}
+				}
+
+				if (selectType == 'select2')
 				{
 					var selectParam = 
 					{
@@ -8664,14 +8690,27 @@ entityos._util.factory.core = function (param)
 					}
 				}
 
-				else if (typeof $.fn.chosen == 'function')
+				if (selectType == 'choices')
 				{
-					console.log('Chosen not supported yet.')
+					//Check if intialised
+					const choices = new Choices('#' + container, {
+							removeItemButton: true
+						})
+
+					choices.setChoices(
+					data,
+					'id',
+					'text',
+					false,
+					);
+
+					//https://github.com/Choices-js/Choices
+
 				}
 
-				else if (typeof $.fn.typeahead == 'function')
+				if (selectType == 'chosen' || selectType == 'typeahead')
 				{
-					console.log('Typeahead not supported yet.')
+					console.log('This type (' + selectType + ') is not supported. You will need to manage directly with your code.')
 				}
 			}
 		}
