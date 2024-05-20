@@ -8692,20 +8692,24 @@ entityos._util.factory.core = function (param)
 
 				if (selectType == 'choices')
 				{
-					//Check if intialised
-					const choices = new Choices('#' + container, {
-							removeItemButton: true
-						})
+					if ($('#' + container).data('choice') != 'active')
+					{
+						const choices = new Choices('#' + container, {
+								removeItemButton: true,
+								placeholder: true,
+								placeholderValue: 'Select ...',
+								searchPlaceholderValue: 'Select ...',
+							})
 
-					choices.setChoices(
-					data,
-					'id',
-					'text',
-					false,
-					);
+						choices.setChoices(
+						data,
+						'id',
+						'text',
+						true,
+						);
+					}
 
 					//https://github.com/Choices-js/Choices
-
 				}
 
 				if (selectType == 'chosen' || selectType == 'typeahead')
