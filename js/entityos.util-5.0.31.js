@@ -6460,12 +6460,6 @@ entityos._util.hex.toBase58 = function(dataHex)
 	const dataAsBase58 = entityos._util.base58.fromArray(dataArray);
 
 	return dataAsBase58;
-
-	/*
-	var to_b58 = function(B,A){var d=[],s="",i,j,c,n;for(i in B){j=0,c=B[i];s+=c||s.length^i?"":1;while(j in d||c){n=d[j];n=n?n*256+c:c;c=n/58|0;d[j]=n%58;j++}}while(j--)s+=A[d[j]];return s};
-	var MAP = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
-	var encodedAsBase58 = to_b58(dataArray, MAP);
-	return encodedAsBase58;*/
 }
 
 entityos._util.controller.add(
