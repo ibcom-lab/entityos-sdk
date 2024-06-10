@@ -284,11 +284,11 @@ entityos._util.identity =
 
 	ssi:
 	{
-		types: function ()
+		types: function (param)
 		{
 			var typeName = entityos._util.param.get(param, 'typeName').value;
 
-			const types =
+			let types =
 			[
 				{
 					name: 'id',
@@ -297,14 +297,15 @@ entityos._util.identity =
 				{
 					name: 'curve',
 					notes: 'Based curve [Secp256k1 Ed25519] as public key hash',
-					values: [
+					curves: [
 						{
 							name: 'secp256k1',
 							keyType: 'EcdsaSecp256k1VerificationKey2019',
 							publicKey:
 							{
 								name: 'publicKeyHex',
-								encoding: 'hex'
+								encoding: 'hex',
+								hashType: 'sha256'
 							}
 						},
 						{
@@ -313,7 +314,8 @@ entityos._util.identity =
 							publicKey:
 							{
 								name: 'publicKeyBase58',
-								encoding: 'base58'
+								encoding: 'base58',
+								hashType: 'sha256'
 							}
 						}
 					]
@@ -329,21 +331,25 @@ entityos._util.identity =
 				types = _.find(types, function (type) {return type.name == typeName})
 			}
 
-			// TODO: If typeValue supplied check is valid
-
 			return types;
 		},
 		init: function (param)
 		{			
-			const didType = entityos._util.identity.ssi.types(param); //typeName:
+			var typeName = entityos._util.param.get(param, 'typeName').value;
 
-			let initOK = (didType == undefined)
+			let initOK = (typeName != undefined)
+
+			if (initOK)
+			{
+				var didType = entityos._util.identity.ssi.types(param); //typeName:
+				initOK = (didType != undefined);
+			}
 
 			if (initOK)
 			{
 				if (didType.name == 'curve')
 				{
-					initOK = (_.isFunction(elliptic.ec));
+					initOK = (_.has(window, 'elliptic.ec'));
 
 					if (!initOK)
 					{
@@ -352,10 +358,10 @@ entityos._util.identity =
 				}
 			}
 
-			if (_.get(param, 'onComplete') != undefined) // eg entityos._util.identity.ssi.create.did
+			if (_.get(param, 'onComplete') != undefined) // eg entityos._util.identity.ssi.create.did.id
 			{
 				_.set(param, 'initOK', initOK);
-				entityos._util.onComplete(param, {initOK: initOK})
+				return entityos._util.onComplete(param, {initOK: initOK})
 			}
 			else
 			{
@@ -364,110 +370,200 @@ entityos._util.identity =
 		},
 		create:
 		{
-			did: function (param)
+			did:
 			{
-				const typeValue = entityos._util.param.get(param, 'typeValue').value;
-
-				var did = {_type: entityos._util.identity.ssi.types(param)};
-
-				if (did._type == undefined)
+				init: function (param)
 				{
-					did.error = '!! Not a valid Type',
-					did.errorNotes = entityos._util.identity.ssi.types();
-					console.log('!! Not a valid Type')
-				}
-				else
-				{
-					if (didType.name == 'id')
-					{}
-					
-					if (didType.name == 'curve')
+					//e.g. app.invoke('util-identity-ssi-create-did-init', {typeName: 'curve'})
+					//e.g. app.invoke('util-identity-ssi-create-did-init', {typeName: 'curve', asDocument: true})
+
+					var did = {_type: entityos._util.identity.ssi.types(param)};
+					var asDocument = entityos._util.param.get(param, 'asDocument', {default: false}).value;
+
+					if (did._type == undefined)
 					{
-						const cryptoCurve = typeValue;
-						const cryptoKeyFormat = entityos._util.param.get(param, 'cryptoKeyFormat', { default: 'hex' }).value;
+						did.error = '!! Not a valid Type',
+						did.errorNotes = entityos._util.identity.ssi.types();
+						console.log('!! Not a valid Type')
+					}
+					else
+					{
+						did.typeName = did._type.name;
 
-						const ec = new elliptic.ec(cryptoCurve);
-						const key = ec.genKeyPair();
-
-						did.keys =
+						if (did._type.name == 'id')
 						{
-							public: {hex: key.getPublic(cryptoKeyFormat)},
-							private: {hex: key.getPrivate(cryptoKeyFormat)}
+							did.id = entityos._util.uuid(param)
+						}
+						
+						if (did._type.name == 'curve')
+						{
+							did.curveName = entityos._util.param.get(param, 'curveName', {default: 'ed25519'}).value;
+
+							did._curve = _.find(did._type.curves, function (curve)
+							{
+								return (curve.name == did.curveName)
+							});
+
+							const cryptoKeyFormat = entityos._util.param.get(param, 'cryptoKeyFormat', { default: 'hex' }).value;
+
+							// Check curveName against did._type.curves
+
+							const ec = new elliptic.ec(did.curveName);
+							const key = ec.genKeyPair();
+
+							did.keys =
+							{
+								public: {hex: key.getPublic(cryptoKeyFormat)},
+								private: {hex: key.getPrivate(cryptoKeyFormat)}
+							}
+
+							did.keys.public.base58 = entityos._util.hex.toBase58(did.keys.public.hex);
+							did.keys.public.hexSHA256 = entityos._util.protect.hash({data: did.keys.public.hex}).dataHashed;
+							did.keys.public.base58SHA256 = entityos._util.protect.hash({data: did.keys.public.base58}).dataHashed;
+
+							did._id = {hexSHA256: did.keys.public.hexSHA256, base58SHA256: did.keys.public.base58SHA256}
+							did.id = did.keys.public[did._curve.publicKey.encoding];
+							if (did._curve.publicKey.hashType != undefined)
+							{
+								did.id = entityos._util.protect.hash({data: did.id, hashType: did._curve.publicKey.hashType.toUpperCase()}).dataHashed;
+							}
 						}
 
-						did.keys.public.base58 = entityos._util.hex.toBase58(did.keys.public.hex);
-						did.keys.public.sha256 = entityos._util.protect.hash({data: did.keys.public.hex}).dataHashed;
+						if (did._type.name == 'cardano')
+						{
+							// Get public address using CIP-30 Connector - see /site/2007/util.on-chain
+							// Then hash etc
+							// And store -- if not storing then just createDoc
+						}
 					}
 
-					if (didType.name == 'cardano')
+					if (asDocument)
 					{
-						// Get public address using CIP-30 Connector - see /site/2007/util.on-chain
-						// Then hash etc
-						// And store -- if not storing then just createDoc
+						param = _.assign(param, {did: did});
+						return app.invoke('util-identity-ssi-create-did-document', param);
 					}
-				}
-
-				return did;
-			},
-			didDocument: function (param)
-			{
-				//typeName:
-				//curveName:
-
-				var ssiType = {_type: entityos._util.identity.ssi.types(param)};
-				const ssiCurves = ssiType.values;
-				const curveName = entityos._util.param.get(param, 'curveName').value;
-
-				if (curveName != undefined)
-				{
-					ssiCurve = _.find(ssiCurves, function (ssiCurve) {return ssiCurve.name == curveName})
-				}
-
-				/*
-
-				{
-					name: 'ed25519',
-					keyType: 'Ed25519SignatureAuthentication2018',
-					publicKey:
+					else
 					{
-						name: 'publicKeyBase58',
-						encoding: 'base58'
+						return did;
 					}
-				}
+				},
+				document: function (param)
+				{			
+					//e.g. app.invoke('util-identity-ssi-create-did-document', {did: did})
 
-				*/
-				
-				if (ssiCurve != undefined)
-				{
+					const nameFormat = entityos._util.param.get(param, 'nameFormat', {default: 'entityos'}).value;
+					const formatted = entityos._util.param.get(param, 'formatted', {default: false}).value;
+					//const publicKeyHashType = entityos._util.param.get(param, 'publicKeyHashType', {default: 'SHA256'}).value; //sha256
+
 					let did = entityos._util.param.get(param, 'did', {default: {}}).value;
-					if (did.id == undefined)
-					{
-						//nameFormat eg 'entityos'
-						did.id = 'did:' + nameFormat  // + based on curve details and the did passed ie after .create
-					}
 
-					didDocument = {
-						id: did.id,
-						verificationMethod:
-						[
+					if (did._type == undefined)
+					{
+						did._type = entityos._util.identity.ssi.types(param); //based on typeName:
+					}
+									
+					let didDocument;
+
+					if (did._type == undefined)
+					{}
+					else
+					{
+						if (did._type.name == 'id')
+						{
+							didDocument = {id: 'did:' + nameFormat + ':' + did.id} // todo: hash if set
+						}
+
+						if (did._type.name == 'curve')
+						{
+							if (did._curve == undefined)
 							{
-								id: data.did + '#keys-1',
-								type: curveSSISpec.keyType,
-								controller: data.did
-						}],
-						authentication: [{
-							type: curveSSISpec.keyType,
-							publicKey: data.did + '#keys-1'
-						}]
+								did._curve = _.find(did._type.curves, function (ssiCurve) {return ssiCurve.name == did.curveName})
+							}
+
+							if (did._curve != undefined)
+							{
+								if (did.id == undefined)
+								{
+									//nameFormat eg 'entityos'
+									did.id = 'did:' + nameFormat + ':'  // + based on curve details and the did passed ie after .create
+
+									if (!_.has(did._curve, 'publicKey.hashType'))
+									{
+										did.id += did.keys.public[did._curve.publicKey.encoding]
+									}
+									else
+									{
+										did.id += entityos._util.protect.hash({data: did.keys.public.hex, hashType: did._curve.publicKey.hashType.toUpperCase()}).dataHashed;
+									}
+								}
+
+								didDocument = {
+									id: did.id,
+									verificationMethod:
+									[
+										{
+											id: did.id + '#keys-1',
+											type: did._curve.keyType,
+											controller: did.id
+										}
+									],
+									authentication:
+									[
+										{
+											type: did._curve.keyType,
+											publicKey: did.id + '#keys-1'
+										}
+									]
+								}
+
+								_.each(didDocument.verificationMethod, function (method)
+								{
+									method[did._curve.publicKey.name] = did.keys.public[did._curve.publicKey.encoding];
+								});
+							}
+						}
 					}
 
-					_.each(didDocument.verificationMethod, function (method)
+					if (_.get(param, 'onComplete') != undefined) // eg entityos._util.identity.ssi.create.did
 					{
-						method[curveSSISpec.publicKey.name] = data['public-key-' + curveSSISpec.publicKey.encoding];
-					});
+						_.set(param, 'didDocument', didDocument);
+						entityos._util.onComplete(param, {didDocument: didDocument})
+					}
+					else
+					{
+						if (formatted)
+						{
+							didDocument = JSON.stringify(didDocument);
+						}
+
+						return didDocument;
+					}
 				}
-
-
+			},
+			credential: 
+			{
+				init: function (param)
+				{
+					//based on on-cloud action - sign locally etc
+				},
+				sign: function (param)
+				{
+					//based on on-cloud private keys or local keys or on-chain keys (Cardano Wallet)
+				}
+			}
+		},
+		save:
+		{
+			did: 
+			{
+				id: function (param)
+				{
+					//local, on-cloud / on-chain
+				},
+				document: function (param)
+				{
+					//local, on-cloud / on-chain
+				}
 			}
 		}
 	}
@@ -485,13 +581,35 @@ if (_.has(entityos, '_util.protect.oauth'))
 entityos._util.factory.identity = function (param)
 {
 	entityos._util.controller.add(
-		[
-			{
-				name: 'util-protect-oauth-connect-init',
-				code: function (param) {
-					return entityos._util.protect.oauth.connect.init(param)
-				}
-			},
+	[
+		{
+			name: 'util-protect-oauth-connect-init',
+			code: function (param) {
+				return entityos._util.protect.oauth.connect.init(param)
+			}
+		},
+	]);
 
-		]);
+	entityos._util.controller.add(
+	[
+		{
+			name: 'util-identity-ssi-init',
+			code: function (param) {
+				return entityos._util.identity.ssi.init(param)
+			}
+		},
+		{
+			name: 'util-identity-ssi-create-did-init',
+			code: function (param) {
+				return entityos._util.identity.ssi.create.did.init(param)
+			}
+		},
+		{
+			name: 'util-identity-ssi-create-did-document',
+			code: function (param) {
+				return entityos._util.identity.ssi.create.did.document(param)
+			}
+		},
+
+	]);
 }
