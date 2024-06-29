@@ -5289,6 +5289,10 @@ entityos._util.data._clean = function (jsonString)
 		{
 			jsonString = atob(jsonString.replace('base64:', ''))
 		}
+		else if (_.startsWith(jsonString, ':z'))
+		{
+			jsonString =  app.invoke('util-convert-from-base58', {textBase58: jsonString.replace(':z', '')})
+		}
 
 		var o = JSON.parse(jsonString);
 
@@ -6582,6 +6586,19 @@ entityos._util.base58 =
         var data = to_b58(array, map);
 
         return data;
+    },
+
+	toText: function(param)
+    {
+		var textBase58 = entityos._util.param.get(param, 'textBase58').value;
+		var array = new TextEncoder().encode(textBase58);
+        var map = entityos._util.param.get(param, 'map', {default: '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'}).value;
+
+        var from_b58 = function(S,A){var d=[],b=[],i,j,c,n;for(i in S){j=0,c=A.indexOf(S[i]);if(c<0)return undefined;c||b.length^i?i:b.push(0);while(j in d||c){n=d[j];n=n?n*58+c:c;c=n>>8;d[j]=n%256;j++}}while(j--)b.push(d[j]);return new Uint8Array(b)};
+    
+        var data = from_b58(array, map);
+
+        return data;
     }
 }
 
@@ -6591,6 +6608,15 @@ entityos._util.controller.add(
 	code: function (param)
 	{
 		return entityos._util.base58.fromText(param)
+	}
+});
+
+entityos._util.controller.add(
+{
+	name: 'util-convert-from-base58',
+	code: function (param)
+	{
+		return entityos._util.base58.toText(param)
 	}
 });
 
