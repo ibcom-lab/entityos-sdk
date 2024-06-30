@@ -5287,11 +5287,11 @@ entityos._util.data._clean = function (jsonString)
 	{
 		if (_.includes(jsonString, 'base64:'))
 		{
-			jsonString = atob(jsonString.replace('base64:', ''))
+			jsonString = atob(jsonString.replace('base64:', ''));
 		}
 		else if (_.startsWith(jsonString, ':z'))
 		{
-			jsonString =  app.invoke('util-convert-from-base58', {textBase58: jsonString.replace(':z', '')})
+			jsonString = entityos._util.base58.toText({textBase58: jsonString.replace(':z', '')});
 		}
 
 		var o = JSON.parse(jsonString);
@@ -6588,18 +6588,44 @@ entityos._util.base58 =
         return data;
     },
 
+
 	toText: function(param)
-    {
-		var textBase58 = entityos._util.param.get(param, 'textBase58').value;
-		var array = new TextEncoder().encode(textBase58);
-        var map = entityos._util.param.get(param, 'map', {default: '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'}).value;
+	{
+		var base58String = entityos._util.param.get(param, 'textBase58').value;
+		var map = entityos._util.param.get(param, 'map', {default: '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'}).value;
+		//var array = new TextEncoder().encode(textBase58);
 
-        var from_b58 = function(S,A){var d=[],b=[],i,j,c,n;for(i in S){j=0,c=A.indexOf(S[i]);if(c<0)return undefined;c||b.length^i?i:b.push(0);while(j in d||c){n=d[j];n=n?n*58+c:c;c=n>>8;d[j]=n%256;j++}}while(j--)b.push(d[j]);return new Uint8Array(b)};
-    
-        var data = from_b58(array, map);
+		const decodeBase58 = (base58String, base58Chars) => {
+			let bytes = [0];
+			for (const char of base58String) {
+				const value = base58Chars.indexOf(char);
+				if (value === -1) throw new Error('Invalid base58 character');
+				for (let j = 0; j < bytes.length; j++) {
+					bytes[j] *= 58;
+				}
+				bytes[0] += value;
+				let carry = 0;
+				for (let j = 0; j < bytes.length; ++j) {
+					bytes[j] += carry;
+					carry = bytes[j] >> 8;
+					bytes[j] &= 0xff;
+				}
+				while (carry) {
+					bytes.push(carry & 0xff);
+					carry >>= 8;
+				}
+			}
+			for (const char of base58String) {
+				if (char === base58Chars[0]) bytes.push(0);
+				else break;
+			}
+			return new Uint8Array(bytes.reverse());
+		};
 
-        return data;
-    }
+		const bytes = decodeBase58(base58String, map);
+		const text = new TextDecoder().decode(bytes);
+		return text;
+	}
 }
 
 entityos._util.controller.add(
