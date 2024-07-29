@@ -5665,26 +5665,41 @@ entityos._util.controller.add(
 	}
 });
 
-entityos._util.checkRandomText = function (param)
+entityos._util.checkText = function (param)
 {
-	var length = entityos._util.param.get(param, 'length').value;
-    var specialChars = entityos._util.param.get(param, 'specialChars', {"default": false}).value;
-    var charset = entityos._util.param.get(param, 'charset').value;
-	var referenceNumber = entityos._util.param.get(param, 'referenceNumber', {"default": false}).value;
+	var minimumLength = entityos._util.param.get(param, 'minimumLength', {default: 0}).value;
+	var text = entityos._util.param.get(param, 'text', {"default": ''}).value;
 
-	var generatedText = '';
+	let returnData = {ok: false, info: {}};
 
-	
+	if (text.length < minimumLength)
+	{
+		returnData.error = 'Less than minimum length of ' + minimumLength;
+	}
+	else
+	{
+		returnData.info.hasAlphabet = /[a-zA-Z]/.test(text);
+    	returnData.info.hasNumber = /\d/.test(text);
+    
+		if (!returnData.info.hasAlphabet || !returnData.info.hasNumber)
+		{
+			returnData.error = 'Not a valid combination of characters';
+		}
+		else
+		{
+			returnData.ok = true;
+		}
+	}
 
-	return generatedText;
+	return returnData;
 }
 
 entityos._util.controller.add(
 {
-	name: 'util-generate-random-text',
+	name: 'util-check-text',
 	code: function (param)
 	{
-		return entityos._util.generateRandomText(param);
+		return entityos._util.checkText(param);
 	}
 });
 
