@@ -2452,7 +2452,7 @@ entityos._util =
 
                                         response = JSON.parse(cleanResponseText);
 
-										if (_.has(response, 'data.rows'))
+										if (_.has(response, 'data.rows') && _.isPlainObject(set))
 										{
 											mydigitalstructure._util.data.set(
 											{
