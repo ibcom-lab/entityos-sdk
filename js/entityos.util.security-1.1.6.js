@@ -1909,6 +1909,8 @@ entityos._util.security.trusted.webauthn =
 			{
 				console.log(credential)
 				console.log(JSON.stringify(credential));
+				_.set(param, 'credential', credential)
+				entityos._util.onComplete(param)
 
 				// Send JSON.stringify(credential) to
 				// LOGON_TRUSTED 
