@@ -1933,15 +1933,19 @@ entityos._util.security.trusted.webauthn =
 		auth: function (param, response)
 		{
 			let authOptions = response;
+			const base64 = _.get(param, 'base64', false);
 
 			console.log('authOptions', authOptions);
 
-			authOptions.challenge = Uint8Array.from(authOptions.challenge, c => c.charCodeAt(0));
-    		authOptions.allowCredentials = authOptions.allowCredentials.map(cred => ({
-				...cred,
-				id: Uint8Array.from(atob(cred.id), c => c.charCodeAt(0)),
-			}));
-
+			if (base64)
+			{
+				authOptions.challenge = Uint8Array.from(authOptions.challenge, c => c.charCodeAt(0));
+				authOptions.allowCredentials = authOptions.allowCredentials.map(cred => ({
+					...cred,
+					id: Uint8Array.from(atob(cred.id), c => c.charCodeAt(0)),
+				}));
+			}
+		
 			console.log('authOptions', authOptions);
 
 			navigator.credentials.get(
@@ -1952,6 +1956,8 @@ entityos._util.security.trusted.webauthn =
 			{
 				console.log(credential)
 				console.log(JSON.stringify(credential));
+				_.set(param, 'credential', credential)
+				entityos._util.onComplete(param)
 
 				// Send JSON.stringify(credential) to
 				// LOGON_TRUSTED 
