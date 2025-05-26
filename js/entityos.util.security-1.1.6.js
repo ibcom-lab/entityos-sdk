@@ -1933,16 +1933,37 @@ entityos._util.security.trusted.webauthn =
 		auth: function (param, response)
 		{
 			let authOptions = response;
-			const base64 = _.get(param, 'base64', false);
+			const base64 = _.get(param, 'base64', true);
 
 			console.log('authOptions', authOptions);
 
 			if (base64)
 			{
+				function base64urlToUint8Array(base64url)
+				{
+					const padding = '='.repeat((4 - base64url.length % 4) % 4);
+					const base64 = base64url.replace(/-/g, '+').replace(/_/g, '/') + padding;
+					const raw = atob(base64);
+					const buffer = new Uint8Array(raw.length);
+					for (let i = 0; i < raw.length; ++i) {
+						buffer[i] = raw.charCodeAt(i);
+					}
+					return buffer;
+				}
+
+				authOptions.challenge = base64urlToUint8Array(authOptions.challenge);
+				authOptions.allowCredentials = authOptions.allowCredentials.map(cred => ({
+					...cred,
+					id: base64urlToUint8Array(cred.id)
+				}));
+
+			}
+			else
+			{
 				authOptions.challenge = Uint8Array.from(authOptions.challenge, c => c.charCodeAt(0));
 				authOptions.allowCredentials = authOptions.allowCredentials.map(cred => ({
 					...cred,
-					id: Uint8Array.from(atob(cred.id), c => c.charCodeAt(0)),
+					id: Uint8Array.from(cred.id, c => c.charCodeAt(0)),
 				}));
 			}
 		
@@ -1964,12 +1985,11 @@ entityos._util.security.trusted.webauthn =
 				// With LOGON_TRUSTED calling api to handle and check
 				//  API using const { generateRegistrationOptions, generateAuthenticationOptions, verifyAuthenticationResponse, verifyRegistrationResponse } = require('@simplewebauthn/server');
 				// https://chatgpt.com/share/6817d8eb-cfe8-800d-9bac-e83fd4464eaf
-			})
-		},
-
-		
-
-
+			}).catch(function (error)
+			{
+				entityos._util.controller.invoke('util-view-spinner-remove-all');
+			});
+		}
 	},
 	_util:
 	{
