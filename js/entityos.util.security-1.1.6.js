@@ -1527,9 +1527,14 @@ entityos._util.security.trusted =
 		signOut: function ()
 		{
 			var auth2 = gapi.auth2.getAuthInstance();
-			auth2.signOut().then(function ()
+			auth2.signOut()
+			.then(function ()
 			{
 				console.log('User signed out.');
+			})
+			.catch(function (error)
+			{
+				console.error(error)
 			});
 		}
 	},
@@ -1842,10 +1847,7 @@ entityos._util.security.trusted =
 	}
 }
 
-
 // WebAuthN - Passkey
-// SETUP_SPACE_SETTINGS_MANAGE
-// 	{ type: "public-key", alg: -257 }  // RS256
 
 entityos._util.security.trusted.webauthn =
 {
@@ -1855,48 +1857,9 @@ entityos._util.security.trusted.webauthn =
 	},
 	passkey:
 	{
-		test: function()
-		{
-			/*entityos._util.security.trusted.webauthn.passkey.register(
-			{
-				challenge: 'H+tK1qhOmQwEOAXpCBuBBYjSRCBGEEmYFnoNEc95/K0=',
-				user: {id: 'MWY0MjE4NzEtYjg1MC00ZjBjLTkzNTUtOTM4OGQ1YmEyMTli'}
-			});*/
-
-			const testResponse = 
-			'{"challenge":"gMYPcbhgb8NOMwVnBj9ty1YR_-bppcdiSyiKfUCsyCQ","rp":{"name":"selfdriven App","id":"app-lab.selfdriven.cloud"},"user":{"id":"ZGI2MzYzYjctZjFmYS00NTcyLWVjZDgtMGU2ZGM5NmM5MDJm","name":"lab@entityos","displayName":""},"pubKeyCredParams":[{"alg":-7,"type":"public-key"},{"alg":-257,"type":"public-key"}],"timeout":60000,"attestation":"none","excludeCredentials":[],"authenticatorSelection":{"residentKey":"preferred","userVerification":"preferred","requireResidentKey":false},"extensions":{"credProps":true},"hints":[]}';
-
-			const _testResponse = JSON.parse(testResponse);
-			console.log(testResponse, _testResponse);
-			
-			entityos._util.security.trusted.webauthn.passkey.register({}, _testResponse)
-		},
-
 		register: function (param, response)
 		{
-			/*const options = {
-				challenge: Uint8Array.from(atob(param.challenge), c => c.charCodeAt(0)),
-				rp: {
-					name: "Example App"
-				},
-				user: {
-					id: Uint8Array.from(atob(param.user.id), c => c.charCodeAt(0)),
-					name: "user@example.com",
-					displayName: "User Example"
-				},
-				pubKeyCredParams: [
-					{ type: "public-key", alg: -7 }   // ES256
-				],
-				authenticatorSelection: {
-					userVerification: "preferred"
-				},
-				timeout: 60000,
-				attestation: "none"
-			};*/
-
 			let publicKeyOptions = response;
-
-			console.log('publicKeyOptions', publicKeyOptions);
 
 			publicKeyOptions.challenge = Uint8Array.from(publicKeyOptions.challenge, c => c.charCodeAt(0));
     		publicKeyOptions.user.id = Uint8Array.from(publicKeyOptions.user.id, c => c.charCodeAt(0));
@@ -1907,35 +1870,19 @@ entityos._util.security.trusted.webauthn =
 			})
 			.then(function (credential)
 			{
-				console.log(credential)
-				console.log(JSON.stringify(credential));
 				_.set(param, 'credential', credential)
 				entityos._util.onComplete(param)
-
-				// Send JSON.stringify(credential) to
-				// LOGON_TRUSTED 
-				// With LOGON_TRUSTED calling api to handle and check
-				//  API using const { generateRegistrationOptions, generateAuthenticationOptions, verifyAuthenticationResponse, verifyRegistrationResponse } = require('@simplewebauthn/server');
-				// https://chatgpt.com/share/6817d8eb-cfe8-800d-9bac-e83fd4464eaf
 			})
-		},
-
-		testAuth: function()
-		{
-			const testResponse = '{"challenge":"KNK2y70BvEd5IEABbgaY-cfKroXVKDWrdBFWzkCOAvc","allowCredentials":[{"id":"RQV7duf8wJI9EtcSH4xTCpLw92Q","type":"public-key","transports":["internal"]}],"timeout":60000,"userVerification":"required"}'
-
-			const _testResponse = JSON.parse(testResponse);
-			console.log(testResponse, _testResponse);
-			
-			entityos._util.security.trusted.webauthn.passkey.auth({}, _testResponse)
+			.catch(function (error)
+			{
+				console.error(error)
+			});
 		},
 
 		auth: function (param, response)
 		{
 			let authOptions = response;
 			const base64 = _.get(param, 'base64', true);
-
-			console.log('authOptions', authOptions);
 
 			if (base64)
 			{
@@ -1967,25 +1914,16 @@ entityos._util.security.trusted.webauthn =
 				}));
 			}
 		
-			console.log('authOptions', authOptions);
-
 			navigator.credentials.get(
 			{
 				publicKey: authOptions
 			})
 			.then(function (credential)
 			{
-				console.log(credential)
-				console.log(JSON.stringify(credential));
 				_.set(param, 'credential', credential)
 				entityos._util.onComplete(param)
-
-				// Send JSON.stringify(credential) to
-				// LOGON_TRUSTED 
-				// With LOGON_TRUSTED calling api to handle and check
-				//  API using const { generateRegistrationOptions, generateAuthenticationOptions, verifyAuthenticationResponse, verifyRegistrationResponse } = require('@simplewebauthn/server');
-				// https://chatgpt.com/share/6817d8eb-cfe8-800d-9bac-e83fd4464eaf
-			}).catch(function (error)
+			})
+			.catch(function (error)
 			{
 				entityos._util.controller.invoke('util-view-spinner-remove-all');
 			});
@@ -1995,11 +1933,8 @@ entityos._util.security.trusted.webauthn =
 	{
 		generateRandomKey: function()
 		{
-			// Generate a 32-bit random value (4 bytes)
 			const randomBytes = new Uint8Array(32);
 			window.crypto.getRandomValues(randomBytes);
-			
-			// Convert the bytes to a Base64 encoded string
 			const base64String = btoa(String.fromCharCode.apply(null, randomBytes));
 			
 			return base64String;
